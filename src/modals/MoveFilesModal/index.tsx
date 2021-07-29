@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#5c6066',
-    fontFamily: 'CerebriSans-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 16
   },
   title: {

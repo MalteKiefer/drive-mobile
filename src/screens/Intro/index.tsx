@@ -104,13 +104,13 @@ const styles = StyleSheet.create({
   },
   buttonSkipText: {
     color: 'white',
-    fontFamily: 'CerebriSans-Regular',
+    fontFamily: 'NeueEinstellung-Regular',
     fontSize: normalize(18),
     textAlign: 'center'
   },
   explanationText: {
     color: '#7e7e7e',
-    fontFamily: 'CerebriSans-Medium',
+    fontFamily: 'NeueEinstellung-Medium',
     fontSize: normalize(22),
     lineHeight: normalize(28),
     marginTop: normalize(30),

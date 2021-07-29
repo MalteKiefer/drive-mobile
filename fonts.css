@@ -18,10 +18,10 @@
 
 @font-face {
   font-family: Averta;
-  src: local(Averta-Regular),
-    url(/path/to/Averta-Regular.woff2) format("woff2"),
-    url(/path/to/Averta-Regular.woff) format("woff"),
-    url(/path/to/Averta-Regular.ttf) format("truetype");
+  src: local(NeueEinstellung-Regular),
+    url(/path/to/NeueEinstellung-Regular.woff2) format("woff2"),
+    url(/path/to/NeueEinstellung-Regular.woff) format("woff"),
+    url(/path/to/NeueEinstellung-Regular.ttf) format("truetype");
   font-weight: normal;
   font-style: normal;
   font-stretch: normal;

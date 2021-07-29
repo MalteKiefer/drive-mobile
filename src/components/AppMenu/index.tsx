@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    fontFamily: 'CerebriSans-Medium',
+    fontFamily: 'NeueEinstellung-Medium',
     fontSize: 17,
     marginLeft: 15,
     marginRight: 15

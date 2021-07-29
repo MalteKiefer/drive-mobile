@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#5c6066',
-    fontFamily: 'CerebriSans-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 16
   },
   textContainer: {
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'black',
-    fontFamily: 'CerebriSans-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 27
   },
   titleContainer: {

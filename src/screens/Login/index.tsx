@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
   },
   buttonOnLabel: {
     color: '#fff',
-    fontFamily: 'CerebriSans-Medium',
+    fontFamily: 'NeueEinstellung-Medium',
     fontSize: normalize(15),
     textAlign: 'center'
   },
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   input: {
     color: '#000',
     flex: 1,
-    fontFamily: 'CerebriSans-Medium',
+    fontFamily: 'NeueEinstellung-Medium',
     fontSize: normalize(15),
     letterSpacing: -0.2,
     paddingLeft: normalize(20)
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
   versionLabel: {
     alignSelf: 'center',
     color: '#999999',
-    fontFamily: 'CerebriSans-Regular',
+    fontFamily: 'NeueEinstellung-Regular',
     marginBottom: normalize(70),
     marginTop: normalize(30)
   }

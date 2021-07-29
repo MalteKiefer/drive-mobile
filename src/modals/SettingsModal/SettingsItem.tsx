@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
   itemText: {
     color: '#000',
-    fontFamily: 'CerebriSans-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 19,
     fontWeight: '500',
     justifyContent: 'center'

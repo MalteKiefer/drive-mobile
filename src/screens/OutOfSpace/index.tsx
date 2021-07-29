@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#5c6066',
-    fontFamily: 'CerebriSans-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 16,
     letterSpacing: -0.2
   },
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   subtitle: {
-    fontFamily: 'CerebriSans-Regular',
+    fontFamily: 'NeueEinstellung-Regular',
     fontSize: 17,
     letterSpacing: -0.1,
     lineHeight: 23,
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#000000',
-    fontFamily: 'CerebriSans-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 27,
     letterSpacing: -0.5
   },

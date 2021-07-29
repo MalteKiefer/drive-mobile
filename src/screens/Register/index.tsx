@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   },
   buttonOffLabel: {
     color: '#5c5c5c',
-    fontFamily: 'CerebriSans-Medium',
+    fontFamily: 'NeueEinstellung-Medium',
     fontSize: normalize(15),
     textAlign: 'center'
   },
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   },
   buttonOnLabel: {
     color: '#fff',
-    fontFamily: 'CerebriSans-Medium',
+    fontFamily: 'NeueEinstellung-Medium',
     fontSize: normalize(15),
     textAlign: 'center'
   },
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   input: {
     color: '#000',
     flex: 1,
-    fontFamily: 'CerebriSans-Medium',
+    fontFamily: 'NeueEinstellung-Medium',
     fontSize: normalize(15),
     letterSpacing: -0.2,
     paddingLeft: 20
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
   },
   textDisclaimer: {
     color: '#737880',
-    fontFamily: 'CerebriSans-Regular',
+    fontFamily: 'NeueEinstellung-Regular',
     fontSize: normalize(15),
     letterSpacing: -0.1,
     marginTop: -15,
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   textStorePassword: {
     color: '#737880',
     flex: 1,
-    fontFamily: 'CerebriSans-Regular',
+    fontFamily: 'NeueEinstellung-Regular',
     fontSize: normalize(15),
     paddingLeft: normalize(9)
   },
@@ -251,13 +251,13 @@ const styles = StyleSheet.create({
   textTip: {
     color: '#737880',
     flex: 1,
-    fontFamily: 'CerebriSans-Regular',
+    fontFamily: 'NeueEinstellung-Regular',
     fontSize: normalize(15),
     paddingLeft: normalize(9)
   },
   title: {
     color: '#000',
-    fontFamily: 'CerebriSans-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: normalize(22),
     letterSpacing: -1.7,
     marginBottom: normalize(30),

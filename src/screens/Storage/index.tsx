@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   backText: {
     color: 'black',
     flex: 0.8,
-    fontFamily: 'CerebriSans-Medium',
+    fontFamily: 'NeueEinstellung-Medium',
     fontSize: 16,
     textAlign: 'center'
   },
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#096dff'
   },
   bold: {
-    fontFamily: 'CerebriSans-Bold'
+    fontFamily: 'NeueEinstellung-Bold'
   },
   cardsContainer: {
     flexGrow: 1,
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     color: '#7e848c',
-    fontFamily: 'CerebriSans-Regular',
+    fontFamily: 'NeueEinstellung-Regular',
     fontSize: 16,
     letterSpacing: -0.1,
     lineHeight: 22,
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
   progressTitle: {
     color: 'black',
     flex: 0.5,
-    fontFamily: 'CerebriSans-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 18,
     paddingLeft: 20
   },
@@ -316,12 +316,12 @@ const styles = StyleSheet.create({
   },
   secondRowText: {
     color: '#7e848c',
-    fontFamily: 'CerebriSans-Regular',
+    fontFamily: 'NeueEinstellung-Regular',
     fontSize: 13
   },
   title: {
     color: 'black',
-    fontFamily: 'CerebriSans-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 18,
     letterSpacing: 0,
     marginRight: 10,
@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
     borderColor: '#eaeced',
     borderLeftWidth: 1,
     color: '#7e848c',
-    fontFamily: 'CerebriSans-Medium',
+    fontFamily: 'NeueEinstellung-Medium',
     fontSize: 18,
     paddingBottom: Platform.OS === 'android' ? wp('1') : 0,
     paddingLeft: 10
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
   },
   usedSpace: {
     color: 'black',
-    fontFamily: 'CerebriSans-Regular',
+    fontFamily: 'NeueEinstellung-Regular',
     fontSize: 13
   }
 })

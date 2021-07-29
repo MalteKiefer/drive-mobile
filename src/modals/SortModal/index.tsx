@@ -74,14 +74,14 @@ export default connect(mapStateToProps)(SortModal)
 const styles = StyleSheet.create({
   sortOption: {
     color: 'black',
-    fontFamily: 'Averta-Semibold',
+    fontFamily: 'NeueEinstellung-Semibold',
     fontSize: 18,
     paddingLeft: 40,
     paddingTop: 25
   },
   sortOptionSelected: {
     color: '#0084ff',
-    fontFamily: 'Averta-Semibold',
+    fontFamily: 'NeueEinstellung-Semibold',
     fontSize: 18,
     paddingLeft: 40,
     paddingTop: 25

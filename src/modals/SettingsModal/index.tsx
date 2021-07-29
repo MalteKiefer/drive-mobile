@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     paddingBottom: Platform.OS === 'ios' ? 20 : 0
   },
   nameText: {
-    fontFamily: 'CerebriSans-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 20,
     fontWeight: 'bold',
     marginLeft: 26,
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
     height: 6
   },
   usageText: {
-    fontFamily: 'CerebriSans-Regular',
+    fontFamily: 'NeueEinstellung-Regular',
     fontSize: 15,
     paddingBottom: 0,
     paddingLeft: 24

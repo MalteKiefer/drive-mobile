@@ -288,7 +288,7 @@ export default connect(mapStateToProps)(FileDetailsModal)
 
 const styles = StyleSheet.create({
   cerebriSansBold: {
-    fontFamily: 'CerebriSans-Bold'
+    fontFamily: 'NeueEinstellung-Bold'
   },
   colorButton: {
     alignItems: 'center',
@@ -318,12 +318,12 @@ const styles = StyleSheet.create({
   fileName: {
     width: wp(92),
     alignSelf: 'center',
-    fontFamily: 'CerebriSans-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 20,
     padding: 0 // remove default padding on Android
   },
   folderName: {
-    fontFamily: 'CerebriSans-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 20,
     marginLeft: 26,
     padding: 0 // Remove default padding Android
@@ -364,21 +364,21 @@ const styles = StyleSheet.create({
     marginBottom: 15
   },
   stylesColorFolder: {
-    fontFamily: 'CerebriSans-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 17,
     fontWeight: 'bold',
     paddingBottom: 8,
     paddingLeft: 24
   },
   stylesCoverFolder: {
-    fontFamily: 'CerebriSans-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 17,
     fontWeight: 'bold',
     paddingBottom: 5,
     paddingLeft: 24
   },
   textDefault: {
-    fontFamily: 'CerebriSans-Regular',
+    fontFamily: 'NeueEinstellung-Regular',
     fontSize: 18,
     fontWeight: 'bold',
     paddingBottom: 6,

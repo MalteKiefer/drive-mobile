@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#4585f5',
-    fontFamily: 'CerebriSans-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 18
   },
   buttonTextLoading: {

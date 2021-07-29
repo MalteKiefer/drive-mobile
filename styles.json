@@ -1680,22 +1680,22 @@
 		"fontWeight": "900"
 	},
   "font-averta-black": {
-    "fontFamily": "Averta-Black"
+    "fontFamily": "NeueEinstellung-Black"
   },
   "font-averta-bold": {
-    "fontFamily": "Averta-Bold"
+    "fontFamily": "NeueEinstellung-Bold"
   },
   "font-averta-extra-bold": {
-    "fontFamily": "Averta-Extra-Bold"
+    "fontFamily": "NeueEinstellung-Extra-Bold"
   },
   "font-averta-light": {
-    "fontFamily": "Averta-Light"
+    "fontFamily": "NeueEinstellung-Light"
   },
   "font-averta-regular": {
-    "fontFamily": "Averta-Regular"
+    "fontFamily": "NeueEinstellung-Regular"
   },
   "font-averta-semibold": {
-    "fontFamily": "Averta-Semibold"
+    "fontFamily": "NeueEinstellung-Semibold"
   },
 	"h-0": {
 		"height": 0

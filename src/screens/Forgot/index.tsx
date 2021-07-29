@@ -169,7 +169,7 @@ export default connect(mapStateToProps)(Forgot)
 
 const styles = StyleSheet.create({
   bold: {
-    fontFamily: 'CerebriSans-Bold'
+    fontFamily: 'NeueEinstellung-Bold'
   },
   button: {
     alignItems: 'center',
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   },
   buttonOffLabel: {
     color: '#5c5c5c',
-    fontFamily: 'CerebriSans-Medium',
+    fontFamily: 'NeueEinstellung-Medium',
     fontSize: normalize(15)
   },
   buttonOn: {
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   },
   buttonOnLabel: {
     color: '#fff',
-    fontFamily: 'CerebriSans-Medium',
+    fontFamily: 'NeueEinstellung-Medium',
     fontSize: normalize(15)
   },
   buttonRight: {
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
   },
   grayBoxText: {
     color: '#737880',
-    fontFamily: 'CerebriSans-Regular',
+    fontFamily: 'NeueEinstellung-Regular',
     fontSize: normalize(15)
   },
   halfOpacity: {
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   input: {
     color: '#000',
     flex: 1,
-    fontFamily: 'CerebriSans-Medium',
+    fontFamily: 'NeueEinstellung-Medium',
     fontSize: normalize(15),
     letterSpacing: -0.2,
     paddingLeft: normalize(20)
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
   },
   signUp: {
     color: '#737880',
-    fontFamily: 'CerebriSans-Regular',
+    fontFamily: 'NeueEinstellung-Regular',
     fontSize: normalize(15),
     marginTop: normalize(10),
     padding: normalize(20),
@@ -261,14 +261,14 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#737880',
-    fontFamily: 'CerebriSans-Regular',
+    fontFamily: 'NeueEinstellung-Regular',
     fontSize: normalize(15),
     marginBottom: normalize(20),
     textAlign: 'justify'
   },
   title: {
     color: '#000',
-    fontFamily: 'CerebriSans-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: normalize(22),
     letterSpacing: -1.5,
     marginBottom: normalize(15),

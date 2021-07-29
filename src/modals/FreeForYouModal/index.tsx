@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#5c6066',
-    fontFamily: 'CerebriSans-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 16
   },
   buttonsContainer: {
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'black',
-    fontFamily: 'CerebriSans-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 27
   },
   white: {
