@@ -37,7 +37,7 @@ export class FunnelStream {
     this.listeners.get(event).push(listener);
   }
 
-  pipe(target: any) {
+  pipe(target: Transform): Transform {
     this.target = target;
 
     return this.target;
@@ -48,9 +48,11 @@ export class FunnelStream {
   }
 
   push(data: Buffer): void {
-    if (!data) {
-      return this.end();
-    }
+    console.log('data here', data.length);
+
+    if (!data) { return; }
+
+    console.log('data here2', data.length);
 
     if (!this.target) {
       this.listeners.get('error').forEach((fn) => {
@@ -61,6 +63,7 @@ export class FunnelStream {
     let remainingBytes = data.length;
 
     while (remainingBytes > this.internalBuffer.length - this.internalBufferOffset) {
+      console.log('entro en el while con chunk size', data.length);
       data.copy(this.internalBuffer, this.internalBufferOffset, 0, this.internalBuffer.length - this.internalBufferOffset);
       data = data.slice(this.internalBuffer.length - this.internalBufferOffset);
 

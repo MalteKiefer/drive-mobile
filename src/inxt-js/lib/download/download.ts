@@ -1,9 +1,8 @@
-import { Transform } from 'readable-stream';
 import { reconstruct } from 'rs-wrapper';
 
 import { DownloadFileOptions, EnvironmentConfig } from '../..';
 import { FileObject } from '../../api/FileObject';
-import { FILEMUXER, DOWNLOAD, DECRYPT, FILEOBJECT } from '../events';
+import { DOWNLOAD, DECRYPT } from '../events';
 import { logger } from '../utils/logger';
 import { bufferToStream } from '../utils/buffer';
 import { promisifyStream } from '../utils/promisify';
@@ -56,22 +55,6 @@ export async function Download(config: EnvironmentConfig, bucketId: string, file
   } catch (err) {
     options.finishedCallback(err, null);
   }
-}
-
-// TODO: use propagate lib
-function attachFileObjectListeners(f: FileObject, notified: Transform) {
-  // propagate events to notified
-  f.on(FILEMUXER.PROGRESS, (msg) => notified.emit(FILEMUXER.PROGRESS, msg));
-
-  // TODO: Handle filemuxer errors
-  f.on(FILEMUXER.ERROR, (err) => notified.emit(FILEMUXER.ERROR, err));
-
-  // TODO: Handle fileObject errors
-  f.on('error', (err) => notified.emit(FILEOBJECT.ERROR, err));
-  // f.on('end', () => notified.emit(FILEOBJECT.END))
-
-  // f.decipher.on('end', () => notified.emit(DECRYPT.END))
-  f.decipher.once('error', (err: Error) => notified.emit(DECRYPT.ERROR, err));
 }
 
 function handleProgress(fl: FileObject, options: DownloadFileOptions) {

@@ -1,12 +1,9 @@
-import { encode, utils } from 'rs-wrapper';
-
 import { EnvironmentConfig, UploadProgressCallback, UploadFinishCallback } from '../..';
 import { FileObjectUpload, FileMeta } from '../../api/FileObjectUpload';
 import { ShardMeta } from '../shardMeta';
 import { CreateEntryFromFrameBody } from '../../services/request';
 import { logger } from '../utils/logger';
-
-const MIN_SHARD_SIZE = 2097152; // 2Mb
+import { determineShardSize } from '../utils';
 
 /**
  * Uploads a file to the network
@@ -21,60 +18,30 @@ export async function Upload(config: EnvironmentConfig, bucketId: string, fileMe
     throw new Error('Encryption key is null');
   }
 
-  const File = await new FileObjectUpload(config, fileMeta, bucketId).init();
-  const Output = await File.StartUploadFile();
+  const file = await new FileObjectUpload(config, fileMeta, bucketId).init();
+  const output = file.getUpstream();
 
   const fileSize = fileMeta.size;
   const buffs: Buffer[] = [];
 
-  progress(0, 0, fileSize);
+  output.on('data', buffs.push.bind(buffs));
+  output.on('error', (err) => finish(err, null));
 
-  Output.on('data', async (shard: Buffer) => { buffs.push(shard); });
-
-  Output.on('error', (err) => finish(err, null));
-
-  Output.on('end', async () => {
+  output.on('end', async () => {
     const fileContent = Buffer.concat(buffs);
 
-    const shardSize = utils.determineShardSize(fileSize);
+    const shardSize = determineShardSize(fileSize);
     const nShards = Math.ceil(fileSize / shardSize);
-    const parityShards = utils.determineParityShards(nShards);
 
-    const rs = fileSize >= MIN_SHARD_SIZE;
-    const totalSize = rs ? fileSize + (parityShards * shardSize) : fileSize;
+    const totalSize = fileSize;
 
     const shardsAction: UploadShardsAction = {
-      fileContent, nShards, shardSize, fileObject: File, firstIndex: 0, parity: false
+      fileContent, nShards, shardSize, fileObject: file, firstIndex: 0, parity: false
     };
 
-    let paritiesAction: UploadShardsAction | void;
+    logger.debug('Shards obtained %s, shardSize %s', nShards, shardSize > fileContent.length ? fileContent.length : shardSize);
 
-    logger.debug('Shards obtained %s, shardSize %s', nShards, shardSize);
-
-    if (rs) {
-      logger.debug('Applying Reed Solomon. File size %s. Creating %s parities', fileContent.length, parityShards);
-
-      const parities = await getParities(fileContent, shardSize, nShards, parityShards);
-
-      logger.debug('Parities content size %s', parities.length);
-
-      paritiesAction = {
-        fileContent: Buffer.from(parities),
-        nShards: parityShards,
-        shardSize,
-        fileObject: File,
-        firstIndex: nShards,
-        parity: true
-      };
-    } else {
-      logger.debug('File too small (%s), not creating parities', fileSize);
-    }
-
-    let uploadRequests = uploadShards(shardsAction);
-
-    if (paritiesAction) {
-      uploadRequests = uploadRequests.concat(uploadShards(paritiesAction));
-    }
+    const uploadRequests = uploadShards(shardsAction);
 
     try {
       logger.debug('Waiting for upload to progress');
@@ -94,7 +61,7 @@ export async function Upload(config: EnvironmentConfig, bucketId: string, fileMe
 
       logger.debug('Upload finished');
 
-      const savingFileResponse = await createBucketEntry(File, fileMeta, uploadResponses, rs);
+      const savingFileResponse = await createBucketEntry(file, fileMeta, uploadResponses, false);
 
       if (!savingFileResponse) {
         throw new Error('Can not save the file in network');
@@ -108,6 +75,10 @@ export async function Upload(config: EnvironmentConfig, bucketId: string, fileMe
       finish(err, null);
     }
   });
+
+  await file.StartUploadFile();
+
+  progress(0, 0, fileSize);
 }
 
 export function createBucketEntry(fileObject: FileObjectUpload, fileMeta: FileMeta, shardMetas: ShardMeta[], rs: boolean) {
@@ -130,12 +101,6 @@ export function generateBucketEntry(fileObject: FileObjectUpload, fileMeta: File
   }
 
   return bucketEntry;
-}
-
-async function getParities(file: Buffer, shardSize: number, totalShards: number, parityShards: number) {
-  const fileEncoded = await encode(file, shardSize, totalShards, parityShards);
-
-  return fileEncoded.slice(totalShards * shardSize);
 }
 
 function updateProgress(totalBytes: number, currentBytesUploaded: number, newBytesUploaded: number, progress: UploadProgressCallback): number {

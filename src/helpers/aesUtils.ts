@@ -32,10 +32,8 @@ const AesUtils = {
    * @returns String encrypted text, base64 encoded
    */
   encrypt(text: string, password: string, randomIv = false) {
-    const {
-      REACT_NATIVE_MAGIC_IV: MAGIC_IV,
-      REACT_NATIVE_MAGIC_SALT: MAGIC_SALT
-    } = process.env;
+    const MAGIC_IV = process && process.env && process.env.REACT_NATIVE_MAGIC_IV;
+    const MAGIC_SALT = process && process.env && process.env.REACT_NATIVE_MAGIC_SALT;
 
     if (!MAGIC_IV || !MAGIC_SALT) {
       throw new Error('Missing secrets on ENV file');

@@ -12,11 +12,12 @@ import { EnvironmentConfig } from '..';
 import { Shard } from './shard';
 import { ExchangeReport } from './reports';
 import { DECRYPT, DOWNLOAD, FILEMUXER } from '../lib/events';
-import { utils } from 'rs-wrapper';
+
 import { logger } from '../lib/utils/logger';
 import { bufferToStream } from '../lib/utils/buffer';
 import { DEFAULT_INXT_MIRRORS, DOWNLOAD_CANCELLED, DOWNLOAD_CANCELLED_ERROR } from './constants';
 import EventEmitter from 'EventEmitter';
+import { determineShardSize } from '../lib/utils';
 
 const MultiStream = require('multistream');
 
@@ -258,7 +259,7 @@ export class FileObject {
     this.decipher.on('error', (err) => this.ev.emit(DECRYPT.ERROR, err));
     this.decipher.on(DECRYPT.PROGRESS, (msg) => this.ev.emit(DECRYPT.PROGRESS, msg));
 
-    const shardSize = utils.determineShardSize(this.final_length);
+    const shardSize = determineShardSize(this.final_length);
 
     const lastShardIndex = this.rawShards.filter(shard => !shard.parity).length - 1;
     const lastShardSize = this.rawShards[lastShardIndex].size;

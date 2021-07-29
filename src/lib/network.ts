@@ -1,6 +1,6 @@
 import { Environment } from '../inxt-js';
 import { createHash } from 'react-native-crypto';
-import { Transform } from 'readable-stream';
+import { PassThrough, Transform } from 'readable-stream';
 
 import { getUser } from '../database/DBUtils.ts/utils';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -75,22 +75,26 @@ export class Network {
 
     async uploadFile(bucketId: string, params: IMobileUploadParams): Promise<string> {
       const fileStream = await RNFetchBlob.fs.readStream(params.fileUri, 'base64', 4095);
-      const base64toUtf8Transformer = new Base64ToUtf8Transform(4095);
+      const base64toUtf8Transformer = new Base64ToUtf8Transform();
+
+      const passthrough = new PassThrough();
 
       fileStream.onError((err) => {
-        console.log('STREAM ERR', err);
         base64toUtf8Transformer.emit('error', err);
       });
 
-      fileStream.onData((chunk) => { base64toUtf8Transformer.push(chunk) });
-      fileStream.onEnd(() => { base64toUtf8Transformer.push(null) });
+      fileStream.onData((chunk: string) => {
+        passthrough.push(Buffer.from(chunk, 'base64'));
+      });
+
+      fileStream.onEnd(() => passthrough.end());
       fileStream.open();
 
       const stat = await RNFetchBlob.fs.stat(params.fileUri);
 
       return this._uploadFile(bucketId, {
         filepath: '',
-        filecontent: base64toUtf8Transformer,
+        filecontent: passthrough,
         filesize: parseInt(stat.size),
         progressCallback: params.progressCallback
       });

@@ -1,5 +1,4 @@
-import { utils } from 'rs-wrapper';
-import { Readable } from 'readable-stream';
+import { Transform } from 'readable-stream';
 import { randomBytes } from 'react-native-crypto';
 
 import { EnvironmentConfig } from '..';
@@ -7,18 +6,19 @@ import * as api from '../services/request';
 
 import EncryptStream from '../lib/encryptStream';
 import { GenerateFileKey, sha512HmacBuffer } from '../lib/crypto';
-import { FunnelStream } from '../lib/funnelStream';
 import { getShardMeta, ShardMeta } from '../lib/shardMeta';
 import { ContractNegotiated } from '../lib/contracts';
 import { logger } from '../lib/utils/logger';
 
 import { ExchangeReport } from './reports';
 import { Shard } from './shard';
+import { FunnelStream } from '../lib/funnelStream';
+import { determineShardSize } from '../lib/utils';
 
 export interface FileMeta {
   size: number;
   name: string;
-  content: Readable;
+  content: Transform;
 }
 
 export class FileObjectUpload {
@@ -39,7 +39,7 @@ export class FileObjectUpload {
     this.fileMeta = fileMeta;
     this.bucketId = bucketId;
     this.frameId = '';
-    this.funnel = new FunnelStream(utils.determineShardSize(fileMeta.size));
+    this.funnel = new FunnelStream(determineShardSize(fileMeta.size));
     this.cipher = new EncryptStream(randomBytes(32), randomBytes(16));
     this.fileEncryptionKey = randomBytes(32);
   }
@@ -102,13 +102,35 @@ export class FileObjectUpload {
     return hmac.digest().toString('hex');
   }
 
+  getUpstream() {
+    return this.cipher;
+  }
+
   async StartUploadFile(): Promise<EncryptStream> {
     logger.info('Starting file upload');
 
     await this.CheckBucketExistance();
     await this.StageFile();
 
-    return this.fileMeta.content.pipe(this.funnel).pipe(this.cipher);
+    this.fileMeta.content.on('data', (chunk) => {
+      this.funnel.push(chunk);
+    });
+
+    this.fileMeta.content.on('error', (err) => {
+      this.funnel.emit('error', err);
+    });
+
+    this.fileMeta.content.on('end', () => {
+      this.funnel.end();
+    });
+
+    this.funnel.on('error', (err) => {
+      this.cipher.emit('error', err);
+    });
+
+    this.funnel.pipe(this.cipher);
+
+    return this.cipher;
   }
 
   async UploadShard(encryptedShard: Buffer, shardSize: number, frameId: string, index: number, attemps: number, parity: boolean): Promise<ShardMeta> {

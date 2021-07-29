@@ -1,4 +1,7 @@
-import CryptoJS from 'crypto-js'
+import CryptoJS from 'crypto-js';
+// import crypto from 'crypto';
+import crypto from 'react-native-crypto';
+import AesUtil from './aesUtils';
 
 const password = process && process.env && process.env.REACT_NATIVE_CRYPTO_SECRET || ''; // Force env var loading
 
@@ -56,5 +59,109 @@ export function decryptTextWithKey(encryptedText: string, keyToDecrypt: string):
     return bytes.toString(CryptoJS.enc.Utf8);
   } catch (error) {
     throw new Error(error);
+  }
+}
+
+export function encryptFilename(filename: string, folderId: string): string {
+  const { REACT_NATIVE_CRYPTO_SECRET2: CRYPTO_KEY } = process.env;
+
+  if (!CRYPTO_KEY) {
+    throw new Error('Cannot encrypt filename due to missing encryption key');
+  }
+
+  return AesUtil.encrypt(filename, `${CRYPTO_KEY}-${folderId}`);
+}
+
+export function probabilisticEncryption(content: string): string | null {
+  try {
+    const b64 = crypto.createCipher('aes-256-gcm', process.env.REACT_NATIVE_CRYPTO_SECRET);
+
+    b64.write(content);
+    // const b64 = CryptoJS.AES.encrypt(content, App.config.get('secrets').CRYPTO_SECRET).toString();
+
+    const e64 = Buffer.concat([b64.update(content), b64.final()]).toString('base64');
+    // const e64 = CryptoJS.enc.Base64.parse(b64);
+
+    const eHex = Buffer.from(e64, 'base64').toString('hex');
+    // const eHex = e64.toString(CryptoJS.enc.Hex);
+
+    return eHex;
+  } catch (error) {
+    return null;
+  }
+}
+
+export function probabilisticDecryption(cipherText: string): string | null {
+  try {
+    const reb64 = Buffer.from(cipherText).toString('hex');
+    // const reb64 = CryptoJS.enc.Hex.parse(cipherText);
+
+    const bytes = Buffer.from(reb64).toString('base64');
+    // const bytes = reb64.toString(CryptoJS.enc.Base64);
+
+    const decrypt = crypto.createDecipher('aes-256-gcm', process.env.REACT_NATIVE_CRYPTO_SECRET);
+    // const decrypt = CryptoJS.AES.decrypt(bytes, App.config.get('secrets').CRYPTO_SECRET);
+
+    const plain = Buffer.concat([decrypt.update(cipherText), decrypt.final()]).toString('utf8');
+    // const plain = decrypt.toString(CryptoJS.enc.Utf8);
+
+    return plain;
+  } catch (error) {
+    return null;
+  }
+}
+
+// function encryptTextWithKey(textToEncrypt, keyToEncrypt) {
+//   const bytes = CryptoJS.AES.encrypt(textToEncrypt, keyToEncrypt).toString();
+//   const text64 = CryptoJS.enc.Base64.parse(bytes);
+//   return text64.toString(CryptoJS.enc.Hex);
+// }
+
+export function deterministicEncryption(content: string, salt?: string | number): string | null {
+  try {
+    const key = Buffer.from(process.env.REACT_NATIVE_CRYPTO_SECRET).toString('hex');
+    // const key = CryptoJS.enc.Hex.parse(App.config.get('secrets').CRYPTO_SECRET);
+
+    const iv = salt ? Buffer.from(salt.toString()).toString('hex') : key;
+    // const iv = salt ? CryptoJS.enc.Hex.parse(salt.toString()) : key;
+
+    const encrypt = crypto.createCipheriv('aes-256-gcm', key, iv);
+    // const encrypt = CryptoJS.AES.encrypt(content, key, { iv }).toString();
+
+    const b64 = Buffer.concat([encrypt.update(content), encrypt.final()]).toString('base64');
+    // const b64 = CryptoJS.enc.Base64.parse(encrypt);
+
+    const eHex = Buffer.from(b64).toString('hex');
+    // const eHex = b64.toString(CryptoJS.enc.Hex);
+
+    return eHex;
+  } catch (e) {
+    return null;
+  }
+}
+
+export function deterministicDecryption(cipherText: string, salt?: string | number): string | null {
+  try {
+    const key = Buffer.from(process.env.REACT_NATIVE_CRYPTO_SECRET).toString('hex');
+    // const key = CryptoJS.enc.Hex.parse(App.config.get('secrets').CRYPTO_SECRET);
+
+    const iv = salt ? Buffer.from(salt.toString()).toString('hex') : key;
+    // const iv = salt ? CryptoJS.enc.Hex.parse(salt.toString()) : key;
+
+    const reb64 = Buffer.from(cipherText).toString('hex');
+    // const reb64 = CryptoJS.enc.Hex.parse(cipherText);
+
+    const bytes = Buffer.from(reb64).toString('base64');
+    // const bytes = reb64.toString(CryptoJS.enc.Base64);
+
+    const decrypt = crypto.createDecipheriv('aes-256-gcm', key, iv);
+    // const decrypt = CryptoJS.AES.decrypt(bytes, key, { iv });
+
+    const plain = Buffer.concat([decrypt.update(Buffer.from(bytes)), decrypt.final()]).toString('utf8');
+    // const plain = decrypt.toString(CryptoJS.enc.Utf8);
+
+    return plain;
+  } catch (e) {
+    return null;
   }
 }

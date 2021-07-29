@@ -7,7 +7,7 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 import strings from '../../../assets/lang/strings';
-import { getLyticsData } from '../../helpers';
+import { encryptFilename, getLyticsData } from '../../helpers';
 import { getIcon } from '../../helpers/getIcon';
 import analytics from '../../helpers/lytics';
 import { fileActions, layoutActions, userActions } from '../../redux/actions';
@@ -18,13 +18,19 @@ import { Environment } from '../../inxt-js';
 import { Base64ToUtf8Transform } from '../../inxt-js/lib/base64toUtf8Stream';
 
 import RNFS from 'react-native-fs';
+import { FilesState } from '../../redux/reducers/files.reducer';
+import { getEnvironmentConfig, Network } from '../../lib/network';
+import { LayoutState } from '../../redux/reducers/layout.reducer';
+import { AuthenticationState } from '../../redux/reducers/authentication.reducer';
+import { getHeaders } from '../../helpers/headers';
+import { getItemsLocalStorage } from '../../modals/CreateAlbumModal/init';
 
 interface AppMenuProps {
   navigation?: any
-  filesState?: any
+  filesState?: FilesState
   dispatch?: any,
-  layoutState?: any
-  authenticationState?: any
+  layoutState?: LayoutState
+  authenticationState?: AuthenticationState
 }
 
 function AppMenu(props: AppMenuProps) {
@@ -51,63 +57,79 @@ function AppMenu(props: AppMenuProps) {
       analytics.track('file-upload-start', { userId: res.uuid, email: res.email, device: 'mobile' }).catch(() => { })
     })
 
-    const user = await getUser();
-
     const regex = /^(.*:\/{0,2})\/?(.*)$/gm
     const file = result.uri.replace(regex, '$2')
 
-    const env = new Environment({
-      encryptionKey: user.mnemonic,
-      bridgePass: user.userId,
-      bridgeUser: user.email,
-      bridgeUrl: 'https://api.internxt.com'
+    const { bridgeUser, bridgePass, encryptionKey, bucketId } = await getEnvironmentConfig();
+    const network = new Network(bridgeUser, bridgePass, encryptionKey);
+
+    // const fileId = '';
+    const fileId = await network.uploadFile(bucketId, {
+      fileUri: file,
+      progressCallback: (progress) => {
+        props.dispatch(fileActions.uploadFileSetProgress(progress, result.id))
+        if (progress >= 1) { // Once upload is finished (on small files it almost never reaches 100% as it uploads really fast)
+          props.dispatch(fileActions.uploadFileSetUri(result.uri)) // Set the uri of the file so FileItem can get it as props
+        }
+      }
+    }).catch((err) => {
+      console.error('ERR', err);
     });
 
     const finalUri = Platform.OS === 'ios' ? RNFetchBlob.wrap(decodeURIComponent(file)) : RNFetchBlob.wrap(result.uri)
 
-    const stream = await RNFetchBlob.fs.readStream(file, 'base64', 4095);
+    // const stat = await RNFS.stat(result.uri);
+    const stat = await RNFetchBlob.fs.stat(file);
 
-    const base64toUtf8Transformer = new Base64ToUtf8Transform(4096);
+    // console.log('FILESTATE', JSON.stringify(props.filesState, null, 2));
 
-    stream.onData((chunk) => {
-      base64toUtf8Transformer.push(chunk);
-    });
+    console.log('stat', stat);
 
-    stream.onError((err) => {
-      console.log('STREAM ERR', err);
-    });
+    const folderId = props.filesState.folderContent.id;
+    const name = encryptFilename(result.name, folderId);
+    const fileSize = stat.size;
+    const type = stat.type;
 
-    // stream.onEnd(() => {
-    //   console.log
-    // });
+    const fileEntry = {
+      fileId,
+      file_id: fileId,
+      type,
+      bucket: bucketId,
+      size: fileSize,
+      folder_id: folderId,
+      name,
+      encrypt_version: '03-aes'
+    };
 
+    const items = await getItemsLocalStorage()
+    const mnemonic = items.xUserJson.mnemonic
+    const xToken = items.xToken
+    const headers = await getHeaders(xToken, mnemonic)
 
-    console.log('FILESIZE', await RNFS.stat(finalUri));
-    return;
-    stream.open();
+    const createFileEntry = () => {
+      const body = JSON.stringify({ file: fileEntry });
+      const params = { method: 'post', headers, body };
 
-    // env.uploadFile(user.bucket, {
-    //   fileSize: ,
-    //   fileContent: base64toUtf8Transformer,
-    //   filename: result.name,
-    //   progressCallback: (progress: number, uploadedBytes: number, totalBytes: number) => {
-    //     props.dispatch(fileActions.uploadFileSetProgress(sent / total, result.id))
-    //     if (sent / total >= 1) { // Once upload is finished (on small files it almost never reaches 100% as it uploads really fast)
-    //       props.dispatch(fileActions.uploadFileSetUri(result.uri)) // Set the uri of the file so FileItem can get it as props
-    //     }
-    //   },
-    //   finishedCallback: (err: Error, res) => {
-    //     console.log('file uplodaded', err);
-    //   }
-    // })
+      return fetch(`${process.env.REACT_NATIVE_API_URL}/api/storage/file`, params);
+    };
 
-    console.log('ohohohooho')
+    const user = await getUser();
 
-    console.log(user);
+    try {
+      await createFileEntry();
+      analytics.track('file-upload-finished', { userId: user.uuid, email: user.email, device: 'mobile' }).catch(() => { })
 
-    // new Environment({
+      props.dispatch(fileActions.removeUploadingFile(result.id))
+      props.dispatch(fileActions.updateUploadingFile(result.id))
+      props.dispatch(fileActions.uploadFileSetUri(undefined))
+    } catch (err) {
+      analytics.track('file-upload-error', { userId: user.uuid, email: user.email, device: 'mobile' }).catch(() => { })
+      props.dispatch(fileActions.uploadFileFailed(result.id));
 
-    // })
+      Alert.alert('Error', 'Cannot upload file');
+    } finally {
+      props.dispatch(fileActions.uploadFileFinished(result.name));
+    }
 
     return;
 
