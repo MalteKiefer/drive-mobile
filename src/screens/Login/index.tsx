@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { View, Text, KeyboardAvoidingView, StyleSheet, Alert } from 'react-native';
-import { TextInput, TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
+import { TextInput, TouchableHighlight } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import strings from '../../../assets/lang/strings';
 import { deviceStorage } from '../../helpers';
@@ -10,7 +10,11 @@ import { normalize } from '../../helpers/normalize'
 import { userActions } from '../../redux/actions';
 import { AuthenticationState } from '../../redux/reducers/authentication.reducer';
 import { Reducers } from '../../redux/reducers/reducers';
+import globalStyles from '../../styles/global.style';
 import { validate2FA, apiLogin } from './access';
+import InternxtLogo from '../../../assets/logo.svg'
+import EnvelopeIcon from '../../../assets/icons/figma-icons/envelope.svg'
+import EyeIcon from '../../../assets/icons/figma-icons/eye.svg'
 
 interface LoginProps extends Reducers {
   goToForm?: (screenName: string) => void
@@ -32,8 +36,8 @@ function Login(props: LoginProps): JSX.Element {
     try {
       const userLoginData = await apiLogin(email)
 
-      if (userLoginData.tfa && !twoFactorCode) {setShowTwoFactor(true)}
-      else {await props.dispatch(userActions.signin(email, password, userLoginData.sKey, twoFactorCode))}
+      if (userLoginData.tfa && !twoFactorCode) { setShowTwoFactor(true) }
+      else { await props.dispatch(userActions.signin(email, password, userLoginData.sKey, twoFactorCode)) }
 
     } catch (err) {
       analytics.track('user-signin-attempted', {
@@ -78,31 +82,13 @@ function Login(props: LoginProps): JSX.Element {
     <KeyboardAvoidingView behavior='height' style={styles.container}>
       <View style={[styles.containerCentered, isLoading ? styles.halfOpacity : {}]}>
         <View style={styles.containerHeader}>
-          <View style={styles.flexRow}>
-            <Text style={styles.title}>{strings.screens.login_screen.title}</Text>
-          </View>
-
-          <View style={styles.buttonWrapper}>
-            <TouchableOpacity
-              style={[styles.button, styles.buttonOn]}
-              disabled={isLoading}
-            >
-              <Text style={styles.buttonOnLabel}>{strings.components.buttons.sign_in}</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              activeOpacity={1}
-              style={[styles.button, styles.buttonOff]}
-              onPress={() => props.navigation.replace('Register')}
-              disabled={isLoading}
-            >
-              <Text style={styles.buttonOffLabel}>{strings.components.buttons.create}</Text>
-            </TouchableOpacity>
+          <View style={[styles.flexRow, styles.title]}>
+            <InternxtLogo />
           </View>
         </View>
 
         <View style={showTwoFactor ? styles.hideInputFieldWrapper : styles.showInputFieldsWrapper}>
-          <View style={styles.inputWrapper}>
+          <View style={globalStyles.textInputStyle.wrapper}>
             <TextInput
               style={styles.input}
               value={email}
@@ -116,9 +102,10 @@ function Login(props: LoginProps): JSX.Element {
               textContentType="emailAddress"
               editable={!isLoading}
             />
+            <EnvelopeIcon style={globalStyles.textInputStyle.icon} />
           </View>
 
-          <View style={styles.inputWrapper}>
+          <View style={globalStyles.textInputStyle.wrapper}>
             <TextInput
               style={styles.input}
               value={password}
@@ -129,11 +116,12 @@ function Login(props: LoginProps): JSX.Element {
               textContentType="password"
               editable={!isLoading}
             />
+            <EyeIcon style={globalStyles.textInputStyle.icon} />
           </View>
         </View>
 
         <View style={showTwoFactor ? styles.showInputFieldsWrapper : styles.hideInputFieldWrapper}>
-          <View style={styles.inputWrapper}>
+          <View style={globalStyles.textInputStyle.wrapper}>
             <TextInput
               style={[styles.input, validate2FA(twoFactorCode) ? {} : { borderWidth: 1, borderColor: '#f00' }]}
               value={twoFactorCode}
@@ -146,15 +134,22 @@ function Login(props: LoginProps): JSX.Element {
           </View>
         </View>
 
-        <View style={styles.buttonFooterWrapper}>
+        <View style={globalStyles.buttonInputStyle.wrapper}>
           <TouchableHighlight
-            style={[styles.button, styles.buttonBlock]}
+            style={[globalStyles.buttonInputStyle.button, globalStyles.buttonInputStyle.block]}
             underlayColor="#4585f5"
             onPress={() => handleOnPress()}>
             <Text style={styles.buttonOnLabel}>{isLoading ? strings.components.buttons.descrypting : strings.components.buttons.sign_in}</Text>
           </TouchableHighlight>
 
-          <Text style={styles.forgotPasswordText} onPress={() => props.navigation.replace('Forgot')}>{strings.screens.login_screen.forgot}</Text>
+          <Text style={[globalStyles.text.link, globalStyles.text.center, globalStyles.text.mt10]} onPress={() => props.navigation.replace('Forgot')}>
+            {strings.screens.login_screen.forgot}
+          </Text>
+
+          <Text style={[globalStyles.text.center, globalStyles.text.mt10]} onPress={() => props.navigation.replace('Register')}>
+            <Text style={globalStyles.text.normal}>{strings.screens.login_screen.no_register},{' '}</Text>
+            <Text style={globalStyles.text.link}>{strings.screens.login_screen.register}</Text>
+          </Text>
         </View>
       </View>
 
@@ -170,45 +165,11 @@ const mapStateToProps = (state: any) => {
 export default connect(mapStateToProps)(Login)
 
 const styles = StyleSheet.create({
-  button: {
-    alignItems: 'center',
-    alignSelf: 'stretch',
-    backgroundColor: '#4585f5',
-    borderRadius: 3.4,
-    height: normalize(55),
-    justifyContent: 'center',
-    width: normalize(130)
-  },
-  buttonBlock: {
-    width: '100%'
-  },
-  buttonFooterWrapper: {
-    marginTop: normalize(15)
-  },
-  buttonOff: {
-    backgroundColor: '#f2f2f2'
-  },
-  buttonOffLabel: {
-    color: '#5c5c5c',
-    fontFamily: 'CerebriSans-Medium',
-    fontSize: normalize(15),
-    textAlign: 'center'
-  },
-  buttonOn: {
-    backgroundColor: '#4585f5'
-  },
   buttonOnLabel: {
     color: '#fff',
     fontFamily: 'NeueEinstellung-Medium',
     fontSize: normalize(15),
     textAlign: 'center'
-  },
-  buttonWrapper: {
-    alignItems: 'center',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: normalize(30)
   },
   container: {
     backgroundColor: '#FFFFFF',
@@ -227,10 +188,6 @@ const styles = StyleSheet.create({
   flexRow: {
     flexDirection: 'row'
   },
-  forgotPasswordText: {
-    color: '#a4a4a4',
-    marginTop: normalize(13)
-  },
   halfOpacity: {
     opacity: 0.5
   },
@@ -245,22 +202,12 @@ const styles = StyleSheet.create({
     letterSpacing: -0.2,
     paddingLeft: normalize(20)
   },
-  inputWrapper: {
-    borderColor: '#c9c9c9',
-    borderRadius: 5,
-    borderWidth: 1,
-    height: normalize(55),
-    justifyContent: 'center',
-    marginBottom: normalize(13)
-  },
   showInputFieldsWrapper: {
     justifyContent: 'center'
   },
   title: {
-    color: '#000',
-    fontFamily: 'CerebriSans-Bold',
-    fontSize: normalize(22),
-    letterSpacing: -1.7,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: normalize(30),
     marginTop: normalize(64)
   },

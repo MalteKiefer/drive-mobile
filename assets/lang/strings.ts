@@ -6,7 +6,9 @@ const strings = new LocalizedStrings({
     "screens": {
       "login_screen": {
         "title": "Sign in to Internxt",
-        "forgot": "Forgot your password?"
+        "forgot": "Forgot your password?",
+        "no_register": "Don't have account",
+        "register": "Get started"
       },
       "register_screen": {
         "first": "{0} is a {1} cloud storage service. A {2} place for all your files. Welcome to the {3}. Welcome to {4}.",
@@ -19,7 +21,7 @@ const strings = new LocalizedStrings({
         "security_subtitle": "Internxt uses your password to encrypt and decrypt your files. Due to the secure nature of Internxt, we don't know your password. That means that if you ever forget it, your files are gone forever. With us, you're the only owner of your files. We strongly suggest you to:",
         "suggestion_1": "Store your password. Keep it safe and secure.",
         "suggestion_2": "Keep an offline backup of your password.",
-        "create_account_title": 'Create an account'
+        "create_account_title": 'Create an Internxt account'
       },
       "forgot_password": {
         "title": "Internxt security",
@@ -199,7 +201,9 @@ const strings = new LocalizedStrings({
     "screens": {
       "login_screen": {
         "title": "Inicia sesión en Internxt",
-        "forgot": "¿Has olvidado la contraseña?"
+        "forgot": "¿Has olvidado la contraseña?",
+        "no_register": "No tengo cuenta",
+        "register": "Crear una"
       },
       "register_screen": {
         "first": "{0} es un servicio de almacenamiento en la nube {1}. Un lugar {2} para todos tus archivos. Bienvenido a la {3}. Bienvenido a {4}.",
