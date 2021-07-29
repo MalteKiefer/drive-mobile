@@ -320,7 +320,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=/Users/internxt/.nvm/versions/node/v10.23.0/bin/node\n../node_modules/react-native/scripts/react-native-xcode.sh\n../node_modules/expo-updates/scripts/create-manifest-ios.sh\n";
+			shellScript = "export NODE_BINARY=/Users/internxt/.nvm/versions/node/v14.17.3/bin/node\n../node_modules/react-native/scripts/react-native-xcode.sh\n../node_modules/expo-updates/scripts/create-manifest-ios.sh\n";
 		};
 		332ACB3C50BF48E5568D7798 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
