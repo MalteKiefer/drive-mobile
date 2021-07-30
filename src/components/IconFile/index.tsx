@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   text: {
     bottom: 5,
     color: '#2e7bff',
-    fontFamily: 'CircularStd-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 9,
     left: 0,
     letterSpacing: -0.2,

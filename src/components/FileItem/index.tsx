@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
   },
   fileName: {
     color: '#000000',
-    fontFamily: 'CircularStd-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 16,
     letterSpacing: -0.1
   },

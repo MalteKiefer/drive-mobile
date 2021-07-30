@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
   },
   backLabel: {
     color: '#000000',
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'NeueEinstellung-Medium',
     fontSize: 19,
     letterSpacing: -0.2
   },
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
   breadcrumbsTitle: {
     width: '80%',
     color: '#000000',
-    fontFamily: 'CircularStd-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 21,
     letterSpacing: -0.2,
     paddingLeft: 20

@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   },
   buttonTextLoading: {
     color: 'rgba(69, 133, 245, 0.7)',
-    fontFamily: 'CircularStd-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 18
   },
   input: {
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'black',
-    fontFamily: 'CircularStd-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 18,
     marginHorizontal: wp('6')
   }

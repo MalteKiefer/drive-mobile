@@ -21,14 +21,14 @@ const styles = StyleSheet.create({
   },
   heading: {
     color: '#000000',
-    fontFamily: 'CircularStd-Black',
+    fontFamily: 'NeueEinstellung-Black',
     fontSize: 25,
     letterSpacing: -0.8,
     marginBottom: 10
   },
   subheading: {
     color: '#404040',
-    fontFamily: 'CircularStd-Book',
+    fontFamily: 'NeueEinstellung-Regular',
     fontSize: 17,
     letterSpacing: -0.1,
     opacity: 0.84

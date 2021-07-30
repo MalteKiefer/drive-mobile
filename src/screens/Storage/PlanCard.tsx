@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   },
   price: {
     color: 'black',
-    fontFamily: 'CircularStd-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 18,
     letterSpacing: -0.13,
     lineHeight: 28.5
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'black',
-    fontFamily: 'CircularStd-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 18,
     letterSpacing: -0.43
   }

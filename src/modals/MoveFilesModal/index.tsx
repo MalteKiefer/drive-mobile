@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#000000',
-    fontFamily: 'CircularStd-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 21,
     letterSpacing: -0.2,
     margin: 20

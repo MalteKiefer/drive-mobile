@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   },
   input: {
     color: '#2c6bc9',
-    fontFamily: 'CircularStd-Bold',
+    fontFamily: 'NeueEinstellung-Bold',
     fontSize: 23,
     letterSpacing: -0.2,
     marginLeft: wp(5),
