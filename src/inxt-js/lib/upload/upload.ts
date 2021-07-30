@@ -105,7 +105,7 @@ export function generateBucketEntry(fileObject: FileObjectUpload, fileMeta: File
 
 function updateProgress(totalBytes: number, currentBytesUploaded: number, newBytesUploaded: number, progress: UploadProgressCallback): number {
   const newCurrentBytes = currentBytesUploaded + newBytesUploaded;
-  const progressCounter = Math.ceil((newCurrentBytes / totalBytes) * 100);
+  const progressCounter = Math.ceil(newCurrentBytes / totalBytes);
 
   progress(progressCounter, newCurrentBytes, totalBytes);
 
@@ -113,12 +113,12 @@ function updateProgress(totalBytes: number, currentBytesUploaded: number, newByt
 }
 
 interface UploadShardsAction {
-    fileObject: FileObjectUpload;
-    fileContent: Buffer;
-    shardSize: number;
-    nShards: number;
-    firstIndex: number;
-    parity: boolean;
+  fileObject: FileObjectUpload;
+  fileContent: Buffer;
+  shardSize: number;
+  nShards: number;
+  firstIndex: number;
+  parity: boolean;
 }
 
 function uploadShards(action: UploadShardsAction): Promise<ShardMeta>[] {

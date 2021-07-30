@@ -33,6 +33,8 @@ interface AppMenuProps {
   authenticationState?: AuthenticationState
 }
 
+type FileType = 'document' | 'image';
+
 function AppMenu(props: AppMenuProps) {
   const [activeSearchBox, setActiveSearchBox] = useState(false)
   const selectedItems = props.filesState.selectedItems;
@@ -50,7 +52,11 @@ function AppMenu(props: AppMenuProps) {
     }
   }
 
-  const uploadFile = async (result: any, currentFolder: number | undefined) => {
+  const getFinalUri = (fileUri: string, fileType: FileType): string => {
+    return fileType === 'document' ? decodeURIComponent(fileUri) : fileUri;
+  }
+
+  const uploadFile = async (result: any, currentFolder: number | undefined, fileType: FileType) => {
     props.dispatch(fileActions.uploadFileStart())
 
     const userData = getLyticsData().then((res) => {
@@ -58,37 +64,32 @@ function AppMenu(props: AppMenuProps) {
     })
 
     const regex = /^(.*:\/{0,2})\/?(.*)$/gm
-    const file = result.uri.replace(regex, '$2')
+    const fileUri = result.uri.replace(regex, '$2')
+    const extension = fileUri.split('.').pop();
+    const finalUri = getFinalUri(fileUri, fileType);
 
     const { bridgeUser, bridgePass, encryptionKey, bucketId } = await getEnvironmentConfig();
     const network = new Network(bridgeUser, bridgePass, encryptionKey);
 
-    // const fileId = '';
     const fileId = await network.uploadFile(bucketId, {
-      fileUri: file,
+      fileUri: finalUri,
+      filepath: finalUri,
       progressCallback: (progress) => {
         props.dispatch(fileActions.uploadFileSetProgress(progress, result.id))
-        if (progress >= 1) { // Once upload is finished (on small files it almost never reaches 100% as it uploads really fast)
+        if (progress >= 1) {
           props.dispatch(fileActions.uploadFileSetUri(result.uri)) // Set the uri of the file so FileItem can get it as props
         }
       }
-    }).catch((err) => {
-      console.error('ERR', err);
-    });
+    })
 
-    const finalUri = Platform.OS === 'ios' ? RNFetchBlob.wrap(decodeURIComponent(file)) : RNFetchBlob.wrap(result.uri)
-
-    // const stat = await RNFS.stat(result.uri);
-    const stat = await RNFetchBlob.fs.stat(file);
-
-    // console.log('FILESTATE', JSON.stringify(props.filesState, null, 2));
+    const stat = await RNFetchBlob.fs.stat(finalUri);
 
     console.log('stat', stat);
 
     const folderId = props.filesState.folderContent.id;
     const name = encryptFilename(result.name, folderId);
     const fileSize = stat.size;
-    const type = stat.type;
+    const type = extension;
 
     const fileEntry = {
       fileId,

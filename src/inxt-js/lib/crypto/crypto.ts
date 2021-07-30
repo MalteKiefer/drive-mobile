@@ -57,11 +57,7 @@ export async function EncryptFilename(mnemonic: string, bucketId: string, filena
   const GenerateEncryptionIv = () => {
     const hasher = sha512HmacBuffer(bucketKey);
 
-    if (bucketId === BUCKET_NAME_MAGIC) {
-      hasher.update(bucketId);
-    }
-
-    hasher.update(filename);
+    hasher.update(bucketId).update(filename);
 
     return hasher.digest().slice(0, 32);
   };

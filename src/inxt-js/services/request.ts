@@ -2,7 +2,7 @@ import * as url from 'url';
 // import * as https from 'https';
 import { Readable } from 'readable-stream';
 import { ClientRequest, IncomingMessage } from 'http';
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import { EnvironmentConfig } from '..';
 import { sha256 } from '../lib/crypto';
@@ -256,7 +256,20 @@ export function createEntryFromFrame(config: EnvironmentConfig, bucketId: string
   const finalParams = { ...defParams, ...params };
 
   return request(config, 'post', targetUrl, finalParams, false)
-    .then<CreateEntryFromFrameResponse>((res: AxiosResponse) => res.data);
+    .then<CreateEntryFromFrameResponse>((res: AxiosResponse) => res.data)
+    .catch((err: AxiosError) => {
+      const message = handleAxiosError(err);
+
+      if (message.includes('duplicate key')) {
+        throw new Error('File already exists in the network');
+      }
+
+      throw new Error(message);
+    });
+}
+
+export function handleAxiosError(err: any): string {
+  return err.response && err.response.data && err.response.data.error || err.message;
 }
 
 interface AddShardToFrameBody {

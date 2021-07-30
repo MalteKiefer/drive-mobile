@@ -16,6 +16,7 @@ interface IUploadParams {
 }
 
 interface IMobileUploadParams {
+  filepath: string;
   fileUri: string;
   progressCallback: ProgressCallback;
 }
@@ -75,12 +76,10 @@ export class Network {
 
     async uploadFile(bucketId: string, params: IMobileUploadParams): Promise<string> {
       const fileStream = await RNFetchBlob.fs.readStream(params.fileUri, 'base64', 4095);
-      const base64toUtf8Transformer = new Base64ToUtf8Transform();
-
       const passthrough = new PassThrough();
 
       fileStream.onError((err) => {
-        base64toUtf8Transformer.emit('error', err);
+        passthrough.emit('error', err);
       });
 
       fileStream.onData((chunk: string) => {
@@ -93,7 +92,7 @@ export class Network {
       const stat = await RNFetchBlob.fs.stat(params.fileUri);
 
       return this._uploadFile(bucketId, {
-        filepath: '',
+        filepath: params.filepath,
         filecontent: passthrough,
         filesize: parseInt(stat.size),
         progressCallback: params.progressCallback
