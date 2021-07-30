@@ -32,12 +32,13 @@ export default {
       borderWidth: 1,
       height: normalize(55),
       justifyContent: 'center',
-      marginBottom: normalize(13)
+      marginBottom: normalize(13),
+      flexDirection: 'row',
+      alignItems: 'center'
     },
     icon: {
-      position: 'absolute',
-      right: 0,
-      marginRight: 10
+      marginRight: 10,
+      marginLeft: 7
     },
     inputOpacity: {
       shadowColor: '#000',
@@ -48,6 +49,9 @@ export default {
       shadowOpacity: 0.29,
       shadowRadius: 4.65,
       elevation: 7
+    },
+    error: {
+      borderColor: 'rgba(255,0,0,1)'
     }
   }),
   text: StyleSheet.create({
@@ -70,6 +74,22 @@ export default {
     center: {
       alignItems: 'center',
       justifyContent: 'center'
+    }
+  }),
+  container: StyleSheet.create({
+    pn20: {
+      padding: normalize(20)
+    },
+    mv20: {
+      marginBottom: 20,
+      marginTop: 20
+    },
+    pv40: {
+      marginBottom: 40,
+      marginTop: 40
+    },
+    pb40: {
+      marginBottom: 40
     }
   })
 }
