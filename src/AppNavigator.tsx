@@ -13,7 +13,6 @@ import Forgot from './screens/Forgot';
 import OutOfSpace from './screens/OutOfSpace';
 import Storage from './screens/Storage';
 import StorageWebView from './screens/StorageWebView';
-import PhotoGallery from './screens/PhotoGallery';
 import EntryGateway from './screens/EntryGateway';
 
 type RouteConfig = NavigationRouteConfigMap<StackNavigationOptions, StackNavigationProp<NavigationRoute<NavigationParams>, NavigationParams>, unknown>
@@ -24,7 +23,6 @@ const routeConfig: RouteConfig = {
   Register: { screen: Register },
   Login: { screen: Login },
   Intro: { screen: Intro },
-  PhotoGallery: { screen: PhotoGallery },
   FileExplorer: { screen: FileExplorer },
   Biometric: { screen: Biometric },
   CreateFolder: { screen: CreateFolder },

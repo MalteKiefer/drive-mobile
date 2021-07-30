@@ -11,7 +11,7 @@ interface IntroProps {
   navigation?: any
 }
 
-const applyBoldStyle = (text: string, boldText: string[]) => {
+const applyBoldStyle: JSX.Element = (text: string, boldText: string[]) => {
   let numberOfItemsAdded = 0
   const result = text.split(/\{\d+\}/)
 

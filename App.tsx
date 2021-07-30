@@ -7,8 +7,6 @@ import { analyticsSetup, loadEnvVars, loadFonts } from './src/helpers'
 import { NavigationContainer } from '@react-navigation/native';
 import { fileActions } from './src/redux/actions';
 import ReceiveSharingIntent from 'react-native-receive-sharing-intent';
-import ConnectionDB from './src/database/connection/connection';
-import { getConnectionManager } from 'typeorm/browser';
 import 'reflect-metadata';
 
 export default function App(): JSX.Element {
@@ -89,17 +87,6 @@ export default function App(): JSX.Element {
     return () => {
       Linking.removeEventListener('url', handleOpenURL)
     }
-  }, [])
-
-  useEffect(() => {
-    ConnectionDB().then((con)=>{
-    }).catch((err)=>{
-      if (err.name === 'AlreadyHasActiveConnectionError') {
-        const existentConn = getConnectionManager().get('default');
-
-        return existentConn;
-      }
-    })
   }, [])
 
   return <Provider store={store}>

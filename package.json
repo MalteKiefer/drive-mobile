@@ -18,7 +18,6 @@
     "@segment/analytics-react-native": "^1.3.2",
     "@segment/analytics-react-native-firebase": "^1.3.2",
     "@types/node": "^14.14.41",
-    "@types/react-native-sqlite-storage": "^5.0.0",
     "async": "^3.2.0",
     "autoprefixer": "^10.2.5",
     "babel-plugin-inline-dotenv": "^1.6.0",
@@ -30,7 +29,6 @@
     "expo-constants": "~10.1.3",
     "expo-document-picker": "~9.1.2",
     "expo-file-system": "~11.0.2",
-    "expo-image-manipulator": "~9.1.0",
     "expo-image-picker": "~10.1.4",
     "expo-linear-gradient": "~9.1.0",
     "expo-linking": "~2.2.3",
@@ -64,9 +62,7 @@
     "react-native-responsive-screen": "^1.4.1",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.0.0",
-    "react-native-sha256": "^1.4.7",
     "react-native-simple-toast": "^1.1.3",
-    "react-native-sqlite-storage": "^5.0.0",
     "react-native-svg": "12.1.0",
     "react-native-timeago": "^0.5.0",
     "react-native-unimodules": "~0.13.3",
@@ -82,8 +78,7 @@
     "rn-fetch-blob": "=0.11.2",
     "socket.io-client": "^3.1.0",
     "tailwind-rn": "^3.0.1",
-    "tailwindcss": "^2.1.2",
-    "typeorm": "^0.2.34"
+    "tailwindcss": "^2.1.2"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",

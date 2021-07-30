@@ -92,11 +92,7 @@ function Storage(props: StorageProps): JSX.Element {
           <View style={styles.backButton}>
             <TouchableOpacity
               onPress={() => {
-                if (props.layoutState.currentApp === 'FileExplorer') {
-                  props.navigation.replace('FileExplorer')
-                } else {
-                  props.navigation.replace('PhotoGallery')
-                }
+                props.navigation.replace('FileExplorer')
               }}
               style={styles.backTouchable}
             >

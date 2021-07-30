@@ -5,12 +5,8 @@ export interface LayoutState {
   createFolderActive: boolean
   showSettingsModal: boolean
   showItemModal: boolean
-  showPhotoDetailsModal: boolean
-  showAlbumModal: boolean
-  showSelectPhotosModal: boolean
   showAddItemModal: boolean
   showSortModal: boolean
-  showSortPhotoModal: boolean
   showMoveModal: boolean
   showDeleteModal: boolean
   showShareModal: boolean
@@ -25,12 +21,8 @@ const initialState: LayoutState = {
   createFolderActive: false,
   showSettingsModal: false,
   showItemModal: false,
-  showPhotoDetailsModal: false,
-  showAlbumModal: false,
-  showSelectPhotosModal: false,
   showAddItemModal: false,
   showSortModal: false,
-  showSortPhotoModal: false,
   showMoveModal: false,
   showDeleteModal: false,
   showShareModal: false,
@@ -153,31 +145,6 @@ export function layoutReducer(state = initialState, action: any): LayoutState {
       showComingSoonModal: false
     }
   }
-  case layoutActionTypes.OPEN_ALBUM_MODAL: {
-    return {
-      ...state,
-      showAlbumModal: true
-    }
-  }
-  case layoutActionTypes.CLOSE_ALBUM_MODAL: {
-    return {
-      ...state,
-      showAlbumModal: false
-    }
-  }
-  case layoutActionTypes.OPEN_SELECT_PHOTOS_FOR_ALBUM_MODAL: {
-    return {
-      ...state,
-      showSelectPhotosModal: true
-    }
-  }
-  case layoutActionTypes.CLOSE_SELECT_PHOTOS_FOR_ALBUM_MODAL: {
-    return {
-      ...state,
-      showSelectPhotosModal: false
-    }
-  }
-
   default:
     return state;
   }

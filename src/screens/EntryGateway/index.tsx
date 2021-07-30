@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { deviceStorage } from '../../helpers';
 import { userActions } from '../../redux/actions';
@@ -28,10 +27,7 @@ function EntryPointGateway(props: any): JSX.Element {
     }
   }
 
-  return (
-    <View>
-    </View>
-  )
+  return <></>;
 }
 
 const mapStateToProps = (state: any) => {

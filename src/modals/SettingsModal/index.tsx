@@ -2,16 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, Linking, ActivityIndicator, Alert, Platform } from 'react-native';
 import Modal from 'react-native-modalbox'
 import ProgressBar from '../../components/ProgressBar';
-import { layoutActions, photoActions, userActions } from '../../redux/actions';
+import { layoutActions, userActions } from '../../redux/actions';
 import SettingsItem from './SettingsItem';
 import prettysize from 'prettysize'
 import Separator from '../../components/Separator';
 import { connect } from 'react-redux';
 import { getHeaders } from '../../helpers/headers';
-import { deviceStorage } from '../../helpers';
 import analytics, { getLyticsUuid } from '../../helpers/lytics';
 import Bold from '../../components/Bold';
-import { AuthenticationState } from '../../redux/reducers/authentication.reducer';
 import { Dispatch } from 'redux';
 import { LayoutState } from '../../redux/reducers/layout.reducer';
 import strings from '../../../assets/lang/strings';
@@ -55,46 +53,6 @@ export async function loadValues(): Promise<{ usage: number, limit: number }> {
 
   return { usage, limit }
 }
-
-async function initializePhotosUser(token: string, mnemonic: string): Promise<any> {
-  const xUser = await deviceStorage.getItem('xUser')
-  const xUserJson = JSON.parse(xUser || '{}')
-  const email = xUserJson.email
-
-  return fetch(`${process.env.REACT_NATIVE_PHOTOS_API_URL}/api/photos/initialize`, {
-    method: 'POST',
-    headers: await getHeaders(),
-    body: JSON.stringify({
-      email: email,
-      mnemonic: mnemonic
-    })
-  }).then(res => {
-    return res.json()
-  })
-}
-
-async function photosUserData(authenticationState: AuthenticationState): Promise<any> {
-  const token = authenticationState.token;
-  const mnemonic = authenticationState.user.mnemonic;
-  const headers = {
-    'Authorization': `Bearer ${token}`,
-    'internxt-mnemonic': mnemonic,
-    'Content-Type': 'application/json; charset=utf-8'
-  };
-
-  return fetch(`${process.env.REACT_NATIVE_PHOTOS_API_URL}/api/photos/user`, {
-    method: 'GET',
-    headers
-  }).then(res => {
-    if (res.status === 400) {
-      return initializePhotosUser(token, mnemonic)
-    }
-    return res.json()
-  }).then(res => {
-    return res
-  })
-}
-
 interface SettingsModalProps {
   user: any
   layoutState: LayoutState
@@ -131,9 +89,8 @@ function SettingsModal(props: SettingsModalProps) {
     }
   }
 
-  // Check current screen to change settings Photos/Drive text
   useEffect(() => {
-    if (props.navigation.state.routeName === 'PhotoGallery' || props.navigation.state.routeName === 'FileExplorer') {
+    if (props.navigation.state.routeName === 'FileExplorer') {
       props.dispatch(layoutActions.setCurrentApp(props.navigation.state.routeName))
     }
   }, [props.navigation.state])
@@ -189,20 +146,6 @@ function SettingsModal(props: SettingsModalProps) {
         onPress={() => Linking.openURL('https://internxt.com/drive')}
       />
 
-      {/* <SettingsItem
-        text={props.layoutState.currentApp === 'PhotoGallery' ? strings.components.app_menu.settings.drive : strings.components.app_menu.settings.photos}
-        onPress={async () => {
-
-          props.dispatch(layoutActions.closeSettings())
-
-          if (props.layoutState.currentApp === 'PhotoGallery') {
-            props.navigation.replace('FileExplorer')
-          } else {
-            props.navigation.replace('PhotoGallery')
-          }
-        }}
-      /> */}
-
       <SettingsItem
         text={strings.components.app_menu.settings.contact}
         onPress={() => {
@@ -221,7 +164,6 @@ function SettingsModal(props: SettingsModalProps) {
         onPress={() => {
           props.dispatch(layoutActions.closeSettings())
           props.dispatch(userActions.signout())
-          props.dispatch(photoActions.clearPhotosToRender());
         }}
       />
     </Modal>
