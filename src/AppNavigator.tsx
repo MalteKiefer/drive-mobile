@@ -3,7 +3,6 @@ import { createAppContainer, CreateNavigatorConfig, NavigationParams, Navigation
 import { createStackNavigator } from 'react-navigation-stack';
 import { StackNavigationConfig, StackNavigationOptions, StackNavigationProp } from 'react-navigation-stack/lib/typescript/src/vendor/types';
 import analytics from './helpers/lytics';
-import Biometric from './screens/Biometric';
 import CreateFolder from './screens/CreateFolder';
 import FileExplorer from './screens/FileExplorer';
 import Intro from './screens/Intro';
@@ -24,7 +23,6 @@ const routeConfig: RouteConfig = {
   Login: { screen: Login },
   Intro: { screen: Intro },
   FileExplorer: { screen: FileExplorer },
-  Biometric: { screen: Biometric },
   CreateFolder: { screen: CreateFolder },
   Forgot: { screen: Forgot },
   OutOfSpace: { screen: OutOfSpace },
