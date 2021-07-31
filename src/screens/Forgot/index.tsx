@@ -12,6 +12,10 @@ import React, { useEffect, useState } from 'react'
 import { normalize } from '../../helpers';
 import { connect } from 'react-redux';
 import strings from '../../../assets/lang/strings';
+import InternxtLogo from '../../../assets/logo.svg'
+import globalStyle from '../../styles/global.style';
+import { tailwind } from '../../helpers/designSystem';
+import EnvelopeIcon from '../../../assets/icons/figma-icons/envelope.svg'
 
 function Forgot(props: any): JSX.Element {
   const [currentContainer, setCurrentCointainer] = useState(1);
@@ -57,11 +61,11 @@ function Forgot(props: any): JSX.Element {
           ]}
         >
           <View style={styles.containerHeader}>
-            <View style={styles.flexRow}>
-              <Text style={styles.title}>{strings.screens.forgot_password.title}</Text>
+            <View style={globalStyle.image.center}>
+              <InternxtLogo />
             </View>
 
-            <Text style={styles.text}>
+            <Text style={tailwind('text-sm')}>
               {strings.screens.forgot_password.subtitle_1}
 
               <Text style={styles.bold}>{strings.screens.forgot_password.bold}</Text>
@@ -69,7 +73,7 @@ function Forgot(props: any): JSX.Element {
               {strings.screens.forgot_password.subtitle_2}
             </Text>
 
-            <View style={styles.inputWrapper}>
+            <View style={globalStyle.textInputStyle.wrapper}>
               <TextInput
                 style={styles.input}
                 value={email}
@@ -80,6 +84,9 @@ function Forgot(props: any): JSX.Element {
                 keyboardType="email-address"
                 textContentType="emailAddress"
               />
+              <EnvelopeIcon
+                fill="#aaa"
+                style={globalStyle.textInputStyle.icon} />
             </View>
 
             <View style={styles.buttonWrapper}>
@@ -96,8 +103,7 @@ function Forgot(props: any): JSX.Element {
                 underlayColor="#4585f5"
                 onPress={() => {
                   sendDeactivationEmail()
-                }
-                }
+                }}
               >
                 <Text style={styles.buttonOnLabel}>{strings.components.buttons.continue}</Text>
               </TouchableHighlight>
@@ -243,13 +249,6 @@ const styles = StyleSheet.create({
     fontSize: normalize(15),
     letterSpacing: -0.2,
     paddingLeft: normalize(20)
-  },
-  inputWrapper: {
-    borderColor: '#c9c9c9',
-    borderRadius: 5,
-    borderWidth: 1,
-    height: normalize(55),
-    justifyContent: 'center'
   },
   signUp: {
     color: '#737880',

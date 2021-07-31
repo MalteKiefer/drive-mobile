@@ -5,7 +5,7 @@ import Svg, { Path, Rect } from 'react-native-svg'
 
 interface CheckBoxProps {
   text: string
-  onPress?: (value: boolean) => void
+  onChange?: (value: boolean) => void
   value?: boolean
 }
 
@@ -14,10 +14,9 @@ export default function CheckBox(props: CheckBoxProps): JSX.Element {
 
   const handleOnPress = () => {
     setChecked(!checked);
-    if (props.onPress) {
-      props.onPress(!checked);
+    if (props.onChange) {
+      props.onChange(!checked);
     }
-    props.value = !checked;
   }
 
   return <View>
@@ -59,6 +58,6 @@ const styles = StyleSheet.create({
   },
   checkBoxtext: {
     fontFamily: 'NeueEinstellung-Regular',
-    marginVertical: 4
+    marginVertical: 5
   }
 });

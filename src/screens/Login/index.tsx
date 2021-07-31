@@ -102,7 +102,9 @@ function Login(props: LoginProps): JSX.Element {
               textContentType="emailAddress"
               editable={!isLoading}
             />
-            <EnvelopeIcon style={globalStyles.textInputStyle.icon} />
+            <EnvelopeIcon
+              style={globalStyles.textInputStyle.icon}
+              fill="#7A869A" />
           </View>
 
           <View style={globalStyles.textInputStyle.wrapper}>
@@ -116,7 +118,9 @@ function Login(props: LoginProps): JSX.Element {
               textContentType="password"
               editable={!isLoading}
             />
-            <EyeIcon style={globalStyles.textInputStyle.icon} />
+            <EyeIcon
+              style={globalStyles.textInputStyle.icon}
+              fill="#7A869A" />
           </View>
         </View>
 

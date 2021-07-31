@@ -1679,22 +1679,22 @@
 	"font-black": {
 		"fontWeight": "900"
 	},
-  "font-averta-black": {
+  "font-einstellung-black": {
     "fontFamily": "NeueEinstellung-Black"
   },
-  "font-averta-bold": {
+  "font-einstellung-bold": {
     "fontFamily": "NeueEinstellung-Bold"
   },
-  "font-averta-extra-bold": {
+  "font-einstellung-extra-bold": {
     "fontFamily": "NeueEinstellung-Extra-Bold"
   },
-  "font-averta-light": {
+  "font-einstellung-light": {
     "fontFamily": "NeueEinstellung-Light"
   },
-  "font-averta-regular": {
+  "font-einstellung-regular": {
     "fontFamily": "NeueEinstellung-Regular"
   },
-  "font-averta-semibold": {
+  "font-einstellung-semibold": {
     "fontFamily": "NeueEinstellung-Semibold"
   },
 	"h-0": {

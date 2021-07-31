@@ -7,7 +7,6 @@ import { analyticsSetup, loadEnvVars, loadFonts } from './src/helpers'
 import { NavigationContainer } from '@react-navigation/native';
 import { fileActions } from './src/redux/actions';
 import ReceiveSharingIntent from 'react-native-receive-sharing-intent';
-import 'reflect-metadata';
 
 export default function App(): JSX.Element {
   const [appInitialized, setAppInitialized] = useState(false);
@@ -49,7 +48,7 @@ export default function App(): JSX.Element {
 
   // useEffect to receive shared file
   useEffect(() => {
-    if (Platform.OS === 'ios'){
+    if (Platform.OS === 'ios') {
       const regex = /inxt:\/\//g
 
       Linking.addEventListener('url', handleOpenURL);
@@ -93,7 +92,9 @@ export default function App(): JSX.Element {
     <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
       {appInitialized ?
         <SafeAreaView style={styles.appContainer}>
-          <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'} />
+          <StatusBar
+            backgroundColor={'#fff'}
+            barStyle={'dark-content'} />
           <AppNavigator />
         </SafeAreaView>
         : <SafeAreaView style={styles.container}>
@@ -102,8 +103,7 @@ export default function App(): JSX.Element {
         </SafeAreaView>
       }
     </NavigationContainer>
-  </Provider>
-  ;
+  </Provider>;
 }
 
 const styles = StyleSheet.create({
