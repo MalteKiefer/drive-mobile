@@ -6,10 +6,10 @@ import ShareIcon from '../../../assets/icons/figma-icons/link-add.svg'
 import SettingsIcon from '../../../assets/icons/figma-icons/settings.svg'
 import MainIcon from '../../../assets/icons/figma-icons/add-main.svg'
 
-export default function DriveMenu() {
+export default function DriveMenu(): JSX.Element {
   return <View style={styles.container}>
     <View>
-      <HddIcon />
+      <HddIcon fill={'#0F62FE'} />
     </View>
     <View>
       <RecentsIcons />

@@ -180,7 +180,10 @@ function Register(props: RegisterProps): JSX.Element {
                 autoCorrect={false}
                 secureTextEntry={true}
               />
-              <EyeIcon style={globalStyles.textInputStyle.icon} />
+              <EyeIcon
+                style={globalStyles.textInputStyle.icon}
+                fill={isValidPassword ? '#7A869A' : '#f00'}
+              />
             </View>
 
             <View style={[globalStyles.textInputStyle.wrapper, password !== confirmPassword && globalStyles.textInputStyle.error]}>
@@ -193,7 +196,10 @@ function Register(props: RegisterProps): JSX.Element {
                 secureTextEntry={true}
                 textContentType="password"
               />
-              <EyeIcon style={globalStyles.textInputStyle.icon} />
+              <EyeIcon
+                style={globalStyles.textInputStyle.icon}
+                fill={password === confirmPassword ? '#7A869A' : '#f00'}
+              />
             </View>
           </View>
         </View>
