@@ -193,10 +193,15 @@ function FileItem(props: FileItemProps) {
                 {
                   props.isFolder ?
                     <View>
-                      <FolderIcon />
+                      <FolderIcon
+                        width={30}
+                        height={30} />
                     </View>
                     : // once local upload implelemented, remove conditional
-                    <IconFile label={props.item.bucket ? props.item.type || '' : props.item.name && props.item.name.split('.').pop()} isLoading={isLoading} />
+                    <IconFile
+                      width={30}
+                      height={30}
+                      label={props.item.bucket ? props.item.type || '' : props.item.name && props.item.name.split('.').pop()} isLoading={isLoading} />
                 }
               </View>
 

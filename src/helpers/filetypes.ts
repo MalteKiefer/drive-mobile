@@ -31,7 +31,14 @@ export const extensions = {
   'png': image,
   'doc': word,
   'docx': word,
-  'docm': word
+  'docm': word,
+  'js': code,
+  'ts': code,
+  'tsx': code,
+  'c': code,
+  'cpp': code,
+  'wav': audio,
+  'mp3': audio
 };
 
 export function getFileTypeIcon(ext: string): React.FC<SvgProps> {
