@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     color: '#999999',
     fontFamily: 'NeueEinstellung-Regular',
-    marginBottom: normalize(70),
-    marginTop: normalize(30)
+    position: 'absolute',
+    bottom: 5
   }
 });

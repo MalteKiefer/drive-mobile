@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, TextInput, TouchableOpacity, View, Text, Alert } from 'react-native';
+import CheckBox from '../../components/CheckBox'
 import { connect } from 'react-redux';
+import strings from '../../../assets/lang/strings';
 import { deviceStorage, normalize } from '../../helpers';
 import { userActions } from '../../redux/actions';
 import { AuthenticationState } from '../../redux/reducers/authentication.reducer';
 import Intro from '../Intro'
-import { validateEmail } from '../Login/access';
-import RegisterStep1 from './RegisterStep1';
-import RegisterStep2 from './RegisterStep2';
-import RegisterStep3 from './RegisterStep3';
-import { isNullOrEmpty, isStrongPassword } from './registerUtils';
+import { apiLogin, validateEmail } from '../Login/access';
+import { doRegister, isNullOrEmpty, isStrongPassword } from './registerUtils';
+import InternxtLogo from '../../../assets/logo.svg'
+import globalStyles from '../../styles/global.style';
+import { ScrollView } from 'react-native-gesture-handler';
+import analytics from '../../helpers/lytics';
+import EnvelopeIcon from '../../../assets/icons/figma-icons/envelope.svg'
+import EyeIcon from '../../../assets/icons/figma-icons/eye.svg'
+import UserIcon from '../../../assets/icons/figma-icons/user.svg'
 
 interface RegisterProps {
   authenticationState: AuthenticationState
@@ -17,36 +23,10 @@ interface RegisterProps {
   dispatch: any
 }
 
-export interface IRegisterScreenStyles {
-  button: any
-  buttonBlock: any
-  buttonDisabled: any
-  buttonFooterWrapper: any
-  buttonLeft: any
-  buttonOff: any
-  buttonOffLabel: any
-  buttonOn: any
-  buttonOnLabel: any
-  buttonRight: any
-  buttonWrapper: any
-  container: any
-  containerCentered: any
-  containerHeader: any
-  flexRow: any
-  halfOpacity: any
-  input: any
-  inputWrapper: any
-  showInputFieldsWrapper: any
-  textDisclaimer: any
-  textStorePassword: any
-  textStorePasswordContainer: any
-  textTip: any
-  title: any
-}
-
 function Register(props: RegisterProps): JSX.Element {
-  const [registerStep, setRegisterStep] = useState(1);
-  const [showIntro, setShowIntro] = useState(true);
+  const [showIntro, setShowIntro] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const twoFactorCode = '';
 
   // Register form fields
   const [firstName, setFirstName] = useState('');
@@ -58,6 +38,8 @@ function Register(props: RegisterProps): JSX.Element {
   const isValidEmail = validateEmail(email);
   const isValidFirstName = !isNullOrEmpty(firstName)
   const isValidLastName = !isNullOrEmpty(lastName)
+
+  const [registerButtonClicked, setRegisterButtonClicked] = useState(false);
 
   useEffect(() => {
     if (props.authenticationState.loggedIn === true) {
@@ -82,95 +64,174 @@ function Register(props: RegisterProps): JSX.Element {
     return <Intro onFinish={() => setShowIntro(false)} />;
   }
 
-  if (registerStep === 1) {
-    const isValidStep = isValidFirstName && isValidLastName && isValidEmail;
+  const isValidPassword = isStrongPassword(password);
 
-    return (
-      <RegisterStep1
-        styles={styles}
-        firstName={firstName}
-        setFirstName={setFirstName}
-        lastName={lastName}
-        setLastName={setLastName}
-        email={email}
-        setEmail={setEmail}
-        isValidFirstName={isValidFirstName}
-        isValidLastName={isValidLastName}
-        isValidEmail={isValidEmail}
-        isValidStep={isValidStep}
-        setRegisterStep={setRegisterStep}
-        navigation={props.navigation}
-      />
-    )
+  const handleOnPress = async () => {
+    if (!isValidPassword) { return Alert.alert('', 'Please make sure your password contains at least six characters, a number, and a letter') }
+    if (password !== confirmPassword) { return Alert.alert('', 'Please make sure your passwords match') }
+    if (registerButtonClicked || isLoading) { return }
+
+    setRegisterButtonClicked(true)
+    setIsLoading(true)
+
+    try {
+      const userData = await doRegister({ firstName: firstName, lastName: lastName, email: email, password: password })
+
+      await Promise.all([
+        analytics.identify(userData.uuid, { email: email }),
+        analytics.track('user-signup', {
+          properties: {
+            userId: userData.uuid,
+            email: email,
+            platform: 'mobile'
+          }
+        })
+      ])
+
+      const userLoginData = await apiLogin(email)
+
+      await props.dispatch(userActions.signin(email, password, userLoginData.sKey, twoFactorCode))
+
+    } catch (err) {
+      await analytics.track('user-signin-attempted', {
+        status: 'error',
+        message: err.message
+      })
+      setIsLoading(false)
+      setRegisterButtonClicked(false)
+
+      Alert.alert('Error while registering', err.message)
+    }
   }
 
-  if (registerStep === 2) {
-    return <RegisterStep2 styles={styles} setRegisterStep={setRegisterStep} />
-  }
+  return (
+    <KeyboardAvoidingView behavior="padding" style={styles.container}>
+      <ScrollView style={globalStyles.container.pn20}>
+        <View style={styles.containerCentered}>
+          <View style={[styles.containerHeader, globalStyles.container.pv40]}>
+            <View style={globalStyles.image.center}>
+              <InternxtLogo />
+            </View>
+            <View>
+              <Text style={[globalStyles.text.normal, globalStyles.text.center]}>{strings.screens.register_screen.create_account_title}</Text>
+            </View>
+          </View>
 
-  if (registerStep === 3) {
-    const isValidPassword = isStrongPassword(password);
-    const isValidStep = (password === confirmPassword) && isValidPassword;
+          <View style={styles.showInputFieldsWrapper}>
+            <View style={globalStyles.textInputStyle.wrapper}>
+              <TextInput
+                style={styles.input}
+                value={firstName}
+                onChangeText={value => setFirstName(value)}
+                placeholder={strings.components.inputs.first_name}
+                placeholderTextColor="#666"
+                maxLength={64}
+                autoCapitalize='words'
+                autoCompleteType='off'
+                autoCorrect={false}
+              />
+              <UserIcon style={globalStyles.textInputStyle.icon} />
+            </View>
 
-    return (
-      <RegisterStep3
-        styles={styles}
-        firstName={firstName}
-        lastName={lastName}
-        email={email}
-        password={password}
-        setPassword={setPassword}
-        confirmPassword={confirmPassword}
-        setConfirmPassword={setConfirmPassword}
-        isValidStep={isValidStep}
-        isValidPassword={isValidPassword}
-        isStrongPassword={isStrongPassword}
-        setRegisterStep={setRegisterStep}
-        navigation={props.navigation}
-        dispatch={props.dispatch}
-      />
-    )
-  }
-  return <></>
+            <View style={globalStyles.textInputStyle.wrapper}>
+              <TextInput
+                style={styles.input}
+                value={lastName}
+                onChangeText={value => setLastName(value)}
+                placeholder={strings.components.inputs.last_name}
+                placeholderTextColor="#666"
+                maxLength={64}
+                autoCapitalize='words'
+                autoCompleteType='off'
+                autoCorrect={false}
+              />
+              <UserIcon style={globalStyles.textInputStyle.icon} />
+            </View>
+
+            <View style={globalStyles.textInputStyle.wrapper}>
+              <TextInput
+                style={styles.input}
+                value={email}
+                onChangeText={value => setEmail(value)}
+                placeholder={strings.components.inputs.email}
+                placeholderTextColor="#666"
+                maxLength={64}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCompleteType="off"
+                autoCorrect={false}
+                textContentType="emailAddress"
+              />
+              <EnvelopeIcon style={globalStyles.textInputStyle.icon} />
+            </View>
+          </View>
+
+          <View style={styles.showInputFieldsWrapper}>
+            <View style={[globalStyles.textInputStyle.wrapper, !isValidPassword && globalStyles.textInputStyle.error]}>
+              <TextInput
+                style={styles.input}
+                value={password}
+                onChangeText={setPassword}
+                placeholder={strings.components.inputs.password}
+                placeholderTextColor="#666"
+                textContentType="password"
+                autoCapitalize="none"
+                autoCompleteType="password"
+                autoCorrect={false}
+                secureTextEntry={true}
+              />
+              <EyeIcon style={globalStyles.textInputStyle.icon} />
+            </View>
+
+            <View style={[globalStyles.textInputStyle.wrapper, password !== confirmPassword && globalStyles.textInputStyle.error]}>
+              <TextInput
+                style={styles.input}
+                value={confirmPassword}
+                onChangeText={value => setConfirmPassword(value)}
+                placeholder={strings.components.inputs.confirm_password}
+                placeholderTextColor="#666"
+                secureTextEntry={true}
+                textContentType="password"
+              />
+              <EyeIcon style={globalStyles.textInputStyle.icon} />
+            </View>
+          </View>
+        </View>
+
+        <View>
+          <Text style={globalStyles.text.normal}>{strings.screens.register_screen.security_subtitle}</Text>
+        </View>
+
+        <View>
+          <CheckBox text="Accept terms, conditions and privacy policy"></CheckBox>
+        </View>
+
+        <View style={globalStyles.container.pb40}>
+          <View style={[styles.containerCentered, isLoading ? styles.halfOpacity : {}]}>
+            <View style={styles.buttonFooterWrapper}>
+              <View style={globalStyles.buttonInputStyle.wrapper}>
+                <TouchableOpacity
+                  style={[globalStyles.buttonInputStyle.button, globalStyles.buttonInputStyle.block]}
+                  onPress={() => handleOnPress()}
+                  disabled={registerButtonClicked}
+                >
+                  <Text style={styles.buttonOnLabel}>{registerButtonClicked ? strings.components.buttons.creating_button : strings.components.buttons.create}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+          <View>
+            <Text style={[globalStyles.text.link, globalStyles.text.center]}>Login in Internxt</Text>
+          </View>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
 }
 
-/* eslint-disable react-native/no-unused-styles */
 const styles = StyleSheet.create({
-  button: {
-    alignItems: 'center',
-    alignSelf: 'stretch',
-    backgroundColor: '#4585f5',
-    borderRadius: 3.4,
-    height: normalize(55),
-    justifyContent: 'center',
-    marginBottom: normalize(10),
-    width: normalize(130)
-  },
-  buttonBlock: {
-    width: '100%'
-  },
-  buttonDisabled: {
-    opacity: 0.5
-  },
   buttonFooterWrapper: {
     marginTop: normalize(20)
-  },
-  buttonLeft: {
-    marginRight: normalize(10)
-  },
-  buttonOff: {
-    alignItems: 'center',
-    backgroundColor: '#f2f2f2'
-  },
-  buttonOffLabel: {
-    color: '#5c5c5c',
-    fontFamily: 'NeueEinstellung-Medium',
-    fontSize: normalize(15),
-    textAlign: 'center'
-  },
-  buttonOn: {
-    alignItems: 'center',
-    backgroundColor: '#4585f5'
   },
   buttonOnLabel: {
     color: '#fff',
@@ -178,33 +239,18 @@ const styles = StyleSheet.create({
     fontSize: normalize(15),
     textAlign: 'center'
   },
-  buttonRight: {
-    marginLeft: normalize(10)
-  },
-  buttonWrapper: {
-    alignItems: 'center',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: normalize(30)
-  },
   container: {
     backgroundColor: '#FFFFFF',
     flex: 1,
-    justifyContent: 'center',
-    padding: normalize(20)
+    justifyContent: 'center'
   },
   containerCentered: {
     alignSelf: 'center',
-    height: normalize(600),
     justifyContent: 'center',
     width: '100%'
   },
   containerHeader: {
     borderWidth: 0
-  },
-  flexRow: {
-    flexDirection: 'row'
   },
   halfOpacity: {
     opacity: 0.5
@@ -217,51 +263,8 @@ const styles = StyleSheet.create({
     letterSpacing: -0.2,
     paddingLeft: 20
   },
-  inputWrapper: {
-    borderColor: '#c9c9c9',
-    borderRadius: 5,
-    borderWidth: 1,
-    height: normalize(55),
-    justifyContent: 'center',
-    marginBottom: normalize(15)
-  },
   showInputFieldsWrapper: {
     justifyContent: 'center'
-  },
-  textDisclaimer: {
-    color: '#737880',
-    fontFamily: 'NeueEinstellung-Regular',
-    fontSize: normalize(15),
-    letterSpacing: -0.1,
-    marginTop: -15,
-    textAlign: 'justify'
-  },
-  textStorePassword: {
-    color: '#737880',
-    flex: 1,
-    fontFamily: 'NeueEinstellung-Regular',
-    fontSize: normalize(15),
-    paddingLeft: normalize(9)
-  },
-  textStorePasswordContainer: {
-    backgroundColor: '#f7f7f7',
-    marginTop: normalize(30),
-    padding: normalize(23)
-  },
-  textTip: {
-    color: '#737880',
-    flex: 1,
-    fontFamily: 'NeueEinstellung-Regular',
-    fontSize: normalize(15),
-    paddingLeft: normalize(9)
-  },
-  title: {
-    color: '#000',
-    fontFamily: 'NeueEinstellung-Bold',
-    fontSize: normalize(22),
-    letterSpacing: -1.7,
-    marginBottom: normalize(30),
-    marginTop: normalize(12)
   }
 });
 

@@ -18,7 +18,7 @@ const strings = new LocalizedStrings({
         "bold_second": ["encrypted", "no way", "Privacy"],
         "bold_third": ["Desktop", "Web", "Mobile", "10 GB", "Upgrade your storage"],
         "security_title": "Internxt Security",
-        "security_subtitle": "Internxt uses your password to encrypt and decrypt your files. Due to the secure nature of Internxt, we don't know your password. That means that if you ever forget it, your files are gone forever. With us, you're the only owner of your files. We strongly suggest you to:",
+        "security_subtitle": "Internxt uses your password to encrypt and decrypt your files. Due to the secure nature of Internxt, we don't know your password. That means that if you ever forget it, your files are gone forever. With us, you're the only owner of your files.",
         "suggestion_1": "Store your password. Keep it safe and secure.",
         "suggestion_2": "Keep an offline backup of your password.",
         "create_account_title": 'Create an Internxt account'
@@ -111,10 +111,9 @@ const strings = new LocalizedStrings({
     "components": {
       "buttons": {
         "sign_in": "Sign in",
-        "create": "Create account",
+        "create": "Create an account",
         "next": "Next",
         "get_started": "Get started",
-        "continue": "Continue",
         "back": "Back",
         "creating_button": "Creating...",
         "deactivation": "Re-send deactivation email",
@@ -213,7 +212,7 @@ const strings = new LocalizedStrings({
         "bold_second": ["encriptados", "Ni nosotros ni ningún servicio", "Privacidad"],
         "bold_third": ["escritorio", "web", "móvil", "10 GB", "Mejora tu almacenamiento"],
         "security_title": "Internxt Security",
-        "security_subtitle": "Interxt usa tu contraseña para encriptar y decriptar tus archivos. Debido a la segura naturaleza de nuestro servicio, nosotros no sabemos tu contraseña. Esto significa que si algún día la llegas a perder, tus archivos se volverán inaccesibles. Con nosotros, tú eres el único propietario de tus archivos. Te recomendamos encarecidamente que:",
+        "security_subtitle": "Interxt usa tu contraseña para encriptar y decriptar tus archivos. Debido a la segura naturaleza de nuestro servicio, nosotros no sabemos tu contraseña. Esto significa que si algún día la llegas a perder, tus archivos se volverán inaccesibles. Con nosotros, tú eres el único propietario de tus archivos.",
         "suggestion_1": "Guardes tu contraseña. Mantenla sana y salva.",
         "suggestion_2": "Guarda una copia local de todos tus archivos.",
         "create_account_title": "Crear cuenta"
