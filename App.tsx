@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, StatusBar, View, Text, Platform, Linking, Alert } from 'react-native';
+import { StyleSheet, StatusBar, Text, Platform, Linking, Alert, SafeAreaView } from 'react-native';
 import { Provider } from 'react-redux'
 import { store } from './src/store'
 import AppNavigator from './src/AppNavigator';
@@ -92,14 +92,14 @@ export default function App(): JSX.Element {
   return <Provider store={store}>
     <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
       {appInitialized ?
-        <View style={styles.appContainer}>
+        <SafeAreaView style={styles.appContainer}>
           <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'} />
           <AppNavigator />
-        </View>
-        : <View style={styles.container}>
+        </SafeAreaView>
+        : <SafeAreaView style={styles.container}>
           {loadError ? <Text>{loadError}</Text>
             : null}
-        </View>
+        </SafeAreaView>
       }
     </NavigationContainer>
   </Provider>

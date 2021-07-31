@@ -306,10 +306,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     flexDirection: 'row',
-    height: 54,
-    justifyContent: 'flex-start',
-    marginTop: Platform.OS === 'ios' ? 30 : 0,
-    paddingTop: 3
+    justifyContent: 'flex-start'
   },
   mr10: {
     marginRight: 10
