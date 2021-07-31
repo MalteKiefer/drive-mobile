@@ -19,6 +19,7 @@ import { WaveIndicator } from 'react-native-indicators'
 import Toast from 'react-native-simple-toast'
 import FreeForYouModal from '../../modals/FreeForYouModal';
 import strings from '../../../assets/lang/strings';
+import DriveMenu from '../../components/DriveMenu';
 
 interface FileExplorerProps extends Reducers {
   navigation?: any
@@ -266,6 +267,7 @@ function FileExplorer(props: FileExplorerProps): JSX.Element {
         :
         <FileList />
     }
+    <DriveMenu />
   </View>
 }
 
@@ -277,13 +279,7 @@ export default connect(mapStateToProps)(FileExplorer)
 
 const styles = StyleSheet.create({
   activityIndicator: {
-    alignItems: 'center',
-    bottom: 0,
-    justifyContent: 'center',
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: 0
+    flex: 1
   },
   backButtonWrapper: {
     alignItems: 'center',

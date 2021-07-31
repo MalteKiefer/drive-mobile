@@ -11,9 +11,8 @@ export default {
       alignSelf: 'stretch',
       backgroundColor: '#0F62FE',
       borderRadius: 10,
-      height: normalize(55),
-      justifyContent: 'center',
-      width: normalize(130)
+      height: 56,
+      justifyContent: 'center'
     },
     block: {
       width: '100%'
@@ -30,7 +29,7 @@ export default {
       borderColor: 'rgba(0,0,0,0.25)',
       borderRadius: 10,
       borderWidth: 1,
-      height: normalize(55),
+      height: 56,
       justifyContent: 'center',
       marginBottom: normalize(13),
       flexDirection: 'row',
