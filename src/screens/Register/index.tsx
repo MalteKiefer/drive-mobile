@@ -11,11 +11,12 @@ import { apiLogin, validateEmail } from '../Login/access';
 import { doRegister, isNullOrEmpty, isStrongPassword } from './registerUtils';
 import InternxtLogo from '../../../assets/logo.svg'
 import globalStyles from '../../styles/global.style';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import analytics from '../../helpers/lytics';
 import EnvelopeIcon from '../../../assets/icons/figma-icons/envelope.svg'
 import EyeIcon from '../../../assets/icons/figma-icons/eye.svg'
 import UserIcon from '../../../assets/icons/figma-icons/user.svg'
+import { tailwind } from '../../helpers/designSystem';
 
 interface RegisterProps {
   authenticationState: AuthenticationState
@@ -34,10 +35,19 @@ function Register(props: RegisterProps): JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [acceptPolicy, setAcceptPolicy] = useState(false);
 
   const isValidEmail = validateEmail(email);
   const isValidFirstName = !isNullOrEmpty(firstName)
   const isValidLastName = !isNullOrEmpty(lastName)
+  const isValidPassword = isStrongPassword(password);
+  const passwordConfirmed = password === confirmPassword;
+
+  const isValidForm = isValidEmail
+    && isValidFirstName
+    && isValidLastName
+    && isValidPassword
+    && passwordConfirmed;
 
   const [registerButtonClicked, setRegisterButtonClicked] = useState(false);
 
@@ -63,8 +73,6 @@ function Register(props: RegisterProps): JSX.Element {
   if (showIntro) {
     return <Intro onFinish={() => setShowIntro(false)} />;
   }
-
-  const isValidPassword = isStrongPassword(password);
 
   const handleOnPress = async () => {
     if (!isValidPassword) { return Alert.alert('', 'Please make sure your password contains at least six characters, a number, and a letter') }
@@ -105,7 +113,9 @@ function Register(props: RegisterProps): JSX.Element {
   }
 
   return (
-    <KeyboardAvoidingView behavior="padding" style={styles.container}>
+    <KeyboardAvoidingView
+      behavior="padding"
+      style={styles.container}>
       <ScrollView style={globalStyles.container.pn20}>
         <View style={styles.containerCentered}>
           <View style={[styles.containerHeader, globalStyles.container.pv40]}>
@@ -128,6 +138,7 @@ function Register(props: RegisterProps): JSX.Element {
                 maxLength={64}
                 autoCapitalize='words'
                 autoCompleteType='off'
+                key='name'
                 autoCorrect={false}
               />
               <UserIcon style={globalStyles.textInputStyle.icon} />
@@ -143,6 +154,7 @@ function Register(props: RegisterProps): JSX.Element {
                 maxLength={64}
                 autoCapitalize='words'
                 autoCompleteType='off'
+                key='lastname'
                 autoCorrect={false}
               />
               <UserIcon style={globalStyles.textInputStyle.icon} />
@@ -160,6 +172,7 @@ function Register(props: RegisterProps): JSX.Element {
                 autoCapitalize="none"
                 autoCompleteType="off"
                 autoCorrect={false}
+                key='mailaddress'
                 textContentType="emailAddress"
               />
               <EnvelopeIcon style={globalStyles.textInputStyle.icon} />
@@ -179,6 +192,7 @@ function Register(props: RegisterProps): JSX.Element {
                 autoCompleteType="password"
                 autoCorrect={false}
                 secureTextEntry={true}
+                key='password'
               />
               <EyeIcon
                 style={globalStyles.textInputStyle.icon}
@@ -195,6 +209,7 @@ function Register(props: RegisterProps): JSX.Element {
                 placeholderTextColor="#666"
                 secureTextEntry={true}
                 textContentType="password"
+                key='confirmPassword'
               />
               <EyeIcon
                 style={globalStyles.textInputStyle.icon}
@@ -204,31 +219,38 @@ function Register(props: RegisterProps): JSX.Element {
           </View>
         </View>
 
-        <View>
-          <Text style={globalStyles.text.normal}>{strings.screens.register_screen.security_subtitle}</Text>
+        <View style={tailwind('mt-5 mb-5')}>
+          <Text style={tailwind('text-sm')}>{strings.screens.register_screen.security_subtitle}</Text>
+        </View>
+
+        <View style={tailwind('p-5')}>
+          <CheckBox
+            text="Accept terms, conditions and privacy policy"
+            value={acceptPolicy}
+            onChange={(value) => setAcceptPolicy(value)}
+          ></CheckBox>
         </View>
 
         <View>
-          <CheckBox text="Accept terms, conditions and privacy policy"></CheckBox>
-        </View>
-
-        <View style={globalStyles.container.pb40}>
           <View style={[styles.containerCentered, isLoading ? styles.halfOpacity : {}]}>
             <View style={styles.buttonFooterWrapper}>
               <View style={globalStyles.buttonInputStyle.wrapper}>
                 <TouchableOpacity
+                  disabled={!isValidForm}
                   style={[globalStyles.buttonInputStyle.button, globalStyles.buttonInputStyle.block]}
                   onPress={() => handleOnPress()}
-                  disabled={registerButtonClicked}
                 >
                   <Text style={styles.buttonOnLabel}>{registerButtonClicked ? strings.components.buttons.creating_button : strings.components.buttons.create}</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </View>
-          <View>
+          <TouchableWithoutFeedback
+            style={tailwind('m-5')}
+            onPress={() => props.navigation.replace('Login')}
+          >
             <Text style={[globalStyles.text.link, globalStyles.text.center]}>Login in Internxt</Text>
-          </View>
+          </TouchableWithoutFeedback>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -264,7 +286,7 @@ const styles = StyleSheet.create({
   input: {
     color: '#000',
     flex: 1,
-    fontFamily: 'NeueEinstellung-Medium',
+    fontFamily: 'NeueEinstellung-Regular',
     fontSize: normalize(15),
     letterSpacing: -0.2,
     paddingLeft: 20
