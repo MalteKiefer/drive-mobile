@@ -2,15 +2,12 @@ import React, { SetStateAction, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
-import IconFolder from '../IconFolder';
 import TimeAgo from 'react-native-timeago';
 import Icon from '../../../assets/icons/Icon';
-import IconFile from '../IconFile';
 import { fileActions, layoutActions } from '../../redux/actions';
 import RNFetchBlob from 'rn-fetch-blob'
-import { deviceStorage, getLyticsData } from '../../helpers';
+import { deviceStorage, FolderIcon, getFileTypeIcon, getLyticsData } from '../../helpers';
 import FileViewer from 'react-native-file-viewer'
-import { colors } from '../../redux/constants';
 import analytics from '../../helpers/lytics';
 import { IFile, IFolder, IUploadingFile } from '../FileList';
 import { Reducers } from '../../redux/reducers/reducers';
@@ -174,6 +171,8 @@ function FileItem(props: FileItemProps) {
 
   const item = props.item
 
+  const IconFile = getFileTypeIcon(props.item.type);
+
   return (
     <View>
       <View style={[styles.container, extendStyles.containerBackground]}>
@@ -194,21 +193,7 @@ function FileItem(props: FileItemProps) {
                 {
                   props.isFolder ?
                     <View>
-                      <IconFolder color={props.item.color} />
-                      {
-                        props.isFolder && props.item.icon ?
-
-                          <View style={styles.iconContainer}>
-                            <Icon
-                              name={props.item.icon.name}
-                              color={item.color ? colors[item.color].icon : colors['blue'].icon}
-                              width={24}
-                              height={24}
-                            />
-                          </View>
-                          :
-                          null
-                      }
+                      <FolderIcon />
                     </View>
                     : // once local upload implelemented, remove conditional
                     <IconFile label={props.item.bucket ? props.item.type || '' : props.item.name && props.item.name.split('.').pop()} isLoading={isLoading} />
@@ -295,10 +280,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     letterSpacing: -0.1
   },
-  iconContainer: {
-    left: 35, position: 'absolute', top: 7
-  },
   itemIcon: {
+    margin: 20
   },
   mainContainer: {
     alignItems: 'center',
