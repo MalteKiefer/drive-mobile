@@ -1,9 +1,9 @@
 import React from 'react'
-import { GestureResponderEvent, StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { TouchableHighlight } from 'react-native-gesture-handler'
 
 interface SettingsItemProps {
-  onPress: (event: GestureResponderEvent) => void
+  onPress: () => void
   text: string
 }
 
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
   itemText: {
     color: '#000',
-    fontFamily: 'NeueEinstellung-Bold',
+    fontFamily: 'NeueEinstellung-Regular',
     fontSize: 19,
     fontWeight: '500',
     justifyContent: 'center'

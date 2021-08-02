@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, Linking, ActivityIndicator, Alert, Platform } from 'react-native';
+import { View, Text, StyleSheet, Linking, ActivityIndicator, Alert } from 'react-native';
 import Modal from 'react-native-modalbox'
 import ProgressBar from '../../components/ProgressBar';
 import { layoutActions, userActions } from '../../redux/actions';
@@ -93,7 +93,10 @@ function SettingsModal(props: SettingsModalProps) {
     <Modal
       isOpen={props.layoutState.showSettingsModal}
       position={'bottom'}
-      swipeArea={20}
+      entry={'bottom'}
+      coverScreen={false}
+      swipeThreshold={40}
+      swipeToClose={true}
       style={styles.modalSettings}
       onClosed={() => {
         props.dispatch(layoutActions.closeSettings())
@@ -165,21 +168,21 @@ function SettingsModal(props: SettingsModalProps) {
 }
 
 const styles = StyleSheet.create({
+  modalSettings: {
+    borderWidth: 1,
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32
+  },
   drawerKnob: {
     alignSelf: 'center',
-    backgroundColor: '#d8d8d8',
+    backgroundColor: '#0F62FE',
     borderRadius: 4,
-    height: 7,
-    marginTop: 10,
-    width: 56
-  },
-  modalSettings: {
-    height: 'auto',
-    paddingBottom: Platform.OS === 'ios' ? 40 : 0,
-    borderRadius: 32
+    height: 4,
+    margin: 12,
+    width: 50
   },
   nameText: {
-    fontFamily: 'NeueEinstellung-Bold',
+    fontFamily: 'NeueEinstellung-Regular',
     fontSize: 20,
     fontWeight: 'bold',
     marginLeft: 26,

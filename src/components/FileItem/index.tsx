@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import TimeAgo from 'react-native-timeago';
-import Icon from '../../../assets/icons/Icon';
 import { fileActions, layoutActions } from '../../redux/actions';
 import RNFetchBlob from 'rn-fetch-blob'
 import { deviceStorage, FolderIcon, getFileTypeIcon, getLyticsData } from '../../helpers';
@@ -16,6 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import PackageJson from '../../../package.json'
 import { NEWTORK_TIMEOUT } from '../../screens/FileExplorer/init';
+import * as Unicons from '@iconscout/react-native-unicons';
 
 interface FileItemProps extends Reducers {
   isFolder: boolean
@@ -226,7 +226,7 @@ function FileItem(props: FileItemProps) {
                 <TouchableOpacity
                   style={isSelectionMode ? styles.dNone : styles.dFlex}
                   onPress={() => props.dispatch(layoutActions.openItemModal(props.item))}>
-                  <Icon name="details" />
+                  <Unicons.UilEllipsisH color={'#7A869A'} />
                 </TouchableOpacity>
               </View>
               : null
