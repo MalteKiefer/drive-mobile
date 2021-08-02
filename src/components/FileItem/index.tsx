@@ -2,7 +2,6 @@ import React, { SetStateAction, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
-import TimeAgo from 'react-native-timeago';
 import { fileActions, layoutActions } from '../../redux/actions';
 import RNFetchBlob from 'rn-fetch-blob'
 import { deviceStorage, FolderIcon, getFileTypeIcon, getLyticsData } from '../../helpers';
@@ -211,11 +210,11 @@ function FileItem(props: FileItemProps) {
                   numberOfLines={1} // once local upload implemented, remove conditional
                 >{props.item.bucket ? props.item.name : props.item.name && props.item.name.split('.').shift()}</Text>
 
-                <Text style={{
-                  fontFamily: 'NeueEinstellung-Regular',
-                  fontSize: 14,
-                  color: '#42526E'
-                }}>Updated <TimeAgo time={props.item.createdAt} /></Text>
+                <Text style={styles.updatedAt}>Updated {new Date(props.item.updatedAt).toLocaleDateString('en-GB', {
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric'
+                })}</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -317,6 +316,11 @@ const styles = StyleSheet.create({
   touchableItemArea: {
     alignItems: 'center',
     flexDirection: 'row'
+  },
+  updatedAt: {
+    fontFamily: 'NeueEinstellung-Regular',
+    fontSize: 14,
+    color: '#42526E'
   }
 });
 
