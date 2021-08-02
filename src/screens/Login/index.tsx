@@ -15,6 +15,7 @@ import { validate2FA, apiLogin } from './access';
 import InternxtLogo from '../../../assets/logo.svg'
 import EnvelopeIcon from '../../../assets/icons/figma-icons/envelope.svg'
 import EyeIcon from '../../../assets/icons/figma-icons/eye.svg'
+import { tailwind } from '../../helpers/designSystem';
 
 interface LoginProps extends Reducers {
   goToForm?: (screenName: string) => void
@@ -81,8 +82,8 @@ function Login(props: LoginProps): JSX.Element {
   return (
     <KeyboardAvoidingView behavior='height' style={styles.container}>
       <View style={[styles.containerCentered, isLoading ? styles.halfOpacity : {}]}>
-        <View style={styles.containerHeader}>
-          <View style={[styles.flexRow, styles.title]}>
+        <View>
+          <View style={tailwind('items-center pb-10')}>
             <InternxtLogo />
           </View>
         </View>
@@ -187,11 +188,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%'
   },
-  containerHeader: {
-  },
-  flexRow: {
-    flexDirection: 'row'
-  },
   halfOpacity: {
     opacity: 0.5
   },
@@ -208,12 +204,6 @@ const styles = StyleSheet.create({
   },
   showInputFieldsWrapper: {
     justifyContent: 'center'
-  },
-  title: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: normalize(30),
-    marginTop: normalize(64)
   },
   versionLabel: {
     alignSelf: 'center',

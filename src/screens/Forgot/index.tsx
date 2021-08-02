@@ -61,7 +61,7 @@ function Forgot(props: any): JSX.Element {
           ]}
         >
           <View style={styles.containerHeader}>
-            <View style={globalStyle.image.center}>
+            <View style={tailwind('items-center pb-10')}>
               <InternxtLogo />
             </View>
 
@@ -89,23 +89,15 @@ function Forgot(props: any): JSX.Element {
                 style={globalStyle.textInputStyle.icon} />
             </View>
 
-            <View style={styles.buttonWrapper}>
+            <View style={globalStyle.buttonInputStyle.wrapper}>
               <TouchableHighlight
-                style={[styles.button, styles.buttonOff, styles.buttonLeft]}
-                underlayColor="#f2f2f2"
-                onPress={() => props.navigation.replace('Login')}
+                style={tailwind('bg-blue-60 h-16')}
+                onPress={() => sendDeactivationEmail()}
               >
-                <Text style={styles.buttonOffLabel}>{strings.components.buttons.back}</Text>
-              </TouchableHighlight>
-
-              <TouchableHighlight
-                style={[styles.button, styles.buttonOn, styles.buttonRight]}
-                underlayColor="#4585f5"
-                onPress={() => {
-                  sendDeactivationEmail()
-                }}
-              >
-                <Text style={styles.buttonOnLabel}>{strings.components.buttons.continue}</Text>
+                <Text style={tailwind('text-base text-red-60')}>
+                  GGG
+                  {strings.components.buttons.continue}
+                </Text>
               </TouchableHighlight>
             </View>
           </View>
@@ -152,7 +144,7 @@ function Forgot(props: any): JSX.Element {
             </View>
 
             <Text
-              style={styles.signUp}
+              style={tailwind('')}
               onPress={() => props.navigation.replace('Register')}
             >
               {strings.components.buttons.sing_up}
@@ -185,18 +177,6 @@ const styles = StyleSheet.create({
     marginTop: normalize(10),
     width: '45%'
   },
-  buttonLeft: {
-    marginRight: normalize(10)
-  },
-  buttonOff: {
-    backgroundColor: '#f2f2f2',
-    flex: 1
-  },
-  buttonOffLabel: {
-    color: '#5c5c5c',
-    fontFamily: 'NeueEinstellung-Medium',
-    fontSize: normalize(15)
-  },
   buttonOn: {
     backgroundColor: '#4585f5',
     flex: 1
@@ -205,9 +185,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontFamily: 'NeueEinstellung-Medium',
     fontSize: normalize(15)
-  },
-  buttonRight: {
-    marginLeft: normalize(10)
   },
   buttonWrapper: {
     flexDirection: 'row',
@@ -249,14 +226,6 @@ const styles = StyleSheet.create({
     fontSize: normalize(15),
     letterSpacing: -0.2,
     paddingLeft: normalize(20)
-  },
-  signUp: {
-    color: '#737880',
-    fontFamily: 'NeueEinstellung-Regular',
-    fontSize: normalize(15),
-    marginTop: normalize(10),
-    padding: normalize(20),
-    textAlign: 'center'
   },
   text: {
     color: '#737880',

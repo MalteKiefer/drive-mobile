@@ -114,16 +114,17 @@ function Register(props: RegisterProps): JSX.Element {
 
   return (
     <KeyboardAvoidingView
-      behavior="padding"
-      style={styles.container}>
-      <ScrollView style={globalStyles.container.pn20}>
-        <View style={styles.containerCentered}>
-          <View style={[styles.containerHeader, globalStyles.container.pv40]}>
-            <View style={globalStyles.image.center}>
-              <InternxtLogo />
+      behavior="padding">
+      <ScrollView style={tailwind('p-6')}>
+        <View>
+          <View style={tailwind('pb-6')}>
+            <View style={tailwind('items-center')}>
+              <InternxtLogo width={120} height={40} />
             </View>
             <View>
-              <Text style={[globalStyles.text.normal, globalStyles.text.center]}>{strings.screens.register_screen.create_account_title}</Text>
+              <Text style={[globalStyles.text.normal, globalStyles.text.center]}>
+                {strings.screens.register_screen.create_account_title}
+              </Text>
             </View>
           </View>
 
@@ -267,18 +268,9 @@ const styles = StyleSheet.create({
     fontSize: normalize(15),
     textAlign: 'center'
   },
-  container: {
-    backgroundColor: '#FFFFFF',
-    flex: 1,
-    justifyContent: 'center'
-  },
   containerCentered: {
-    alignSelf: 'center',
-    justifyContent: 'center',
-    width: '100%'
-  },
-  containerHeader: {
-    borderWidth: 0
+    alignSelf: 'stretch',
+    justifyContent: 'center'
   },
   halfOpacity: {
     opacity: 0.5
