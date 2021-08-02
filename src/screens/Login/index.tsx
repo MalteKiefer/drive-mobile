@@ -13,9 +13,8 @@ import { Reducers } from '../../redux/reducers/reducers';
 import globalStyles from '../../styles/global.style';
 import { validate2FA, apiLogin } from './access';
 import InternxtLogo from '../../../assets/logo.svg'
-import EnvelopeIcon from '../../../assets/icons/figma-icons/envelope.svg'
-import EyeIcon from '../../../assets/icons/figma-icons/eye.svg'
 import { tailwind } from '../../helpers/designSystem';
+import * as Unicons from '@iconscout/react-native-unicons'
 
 interface LoginProps extends Reducers {
   goToForm?: (screenName: string) => void
@@ -103,9 +102,9 @@ function Login(props: LoginProps): JSX.Element {
               textContentType="emailAddress"
               editable={!isLoading}
             />
-            <EnvelopeIcon
+            <Unicons.UilEnvelope
               style={globalStyles.textInputStyle.icon}
-              fill="#7A869A" />
+              color="#7A869A" />
           </View>
 
           <View style={globalStyles.textInputStyle.wrapper}>
@@ -119,9 +118,9 @@ function Login(props: LoginProps): JSX.Element {
               textContentType="password"
               editable={!isLoading}
             />
-            <EyeIcon
+            <Unicons.UilEye
               style={globalStyles.textInputStyle.icon}
-              fill="#7A869A" />
+              color="#7A869A" />
           </View>
         </View>
 

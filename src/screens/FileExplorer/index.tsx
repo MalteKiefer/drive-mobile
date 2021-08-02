@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View, StyleSheet, Image, Platform, Alert, BackHandler } from 'react-native'
+import { View, StyleSheet, Platform, Alert, BackHandler } from 'react-native'
 import AppMenu from '../../components/AppMenu'
 import { fileActions, userActions } from '../../redux/actions';
 import { connect } from 'react-redux';
 import FileList from '../../components/FileList';
 import SettingsModal, { loadValues } from '../../modals/SettingsModal';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { getIcon } from '../../helpers/getIcon';
 import FileDetailsModal from '../../modals/FileDetailsModal';
 import SortModal from '../../modals/SortModal';
 import DeleteItemModal from '../../modals/DeleteItemModal';
@@ -18,7 +16,6 @@ import RNFetchBlob from 'rn-fetch-blob';
 import { WaveIndicator } from 'react-native-indicators'
 import Toast from 'react-native-simple-toast'
 import FreeForYouModal from '../../modals/FreeForYouModal';
-import strings from '../../../assets/lang/strings';
 import DriveMenu from '../../components/DriveMenu';
 
 interface FileExplorerProps extends Reducers {
@@ -241,24 +238,6 @@ function FileExplorer(props: FileExplorerProps): JSX.Element {
 
     <AppMenu navigation={props.navigation} />
 
-    <View style={styles.breadcrumbs}>
-      <Text numberOfLines={1} style={styles.breadcrumbsTitle}>
-        {filesState.folderContent && filesState.folderContent.parentId
-          ? filesState.folderContent.name
-          : strings.screens.file_explorer.title}
-      </Text>
-
-      <TouchableOpacity
-        style={parentFolderId ? styles.backButtonWrapper : styles.backHidden}
-        onPress={() => {
-          props.dispatch(fileActions.getFolderContent(parentFolderId))
-        }}>
-        <Image style={styles.backIcon} source={getIcon('back')} />
-
-        <Text style={styles.backLabel}>{strings.components.buttons.back}</Text>
-      </TouchableOpacity>
-    </View>
-
     {
       props.filesState.loading && !props.filesState.isUploading ?
         <View style={styles.activityIndicator}>
@@ -280,46 +259,6 @@ export default connect(mapStateToProps)(FileExplorer)
 const styles = StyleSheet.create({
   activityIndicator: {
     flex: 1
-  },
-  backButtonWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    height: '100%',
-    marginRight: 20,
-    width: '80%'
-  },
-  backHidden: {
-    display: 'none'
-  },
-  backIcon: {
-    height: 12,
-    marginRight: 5,
-    width: 8
-  },
-  backLabel: {
-    color: '#000000',
-    fontFamily: 'NeueEinstellung-Medium',
-    fontSize: 19,
-    letterSpacing: -0.2
-  },
-  breadcrumbs: {
-    alignItems: 'center',
-    borderBottomColor: '#e6e6e6',
-    borderBottomWidth: 1,
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'nowrap',
-    height: 40,
-    justifyContent: 'space-between',
-    marginTop: 15
-  },
-  breadcrumbsTitle: {
-    width: '80%',
-    color: '#000000',
-    fontFamily: 'NeueEinstellung-Bold',
-    fontSize: 21,
-    letterSpacing: -0.2,
-    paddingLeft: 20
   },
   container: {
     backgroundColor: '#fff',

@@ -1,27 +1,24 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import HddIcon from '../../../assets/icons/figma-icons/hdd.svg'
-import RecentsIcons from '../../../assets/icons/figma-icons/clock.svg'
-import ShareIcon from '../../../assets/icons/figma-icons/link-add.svg'
-import SettingsIcon from '../../../assets/icons/figma-icons/settings.svg'
 import MainIcon from '../../../assets/icons/figma-icons/add-main.svg'
+import * as Unicons from '@iconscout/react-native-unicons'
 
 export default function DriveMenu(): JSX.Element {
   return <View style={styles.container}>
     <View>
-      <HddIcon fill={'#0F62FE'} />
+      <Unicons.UilHdd size={28} color="#C1C7D0" />
     </View>
     <View>
-      <RecentsIcons />
+      <Unicons.UilClockEight size={28} color="#C1C7D0" />
     </View>
     <View>
       <MainIcon />
     </View>
     <View>
-      <ShareIcon />
+      <Unicons.UilLinkAdd size={28} color="#C1C7D0" />
     </View>
     <View>
-      <SettingsIcon />
+      <Unicons.UilCog size={28} color="#C1C7D0" />
     </View>
   </View>
 }

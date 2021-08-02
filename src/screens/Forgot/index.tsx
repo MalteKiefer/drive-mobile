@@ -15,9 +15,13 @@ import strings from '../../../assets/lang/strings';
 import InternxtLogo from '../../../assets/logo.svg'
 import globalStyle from '../../styles/global.style';
 import { tailwind } from '../../helpers/designSystem';
-import EnvelopeIcon from '../../../assets/icons/figma-icons/envelope.svg'
+import * as Unicons from '@iconscout/react-native-unicons'
 
-function Forgot(props: any): JSX.Element {
+interface ForgotProps {
+  navigation: any
+}
+
+function Forgot(props: ForgotProps): JSX.Element {
   const [currentContainer, setCurrentCointainer] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -84,8 +88,8 @@ function Forgot(props: any): JSX.Element {
                 keyboardType="email-address"
                 textContentType="emailAddress"
               />
-              <EnvelopeIcon
-                fill="#aaa"
+              <Unicons.UilEnvelope
+                color={'#AAA'}
                 style={globalStyle.textInputStyle.icon} />
             </View>
 

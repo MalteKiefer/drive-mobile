@@ -13,9 +13,7 @@ import InternxtLogo from '../../../assets/logo.svg'
 import globalStyles from '../../styles/global.style';
 import { ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import analytics from '../../helpers/lytics';
-import EnvelopeIcon from '../../../assets/icons/figma-icons/envelope.svg'
-import EyeIcon from '../../../assets/icons/figma-icons/eye.svg'
-import UserIcon from '../../../assets/icons/figma-icons/user.svg'
+import * as Unicons from '@iconscout/react-native-unicons';
 import { tailwind } from '../../helpers/designSystem';
 
 interface RegisterProps {
@@ -115,7 +113,7 @@ function Register(props: RegisterProps): JSX.Element {
   return (
     <KeyboardAvoidingView
       behavior="padding">
-      <ScrollView style={tailwind('p-6')}>
+      <ScrollView style={tailwind('p-6 bg-white')}>
         <View>
           <View style={tailwind('pb-6')}>
             <View style={tailwind('items-center')}>
@@ -142,7 +140,9 @@ function Register(props: RegisterProps): JSX.Element {
                 key='name'
                 autoCorrect={false}
               />
-              <UserIcon style={globalStyles.textInputStyle.icon} />
+              <Unicons.UilUser
+                style={globalStyles.textInputStyle.icon}
+                color={firstNameFocus ? '#42BE65' : '#7A869A'} />
             </View>
 
             <View style={globalStyles.textInputStyle.wrapper}>
@@ -158,7 +158,9 @@ function Register(props: RegisterProps): JSX.Element {
                 key='lastname'
                 autoCorrect={false}
               />
-              <UserIcon style={globalStyles.textInputStyle.icon} />
+              <Unicons.UilUser
+                style={globalStyles.textInputStyle.icon}
+                color={lastNameFocus ? '#42BE65' : '#7A869A'} />
             </View>
 
             <View style={globalStyles.textInputStyle.wrapper}>
@@ -176,7 +178,9 @@ function Register(props: RegisterProps): JSX.Element {
                 key='mailaddress'
                 textContentType="emailAddress"
               />
-              <EnvelopeIcon style={globalStyles.textInputStyle.icon} />
+              <Unicons.UilEnvelope
+                style={globalStyles.textInputStyle.icon}
+                color={emailFocus ? '#42BE65' : '#7A869A'} />
             </View>
           </View>
 
@@ -195,10 +199,9 @@ function Register(props: RegisterProps): JSX.Element {
                 secureTextEntry={true}
                 key='password'
               />
-              <EyeIcon
+              <Unicons.UilEye
                 style={globalStyles.textInputStyle.icon}
-                fill={isValidPassword ? '#7A869A' : '#f00'}
-              />
+                color={!isValidPassword ? '#f00' : (passwordFocus ? '#42BE65' : '#7A869A')} />
             </View>
 
             <View style={[globalStyles.textInputStyle.wrapper, password !== confirmPassword && globalStyles.textInputStyle.error]}>
@@ -212,10 +215,9 @@ function Register(props: RegisterProps): JSX.Element {
                 textContentType="password"
                 key='confirmPassword'
               />
-              <EyeIcon
+              <Unicons.UilEye
                 style={globalStyles.textInputStyle.icon}
-                fill={password === confirmPassword ? '#7A869A' : '#f00'}
-              />
+                color={password !== confirmPassword ? '#f00' : (confirmPasswordFocus ? '#42BE65' : '#7A869A')} />
             </View>
           </View>
         </View>
