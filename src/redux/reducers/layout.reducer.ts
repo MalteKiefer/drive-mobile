@@ -34,6 +34,16 @@ const initialState: LayoutState = {
 
 export function layoutReducer(state = initialState, action: any): LayoutState {
   switch (action.type) {
+  case layoutActionTypes.OPEN_SEARCH_FORM:
+    return {
+      ...state,
+      searchActive: true
+    }
+  case layoutActionTypes.CLOSE_SEARCH_FORM:
+    return {
+      ...state,
+      searchActive: false
+    }
   case layoutActionTypes.OPEN_SETTINGS_MODAL:
     return {
       ...state,
@@ -125,12 +135,6 @@ export function layoutReducer(state = initialState, action: any): LayoutState {
     return {
       ...state,
       showFreeForYouModal: false
-    }
-  }
-  case layoutActionTypes.SET_CURRENT_APP: {
-    return {
-      ...state,
-      currentApp: action.payload
     }
   }
   case layoutActionTypes.OPEN_COMING_SOON_MODAL: {

@@ -211,7 +211,11 @@ function FileItem(props: FileItemProps) {
                   numberOfLines={1} // once local upload implemented, remove conditional
                 >{props.item.bucket ? props.item.name : props.item.name && props.item.name.split('.').shift()}</Text>
 
-                {!props.isFolder && <TimeAgo time={props.item.createdAt} />}
+                <Text style={{
+                  fontFamily: 'NeueEinstellung-Regular',
+                  fontSize: 14,
+                  color: '#42526E'
+                }}>Updated <TimeAgo time={props.item.createdAt} /></Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -261,12 +265,11 @@ const styles = StyleSheet.create({
   buttonDetails: {
     alignItems: 'center',
     borderRadius: 30,
-    height: 51,
+    height: 55,
     justifyContent: 'center',
     width: 51
   },
   container: {
-    borderBottomWidth: 1,
     borderColor: '#e6e6e6',
     flexDirection: 'column'
   },
@@ -280,8 +283,8 @@ const styles = StyleSheet.create({
     flexGrow: 1
   },
   fileName: {
-    color: '#000000',
-    fontFamily: 'NeueEinstellung-Bold',
+    color: '#172B4D',
+    fontFamily: 'NeueEinstellung-Regular',
     fontSize: 16,
     letterSpacing: -0.1
   },

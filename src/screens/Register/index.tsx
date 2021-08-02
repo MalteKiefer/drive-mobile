@@ -35,6 +35,12 @@ function Register(props: RegisterProps): JSX.Element {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [acceptPolicy, setAcceptPolicy] = useState(false);
 
+  const [firstNameFocus, setFirstNameFocus] = useState(false);
+  const [lastNameFocus, setLastNameFocus] = useState(false);
+  const [emailFocus, setEmailFocus] = useState(false);
+  const [passwordFocus, setPasswordFocus] = useState(false);
+  const [confirmPasswordFocus, setConfirmPasswordFocus] = useState(false);
+
   const isValidEmail = validateEmail(email);
   const isValidFirstName = !isNullOrEmpty(firstName)
   const isValidLastName = !isNullOrEmpty(lastName)
@@ -139,6 +145,8 @@ function Register(props: RegisterProps): JSX.Element {
                 autoCompleteType='off'
                 key='name'
                 autoCorrect={false}
+                onFocus={() => setFirstNameFocus(true)}
+                onBlur={() => setFirstNameFocus(false)}
               />
               <Unicons.UilUser
                 style={globalStyles.textInputStyle.icon}
@@ -157,6 +165,8 @@ function Register(props: RegisterProps): JSX.Element {
                 autoCompleteType='off'
                 key='lastname'
                 autoCorrect={false}
+                onFocus={() => setLastNameFocus(true)}
+                onBlur={() => setLastNameFocus(false)}
               />
               <Unicons.UilUser
                 style={globalStyles.textInputStyle.icon}
@@ -177,6 +187,8 @@ function Register(props: RegisterProps): JSX.Element {
                 autoCorrect={false}
                 key='mailaddress'
                 textContentType="emailAddress"
+                onFocus={() => setEmailFocus(true)}
+                onBlur={() => setEmailFocus(false)}
               />
               <Unicons.UilEnvelope
                 style={globalStyles.textInputStyle.icon}
@@ -198,6 +210,8 @@ function Register(props: RegisterProps): JSX.Element {
                 autoCorrect={false}
                 secureTextEntry={true}
                 key='password'
+                onFocus={() => setPasswordFocus(true)}
+                onBlur={() => setPasswordFocus(false)}
               />
               <Unicons.UilEye
                 style={globalStyles.textInputStyle.icon}
@@ -214,6 +228,8 @@ function Register(props: RegisterProps): JSX.Element {
                 secureTextEntry={true}
                 textContentType="password"
                 key='confirmPassword'
+                onFocus={() => setConfirmPasswordFocus(true)}
+                onBlur={() => setConfirmPasswordFocus(false)}
               />
               <Unicons.UilEye
                 style={globalStyles.textInputStyle.icon}

@@ -89,12 +89,6 @@ function SettingsModal(props: SettingsModalProps) {
     }
   }
 
-  useEffect(() => {
-    if (props.navigation.state.routeName === 'FileExplorer') {
-      props.dispatch(layoutActions.setCurrentApp(props.navigation.state.routeName))
-    }
-  }, [props.navigation.state])
-
   return (
     <Modal
       isOpen={props.layoutState.showSettingsModal}
@@ -181,7 +175,8 @@ const styles = StyleSheet.create({
   },
   modalSettings: {
     height: 'auto',
-    paddingBottom: Platform.OS === 'ios' ? 20 : 0
+    paddingBottom: Platform.OS === 'ios' ? 40 : 0,
+    borderRadius: 32
   },
   nameText: {
     fontFamily: 'NeueEinstellung-Bold',

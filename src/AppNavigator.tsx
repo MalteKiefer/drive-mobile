@@ -14,7 +14,7 @@ import Storage from './screens/Storage';
 import StorageWebView from './screens/StorageWebView';
 import EntryGateway from './screens/EntryGateway';
 
-type RouteConfig = NavigationRouteConfigMap<StackNavigationOptions, StackNavigationProp<NavigationRoute<NavigationParams>, NavigationParams>, unknown>
+type RouteConfig = NavigationRouteConfigMap<StackNavigationOptions, StackNavigationProp<NavigationRoute<NavigationParams>, NavigationParams>, string>
 type NavigatorOptions = CreateNavigatorConfig<StackNavigationConfig, NavigationStackRouterConfig, StackNavigationOptions, StackNavigationProp<NavigationRoute<NavigationParams>, NavigationParams>>
 
 const routeConfig: RouteConfig = {

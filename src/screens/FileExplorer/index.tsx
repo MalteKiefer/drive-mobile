@@ -17,6 +17,7 @@ import { WaveIndicator } from 'react-native-indicators'
 import Toast from 'react-native-simple-toast'
 import FreeForYouModal from '../../modals/FreeForYouModal';
 import DriveMenu from '../../components/DriveMenu';
+import SearchBox from '../../components/SearchBox';
 
 interface FileExplorerProps extends Reducers {
   navigation?: any
@@ -234,9 +235,8 @@ function FileExplorer(props: FileExplorerProps): JSX.Element {
     <ShareFilesModal />
     <FreeForYouModal navigation={props.navigation} />
 
-    <View style={styles.platformSpecificHeight}></View>
-
     <AppMenu navigation={props.navigation} />
+    {props.layoutState.searchActive && <SearchBox />}
 
     {
       props.filesState.loading && !props.filesState.isUploading ?
@@ -264,8 +264,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'flex-start'
-  },
-  platformSpecificHeight: {
-    height: Platform.OS === 'ios' ? '5%' : '0%'
   }
 });

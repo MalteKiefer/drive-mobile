@@ -217,7 +217,7 @@ function FileDetailsModal(props: FileDetailsProps) {
             <Text style={styles.textDefault}>
               <Text>{strings.components.file_and_folder_options.added}</Text>
               <Text style={styles.cerebriSansBold}>
-                {file ? <TimeAgo time={file.created_at} /> : ''}
+                <TimeAgo time={file.created_at} />
               </Text>
             </Text>
 

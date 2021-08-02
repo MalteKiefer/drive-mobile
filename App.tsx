@@ -78,9 +78,9 @@ export default function App(): JSX.Element {
         // files returns as JSON Array example
         //[{ filePath: null, text: null, weblink: null, mimeType: null, contentUri: null, fileName: null, extension: null }]
       },
-        (error) => {
-          Alert.alert('There was an error', error)
-        }, 'inxt' // share url protocol (must be unique to your app, suggest using your apple bundle id)
+      (error) => {
+        Alert.alert('There was an error', error)
+      }, 'inxt' // share url protocol (must be unique to your app, suggest using your apple bundle id)
       )
     }
     return () => {
