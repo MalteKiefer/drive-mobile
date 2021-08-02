@@ -22,10 +22,10 @@ export const layoutActions = {
   closeDeleteModal,
   openShareModal,
   closeShareModal,
-  openUploadFileModal,
-  closeUploadFileModal,
   openComingSoonModal,
-  closeComingSoonModal
+  closeComingSoonModal,
+  openUploadFileModal,
+  closeUploadFileModal
 };
 
 function openSearch() {

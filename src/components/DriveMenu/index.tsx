@@ -5,7 +5,7 @@ import * as Unicons from '@iconscout/react-native-unicons'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import strings from '../../../assets/lang/strings';
-import { fileActions, userActions } from '../../redux/actions';
+import { fileActions, layoutActions, userActions } from '../../redux/actions';
 import { uniqueId } from 'lodash';
 import { getLyticsData } from '../../helpers';
 import analytics from '../../helpers/lytics';
@@ -204,7 +204,7 @@ function DriveMenu(props: any): JSX.Element {
       <Unicons.UilClockEight size={28} color="#C1C7D0" />
     </TouchableWithoutFeedback>
     <TouchableWithoutFeedback onPress={() => {
-      RequestFile(props);
+      props.dispatch(layoutActions.openUploadFileModal());
     }}>
       <MainIcon />
     </TouchableWithoutFeedback>

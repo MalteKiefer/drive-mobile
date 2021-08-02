@@ -10,10 +10,9 @@ export interface LayoutState {
   showMoveModal: boolean
   showDeleteModal: boolean
   showShareModal: boolean
-  showUploadModal: boolean
   showFreeForYouModal: boolean
   showComingSoonModal: boolean
-  currentApp: string
+  showUploadModal: boolean
 }
 
 const initialState: LayoutState = {
@@ -26,10 +25,9 @@ const initialState: LayoutState = {
   showMoveModal: false,
   showDeleteModal: false,
   showShareModal: false,
-  showUploadModal: false,
   showFreeForYouModal: false,
   showComingSoonModal: false,
-  currentApp: 'FileExplorer'
+  showUploadModal: false
 };
 
 export function layoutReducer(state = initialState, action: any): LayoutState {

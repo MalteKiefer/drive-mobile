@@ -18,6 +18,7 @@ import Toast from 'react-native-simple-toast'
 import FreeForYouModal from '../../modals/FreeForYouModal';
 import DriveMenu from '../../components/DriveMenu';
 import SearchBox from '../../components/SearchBox';
+import UploadModal from '../../modals/UploadModal';
 
 interface FileExplorerProps extends Reducers {
   navigation?: any
@@ -229,6 +230,7 @@ function FileExplorer(props: FileExplorerProps): JSX.Element {
   return <View style={styles.container}>
     <FileDetailsModal key={selectedKeyId} />
     <SettingsModal navigation={props.navigation} />
+    <UploadModal navigation={props.navigation} />
     <SortModal />
     <DeleteItemModal />
     <MoveFilesModal />
