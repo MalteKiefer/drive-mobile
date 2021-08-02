@@ -1,19 +1,21 @@
 import React from 'react'
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, Alert, ImagePickerResult } from 'react-native';
 import Modal from 'react-native-modalbox'
-import { layoutActions } from '../../redux/actions';
+import { fileActions, layoutActions } from '../../redux/actions';
 import SettingsItem from '../SettingsModal/SettingsItem';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
-import { LayoutState } from '../../redux/reducers/layout.reducer';
+import { uniqueId } from 'lodash';
+import { uploadFile } from '../../services/upload';
+import { launchCameraAsync, launchImageLibraryAsync, MediaTypeOptions, requestCameraPermissionsAsync, requestMediaLibraryPermissionsAsync } from 'expo-image-picker';
+import { getDocumentAsync } from 'expo-document-picker'
 
-interface UploadModalProps {
-  layoutState: LayoutState
-  dispatch: Dispatch,
-  navigation: any
-}
+function UploadModal(props: any) {
 
-function UploadModal(props: UploadModalProps) {
+  const currentFolder =
+    props.filesState?.folderContent?.currentFolder
+    ||
+    props.authenticationState?.user?.root_folder_id || 123; // TODO: Fix this
+
   return (
     <Modal
       isOpen={props.layoutState.showUploadModal}
@@ -38,19 +40,77 @@ function UploadModal(props: UploadModalProps) {
       <SettingsItem
         text={'Upload file'}
         onPress={() => {
+          const result = getDocumentAsync({
+            copyToCacheDirectory: false
+          })
+
+          if (result.type !== 'cancel') {
+            const fileUploading: any = result
+
+            fileUploading.progress = 0
+            fileUploading.currentFolder = currentFolder
+            fileUploading.createdAt = new Date()
+            fileUploading.id = uniqueId()
+
+            props.dispatch(fileActions.addUploadingFile(fileUploading))
+            uploadFile(props, fileUploading, currentFolder)
+          }
         }}
       />
 
       <SettingsItem
         text={'Take photo & upload'}
-        onPress={() => {
+        onPress={async () => {
+          const { status } = await requestCameraPermissionsAsync();
 
+          if (status === 'granted') {
+            const result: ImagePickerResult = await launchCameraAsync()
+
+            if (!result.cancelled) {
+              const fileUploading: any = result
+
+              // Set name for pics/photos
+              if (!fileUploading.name) {
+                fileUploading.name = result.uri.split('/').pop()
+              }
+              fileUploading.progress = 0
+              fileUploading.currentFolder = currentFolder
+              fileUploading.createdAt = new Date()
+              fileUploading.id = uniqueId()
+
+              props.dispatch(fileActions.addUploadingFile(fileUploading))
+              uploadFile(props, fileUploading, currentFolder)
+            }
+          }
         }}
       />
 
       <SettingsItem
         text={'Upload media'}
-        onPress={() => {
+        onPress={async () => {
+          const { status } = await requestMediaLibraryPermissionsAsync(false)
+
+          if (status === 'granted') {
+            const result = launchImageLibraryAsync({ mediaTypes: MediaTypeOptions.All })
+
+            if (!result.cancelled) {
+              const fileUploading: any = result
+
+              // Set name for pics/photos
+              if (!fileUploading.name) {
+                fileUploading.name = result.uri.split('/').pop()
+              }
+              fileUploading.progress = 0
+              fileUploading.currentFolder = currentFolder
+              fileUploading.createdAt = new Date()
+              fileUploading.id = uniqueId()
+
+              props.dispatch(fileActions.addUploadingFile(fileUploading))
+              uploadFile(props, fileUploading, fileUploading.currentFolder)
+            }
+          } else {
+            Alert.alert('Camera roll permissions needed to perform this action')
+          }
         }}
       />
 
