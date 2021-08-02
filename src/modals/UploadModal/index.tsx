@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, StyleSheet, Text, Alert, ImagePickerResult } from 'react-native';
+import { View, StyleSheet, Text, Alert } from 'react-native';
 import Modal from 'react-native-modalbox'
 import { fileActions, layoutActions } from '../../redux/actions';
 import SettingsItem from '../SettingsModal/SettingsItem';
@@ -64,7 +64,19 @@ function UploadModal(props: any) {
           const { status } = await requestCameraPermissionsAsync();
 
           if (status === 'granted') {
-            const result: ImagePickerResult = await launchCameraAsync()
+            let error: Error | null = null;
+
+            const result = await launchCameraAsync().catch(err => {
+              error = err;
+            })
+
+            if (error || !result) {
+              return Alert.alert(error?.message);
+            }
+
+            if (!result) {
+              return;
+            }
 
             if (!result.cancelled) {
               const fileUploading: any = result
@@ -91,7 +103,7 @@ function UploadModal(props: any) {
           const { status } = await requestMediaLibraryPermissionsAsync(false)
 
           if (status === 'granted') {
-            const result = launchImageLibraryAsync({ mediaTypes: MediaTypeOptions.All })
+            const result = await launchImageLibraryAsync({ mediaTypes: MediaTypeOptions.All })
 
             if (!result.cancelled) {
               const fileUploading: any = result
