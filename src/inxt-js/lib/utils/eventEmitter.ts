@@ -1,5 +1,5 @@
 type Event = string;
-type Listener = any;
+type Listener = Function;
 type Listeners = Array<Listener>;
 
 export class EventEmitter {

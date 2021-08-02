@@ -1,23 +1,25 @@
 import { Readable, Transform } from 'readable-stream';
 
-import { Upload } from './lib/upload';
+import { upload } from './lib/upload';
 import { Download } from './lib/download';
 import { EncryptFilename } from './lib/crypto';
 import { logger } from './lib/utils/logger';
 
 import { FileMeta } from './api/FileObjectUpload';
-import { CreateEntryFromFrameResponse } from './services/request';
-
 import { BUCKET_ID_NOT_PROVIDED, ENCRYPTION_KEY_NOT_PROVIDED } from './api/constants';
 import { ActionState, ActionTypes } from './api/ActionState';
 
 export type OnlyErrorCallback = (err: Error | null) => void;
-export type UploadFinishCallback = (err: Error | null, response: CreateEntryFromFrameResponse | null) => void;
+export type UploadFinishCallback = (err: Error | null, response: string | null) => void;
 export type DownloadFinishedCallback = (err: Error | null, fileStream: Readable | null) => void;
 export type DownloadProgressCallback = (progress: number, downloadedBytes: number | null, totalBytes: number | null) => void;
 export type DecryptionProgressCallback = (progress: number, decryptedBytes: number | null, totalBytes: number | null) => void;
 export type UploadProgressCallback = (progress: number, uploadedBytes: number | null, totalBytes: number | null) => void;
 
+export interface UploadFileOptions {
+  progressCallback: UploadProgressCallback;
+  finishedCallback: UploadFinishCallback;
+}
 export interface ResolveFileOptions {
   progressCallback: DownloadProgressCallback;
   finishedCallback: OnlyErrorCallback;
@@ -50,7 +52,7 @@ export class Environment {
   }
 
   downloadFile(bucketId: string, fileId: string, options: DownloadFileOptions): ActionState {
-    const downloadState = new ActionState(ActionTypes.DOWNLOAD);
+    const downloadState = new ActionState(ActionTypes.Download);
 
     if (!this.config.encryptionKey) {
       options.finishedCallback(Error(ENCRYPTION_KEY_NOT_PROVIDED), null);
@@ -72,7 +74,9 @@ export class Environment {
    * @param bucketId Bucket id where file is going to be stored
    * @param params Upload file params
    */
-  uploadFile(bucketId: string, params: UploadFileParams): void {
+  uploadFile(bucketId: string, params: UploadFileParams): ActionState {
+    const uploadState = new ActionState(ActionTypes.Upload);
+
     if (!this.config.encryptionKey) {
       params.finishedCallback(Error('Mnemonic was not provided, please, provide a mnemonic'), null);
       return;
@@ -93,7 +97,7 @@ export class Environment {
       return;
     }
 
-    const { filename, fileSize: size, fileContent, progressCallback: progress, finishedCallback: finished } = params;
+    const { filename, fileSize: size, fileContent } = params;
 
     EncryptFilename(this.config.encryptionKey, bucketId, filename)
       .then((name: string) => {
@@ -101,21 +105,23 @@ export class Environment {
 
         const fileToUpload: FileMeta = { content: fileContent, name, size };
 
-        Upload(this.config, bucketId, fileToUpload, progress, finished);
+        upload(this.config, bucketId, fileToUpload, params, uploadState);
       })
       .catch((err: Error) => {
         logger.error(`Error encrypting filename due to ${err.message}`);
         logger.error(err);
 
-        finished(err, null);
+        params.finishedCallback(err, null);
       });
+
+    return uploadState;
   }
 
   /**
-   * Cancels the download
-   * @param state Download file state at the moment
+   * Cancels the upload
+   * @param state Upload file state at the moment
    */
-  resolveFileCancel(state: ActionState): void {
+  uploadFileCancel(state: ActionState): void {
     state.stop();
   }
 }
@@ -127,6 +133,7 @@ export interface EnvironmentConfig {
   encryptionKey?: string;
   logLevel?: number;
   webProxy?: string;
+  useProxy?: boolean;
   config?: {
     shardRetry: number
   };

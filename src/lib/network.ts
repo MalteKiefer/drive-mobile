@@ -4,7 +4,6 @@ import { PassThrough, Transform } from 'readable-stream';
 
 import { getUser } from '../database/DBUtils.ts/utils';
 import RNFetchBlob from 'rn-fetch-blob';
-import { Base64ToUtf8Transform } from '../inxt-js/lib/base64toUtf8Stream';
 
 type ProgressCallback = (progress: number, uploadedBytes: number | null, totalBytes: number | null) => void;
 
@@ -112,22 +111,20 @@ export class Network {
 
       const hashName = createHash('ripemd160').update(params.filepath).digest('hex');
 
-      return new Promise((resolve: (entry: CreateEntryFromFrameResponse) => void, reject) => {
+      return new Promise((resolve: (fileId: string) => void, reject) => {
         this.environment.uploadFile(bucketId, {
           filename: hashName,
           fileSize: params.filesize,
           fileContent: params.filecontent,
           progressCallback: params.progressCallback,
-          finishedCallback: (err, response) => {
+          finishedCallback: (err, fileId) => {
             if (err) {
               return reject(err);
             }
 
-            resolve(response);
+            resolve(fileId);
           }
         });
-      }).then((uploadRes) => {
-        return uploadRes.id;
       });
     }
 

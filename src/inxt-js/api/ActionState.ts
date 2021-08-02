@@ -2,8 +2,8 @@ import { DOWNLOAD_CANCELLED, UPLOAD_CANCELLED } from './constants';
 import EventEmitter from 'EventEmitter';
 
 export enum ActionTypes {
-  DOWNLOAD = 'DOWNLOAD',
-  UPLOAD = 'UPLOAD'
+  Download = 'DOWNLOAD',
+  Upload = 'UPLOAD'
 }
 
 export class ActionState {
@@ -20,11 +20,11 @@ export class ActionState {
   }
 
   public stop(): void {
-    if (this.type === ActionTypes.DOWNLOAD) {
+    if (this.type === ActionTypes.Download) {
       this.ev.emit(DOWNLOAD_CANCELLED);
     }
 
-    if (this.type === ActionTypes.UPLOAD) {
+    if (this.type === ActionTypes.Upload) {
       this.ev.emit(UPLOAD_CANCELLED);
     }
   }
