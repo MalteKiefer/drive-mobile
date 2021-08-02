@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import { AnyAction, CombinedState, combineReducers } from 'redux';
 
 import { authenticationReducer } from './authentication.reducer';
 import { filesReducer } from './files.reducer';
@@ -12,7 +12,7 @@ const appReducer = combineReducers({
   settingsState: settingsReducer
 });
 
-const rootReducer = (state: any, action: any) => {
+const rootReducer = (state: any, action: AnyAction): CombinedState<any> => {
   if (action.type === 'USER_SIGNOUT') {
     state = undefined
   }

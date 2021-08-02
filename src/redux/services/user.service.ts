@@ -8,7 +8,7 @@ export const userService = {
   payment
 };
 
-function signin(email: string, password: string, sKey: string, twoFactorCode: string) {
+function signin(email: string, password: string, sKey: string, twoFactorCode: string): Promise<any> {
   return new Promise((resolve, reject) => {
     const salt = decryptText(sKey);
     const hashObj = passToHash({ password, salt });
@@ -38,6 +38,7 @@ function signin(email: string, password: string, sKey: string, twoFactorCode: st
         if (!user.root_folder_id) {
           const initializeData = await initializeUser(email, user.mnemonic, body.token)
 
+          // eslint-disable-next-line camelcase
           user.root_folder_id = initializeData.user.root_folder_id
         }
 
@@ -71,7 +72,7 @@ async function initializeUser(email: string, mnemonic: string, token: string) {
   })
 }
 
-async function signout() {
+async function signout(): Promise<void> {
   try {
     const userData = await getLyticsData()
 
@@ -86,7 +87,7 @@ async function signout() {
   }
 }
 
-function payment(token: string, stripePlan: string) {
+function payment(token: string, stripePlan: string): Promise<any> {
   return new Promise((resolve, reject) => {
     fetch(`${process.env.REACT_APP_API_URL}/api/buy`, {
       method: 'POST',

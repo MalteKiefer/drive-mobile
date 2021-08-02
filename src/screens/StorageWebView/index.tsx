@@ -4,14 +4,9 @@ import { getHeaders } from '../../helpers/headers';
 import { WebView } from 'react-native-webview'
 import { connect } from 'react-redux';
 import Toast from 'react-native-simple-toast'
+import { Reducers } from '../../redux/reducers/reducers';
 
-interface StorageWebView {
-  navigation?: any
-  authenticationState?: any
-}
-
-// TODO: OutOfSpaceProps is a bad name for this component
-function StorageWebView(props: StorageWebView): JSX.Element {
+function StorageWebView(props: Reducers): JSX.Element {
 
   const [isloading, setIsLoading] = useState(true)
   const [uri, setUri] = useState('')

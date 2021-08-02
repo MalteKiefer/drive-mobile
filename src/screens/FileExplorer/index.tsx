@@ -20,15 +20,7 @@ import DriveMenu from '../../components/DriveMenu';
 import SearchBox from '../../components/SearchBox';
 import UploadModal from '../../modals/UploadModal';
 
-interface FileExplorerProps extends Reducers {
-  navigation?: any
-  filesState: any
-  dispatch?: any,
-  layoutState: any
-  authenticationState: any
-}
-
-function FileExplorer(props: FileExplorerProps): JSX.Element {
+function FileExplorer(props: Reducers): JSX.Element {
   const [selectedKeyId, setSelectedKeyId] = useState(0)
   const { filesState } = props
   const parentFolderId = (() => {
@@ -65,8 +57,11 @@ function FileExplorer(props: FileExplorerProps): JSX.Element {
               userId: userData.uuid,
               email: userData.email,
               platform: 'mobile',
+              // eslint-disable-next-line camelcase
               storage_used: currentPlan.usage,
+              // eslint-disable-next-line camelcase
               storage_limit: currentPlan.limit,
+              // eslint-disable-next-line camelcase
               storage_usage: currentPlan.percentage
             }).catch(() => { })
           }
@@ -162,7 +157,7 @@ function FileExplorer(props: FileExplorerProps): JSX.Element {
       const regex = /^(.*:\/{0,2})\/?(.*)$/gm
 
       analytics.track('file-upload-start', { userId: userData.uuid, email: userData.email, device: 'mobile' }).catch(() => { })
-      props.dispatch(fileActions.uploadFileStart(name))
+      props.dispatch(fileActions.uploadFileStart())
 
       const file = uri.replace(regex, '$2') // if iOS remove file://
       const finalUri = Platform.OS === 'ios' ? RNFetchBlob.wrap(decodeURIComponent(file)) : RNFetchBlob.wrap(uri)

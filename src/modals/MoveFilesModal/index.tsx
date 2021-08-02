@@ -7,16 +7,10 @@ import { connect } from 'react-redux';
 import strings from '../../../assets/lang/strings';
 import Separator from '../../components/Separator';
 import { fileActions, layoutActions } from '../../redux/actions';
+import { Reducers } from '../../redux/reducers/reducers';
 import Folder from './Folder';
 
-interface MoveFilesProps {
-  layoutState?: any
-  filesState?: any
-  authenticationState?: any
-  dispatch?: any
-}
-
-function MoveFilesModal(props: MoveFilesProps) {
+function MoveFilesModal(props: Reducers) {
   const [isOpen, setIsOpen] = useState(props.layoutState.showMoveModal)
   const [currentfolderid, setCurrentFolderId] = useState('')
   const [folderlist, setFolderList] = useState(Array)

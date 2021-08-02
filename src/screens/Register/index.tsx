@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import strings from '../../../assets/lang/strings';
 import { deviceStorage, normalize } from '../../helpers';
 import { userActions } from '../../redux/actions';
-import { AuthenticationState } from '../../redux/reducers/authentication.reducer';
 import Intro from '../Intro'
 import { apiLogin, validateEmail } from '../Login/access';
 import { doRegister, isNullOrEmpty, isStrongPassword } from './registerUtils';
@@ -15,14 +14,9 @@ import { ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handl
 import analytics from '../../helpers/lytics';
 import * as Unicons from '@iconscout/react-native-unicons';
 import { tailwind } from '../../helpers/designSystem';
+import { Reducers } from '../../redux/reducers/reducers';
 
-interface RegisterProps {
-  authenticationState: AuthenticationState
-  navigation: any
-  dispatch: any
-}
-
-function Register(props: RegisterProps): JSX.Element {
+function Register(props: Reducers): JSX.Element {
   const [showIntro, setShowIntro] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const twoFactorCode = '';

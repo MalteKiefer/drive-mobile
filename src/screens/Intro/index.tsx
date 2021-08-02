@@ -6,12 +6,12 @@ import { connect } from 'react-redux';
 import { normalize } from '../../helpers';
 import B from '../../components/Bold'
 import strings from '../../../assets/lang/strings';
-interface IntroProps {
+import { Reducers } from '../../redux/reducers/reducers';
+interface IntroProps extends Reducers {
   onFinish: () => void
-  navigation?: any
 }
 
-const applyBoldStyle: JSX.Element = (text: string, boldText: string[]) => {
+const applyBoldStyle: (text: string, boldText: string[]) => JSX.Element = (text: string, boldText: string[]) => {
   let numberOfItemsAdded = 0
   const result = text.split(/\{\d+\}/)
 

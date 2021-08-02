@@ -12,7 +12,7 @@ function IconFile(props: IconFileProps) {
 
   return <View style={styles.wrapper}>
     {isLoading
-      ? <ActivityIndicator style={{ position: 'absolute' }} size='small' color="gray" />
+      ? <ActivityIndicator style={styles.pAbsolute} size='small' color="gray" />
       : <Text numberOfLines={1} style={styles.text}>{label.toUpperCase()}</Text>}
 
   </View>
@@ -49,5 +49,6 @@ const styles = StyleSheet.create({
     marginRight: 25,
     position: 'relative',
     width: 44
-  }
+  },
+  pAbsolute: { position: 'absolute' }
 });

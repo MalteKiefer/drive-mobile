@@ -1,3 +1,4 @@
+import { AnyAction } from 'redux';
 import { IFile, IFolder, IUploadingFile } from '../../components/FileList';
 import { fileActionTypes } from '../constants';
 import { ArraySortFunction } from '../services';
@@ -43,7 +44,7 @@ const initialState: FilesState = {
   uri: undefined
 };
 
-export function filesReducer(state = initialState, action: any): FilesState {
+export function filesReducer(state = initialState, action: AnyAction): FilesState {
   switch (action.type) {
   case fileActionTypes.GET_FILES_REQUEST:
     return {

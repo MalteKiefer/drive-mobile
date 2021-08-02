@@ -8,12 +8,11 @@ import { colors } from '../../redux/constants';
 import { fileActions } from '../../redux/actions';
 import { getLyticsData } from '../../helpers';
 import analytics from '../../helpers/lytics';
+import { Reducers } from '../../redux/reducers/reducers';
 
-interface FolderProps {
+interface FolderProps extends Reducers {
     isFolder: boolean
     item: any
-    dispatch?: any
-    filesState?: any
     isLoading?: boolean
 }
 
@@ -26,6 +25,7 @@ function Folder(props: FolderProps) {
     analytics.track('folder-opened', {
       userId: userData.uuid,
       email: userData.email,
+      // eslint-disable-next-line camelcase
       folder_id: props.item.id
     })
     props.dispatch(fileActions.getFolderContent(props.item.id))

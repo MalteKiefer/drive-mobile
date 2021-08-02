@@ -9,16 +9,9 @@ import { fileActions, layoutActions, userActions } from '../../redux/actions';
 import PackageJson from '../../../package.json'
 import { NEWTORK_TIMEOUT } from '../../screens/FileExplorer/init';
 import * as Unicons from '@iconscout/react-native-unicons';
+import { Reducers } from '../../redux/reducers/reducers';
 
-interface AppMenuProps {
-  navigation?: any
-  filesState?: any
-  dispatch?: any,
-  layoutState?: any
-  authenticationState?: any
-}
-
-function AppMenu(props: AppMenuProps) {
+function AppMenu(props: Reducers) {
   const [activeSearchBox, setActiveSearchBox] = useState(false)
   const selectedItems = props.filesState.selectedItems;
   const textInput = useRef<TextInput>(null)
@@ -53,10 +46,14 @@ function AppMenu(props: AppMenuProps) {
 
       const finalUri = Platform.OS === 'ios' ? RNFetchBlob.wrap(decodeURIComponent(file)) : RNFetchBlob.wrap(result.uri)
 
-      RNFetchBlob.config({ timeout: NEWTORK_TIMEOUT }).fetch('POST', `${process.env.REACT_NATIVE_API_URL}/api/storage/folder/${currentFolder}/upload`, headers,
-        [
-          { name: 'xfile', filename: result.name, data: finalUri }
-        ])
+      RNFetchBlob
+        .config({
+          timeout: NEWTORK_TIMEOUT
+        })
+        .fetch('POST', `${process.env.REACT_NATIVE_API_URL}/api/storage/folder/${currentFolder}/upload`, headers,
+          [
+            { name: 'xfile', filename: result.name, data: finalUri }
+          ])
         .uploadProgress({ count: 10 }, async (sent, total) => {
           props.dispatch(fileActions.uploadFileSetProgress(sent / total, result.id))
 
@@ -113,7 +110,7 @@ function AppMenu(props: AppMenuProps) {
     <Fragment>
       <View style={styles.buttonContainer}>
         <View style={styles.commonButtons}>
-          <View style={{ width: 50 }}>
+          <View style={styles.w50}>
             <TouchableWithoutFeedback onPress={() => {
               props.dispatch(fileActions.getFolderContent(parentFolderId));
             }}>
@@ -121,17 +118,9 @@ function AppMenu(props: AppMenuProps) {
             </TouchableWithoutFeedback>
           </View>
           <View>
-            <Text style={{
-              fontFamily: 'NeueEinstellung-SemiBold',
-              fontSize: 24,
-              color: '#42526E'
-            }}>Storage</Text>
+            <Text style={styles.storageText}>Storage</Text>
           </View>
-          <View style={{
-            width: 70,
-            flexDirection: 'row',
-            justifyContent: 'space-between'
-          }}>
+          <View style={styles.openSearchIcon}>
             <TouchableWithoutFeedback onPress={() => {
               props.dispatch(layoutActions.openSearch())
             }}>
@@ -169,7 +158,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flexDirection: 'row',
     justifyContent: 'flex-start'
-  }
+  },
+  storageText: {
+    fontFamily: 'NeueEinstellung-SemiBold',
+    fontSize: 24,
+    color: '#42526E'
+  },
+  openSearchIcon: {
+    width: 70,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  w50: { width: 50 }
 });
 
 const mapStateToProps = (state: any) => {

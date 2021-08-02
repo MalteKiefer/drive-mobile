@@ -16,8 +16,9 @@ import InternxtLogo from '../../../assets/logo.svg'
 import globalStyle from '../../styles/global.style';
 import { tailwind } from '../../helpers/designSystem';
 import * as Unicons from '@iconscout/react-native-unicons'
+import { Reducers } from '../../redux/reducers/reducers';
 
-interface ForgotProps {
+interface ForgotProps extends Reducers {
   navigation: any
 }
 

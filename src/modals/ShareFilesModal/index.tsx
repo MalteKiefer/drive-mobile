@@ -12,11 +12,7 @@ import { Reducers } from '../../redux/reducers/reducers';
 import Clipboard from 'expo-clipboard'
 import strings from '../../../assets/lang/strings';
 
-interface ShareFilesModalProps extends Reducers {
-  dispatch?: any,
-}
-
-function ShareFilesModal(props: ShareFilesModalProps) {
+function ShareFilesModal(props: Reducers) {
   const [isOpen, setIsOpen] = useState(props.layoutState.showShareModal)
   const [selectedFile, setSelectedFile] = useState<IFile & IFolder>()
   const [filename, setFileName] = useState('')

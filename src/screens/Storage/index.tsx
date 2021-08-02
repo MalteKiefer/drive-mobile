@@ -15,8 +15,6 @@ import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import strings from '../../../assets/lang/strings';
 
 interface StorageProps extends Reducers {
-  dispatch?: any,
-  navigation?: any,
   currentPlan: number
 }
 
@@ -86,7 +84,7 @@ function Storage(props: StorageProps): JSX.Element {
   }, [chosenProduct])
 
   return (
-    <SafeAreaView style={{ backgroundColor: '#fff' }}>
+    <SafeAreaView style={styles.bgWhite}>
       <View style={styles.container}>
         <View style={styles.navigatorContainer}>
           <View style={styles.backButton}>
@@ -116,8 +114,7 @@ function Storage(props: StorageProps): JSX.Element {
           </View>
 
           <ProgressBar
-            styleBar={{}}
-            styleProgress={{ height: 7 }}
+            styleProgress={styles.h7}
             totalValue={usageValues.limit}
             usedValue={usageValues.usage}
           />
@@ -161,7 +158,11 @@ function Storage(props: StorageProps): JSX.Element {
                         setIsLoading(true)
                         setChosenProduct(product)
                       }}>
-                      <PlanCard currentPlan={prettysize(usageValues.limit)} product={product} size={product.metadata.simple_name} price={product.metadata.price_eur} />
+                      <PlanCard
+                        currentPlan={prettysize(usageValues.limit)}
+                        product={product}
+                        size={product.metadata.simple_name}
+                        price={product.metadata.price_eur} />
                     </TouchableWithoutFeedback>)
                   }
                 </View>
@@ -348,7 +349,11 @@ const styles = StyleSheet.create({
     color: 'black',
     fontFamily: 'NeueEinstellung-Regular',
     fontSize: 13
-  }
+  },
+  bgWhite: {
+    backgroundColor: '#fff'
+  },
+  h7: { height: 7 }
 })
 
 const mapStateToProps = (state: any) => {

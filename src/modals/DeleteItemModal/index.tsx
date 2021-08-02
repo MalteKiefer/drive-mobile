@@ -7,11 +7,8 @@ import { connect } from 'react-redux';
 import strings from '../../../assets/lang/strings';
 import { fileActions, layoutActions } from '../../redux/actions';
 import { Reducers } from '../../redux/reducers/reducers';
-interface DeleteItemModalProps extends Reducers {
-    dispatch?: any,
-}
 
-function DeleteItemModal(props: DeleteItemModalProps) {
+function DeleteItemModal(props: Reducers) {
   const selectedItems = props.filesState.selectedItems
   const currentFolderId = props.filesState.folderContent && props.filesState.folderContent.currentFolder
   const [isOpen, setIsOpen] = useState(props.layoutState.showDeleteModal)

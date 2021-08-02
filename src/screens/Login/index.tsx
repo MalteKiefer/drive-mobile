@@ -8,7 +8,6 @@ import { deviceStorage } from '../../helpers';
 import analytics from '../../helpers/lytics';
 import { normalize } from '../../helpers/normalize'
 import { userActions } from '../../redux/actions';
-import { AuthenticationState } from '../../redux/reducers/authentication.reducer';
 import { Reducers } from '../../redux/reducers/reducers';
 import globalStyles from '../../styles/global.style';
 import { validate2FA, apiLogin } from './access';
@@ -18,9 +17,6 @@ import * as Unicons from '@iconscout/react-native-unicons'
 
 interface LoginProps extends Reducers {
   goToForm?: (screenName: string) => void
-  dispatch?: any
-  navigation?: any
-  authenticationState: AuthenticationState
 }
 
 function Login(props: LoginProps): JSX.Element {
@@ -127,7 +123,7 @@ function Login(props: LoginProps): JSX.Element {
         <View style={showTwoFactor ? styles.showInputFieldsWrapper : styles.hideInputFieldWrapper}>
           <View style={globalStyles.textInputStyle.wrapper}>
             <TextInput
-              style={[styles.input, validate2FA(twoFactorCode) ? {} : { borderWidth: 1, borderColor: '#f00' }]}
+              style={[styles.input, validate2FA(twoFactorCode) ? {} : styles.showBorder]}
               value={twoFactorCode}
               onChangeText={value => setTwoFactorCode(value)}
               placeholder="Two-factor code"
@@ -210,5 +206,6 @@ const styles = StyleSheet.create({
     fontFamily: 'NeueEinstellung-Regular',
     position: 'absolute',
     bottom: 5
-  }
+  },
+  showBorder: { borderWidth: 1, borderColor: '#f00' }
 });

@@ -4,14 +4,9 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { connect } from 'react-redux';
 import strings from '../../../assets/lang/strings';
+import { Reducers } from '../../redux/reducers/reducers';
 
-interface OutOfSpaceProps {
-  dispatch?: any,
-  navigation?: any
-}
-
-// TODO: This should be a modal, not a new screen
-function OutOfSpace(props: OutOfSpaceProps): JSX.Element {
+function OutOfSpace(props: Reducers): JSX.Element {
 
   return (
     <View style={styles.container}>

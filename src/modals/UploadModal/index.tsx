@@ -35,7 +35,7 @@ function UploadModal(props: any) {
 
       <View style={styles.drawerKnob}></View>
 
-      <View style={{ alignItems: 'center' }}>
+      <View style={styles.alignCenter}>
         <Text>Upload</Text>
       </View>
 
@@ -167,7 +167,8 @@ const styles = StyleSheet.create({
   cancelText: {
     textAlign: 'center',
     color: '#f00'
-  }
+  },
+  alignCenter: { alignItems: 'center' }
 })
 
 const mapStateToProps = (state: any) => {

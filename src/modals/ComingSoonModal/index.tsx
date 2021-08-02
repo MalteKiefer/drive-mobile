@@ -6,10 +6,9 @@ import { widthPercentageToDP } from 'react-native-responsive-screen';
 import { connect } from 'react-redux';
 import strings from '../../../assets/lang/strings';
 import { layoutActions } from '../../redux/actions';
-import { LayoutState } from '../../redux/reducers/layout.reducer';
-interface ComingSoonProps {
+import { Reducers } from '../../redux/reducers/reducers';
+interface ComingSoonProps extends Reducers {
     navigation: any
-    layoutState: LayoutState
     dispatch: any
 }
 

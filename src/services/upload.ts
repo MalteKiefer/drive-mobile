@@ -4,8 +4,11 @@ import analytics, { getLyticsData } from '../helpers/lytics'
 import { fileActions, userActions } from '../redux/actions'
 import { NEWTORK_TIMEOUT } from '../screens/FileExplorer/init'
 import PackageJson from '../../package.json'
+import { Reducers } from '../redux/reducers/reducers'
+import { Dispatch } from 'react'
+import { AnyAction } from 'redux'
 
-export function uploadFile(props: any, result: any, currentFolder: number | undefined): void {
+export function uploadFile(props: Reducers & { dispatch: Dispatch<AnyAction> }, result: any, currentFolder: number | undefined): void {
   props.dispatch(fileActions.uploadFileStart())
 
   const userData = getLyticsData().then((res) => {

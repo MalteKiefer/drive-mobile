@@ -19,7 +19,6 @@ import * as Unicons from '@iconscout/react-native-unicons';
 interface FileItemProps extends Reducers {
   isFolder: boolean
   item: IFile & IFolder | IUploadingFile
-  dispatch?: any
   isLoading?: boolean
 }
 
@@ -40,6 +39,7 @@ async function handleClick(props: FileItemProps, setProgress: React.Dispatch<Set
     analytics.track('folder-opened', {
       userId: userData.uuid,
       email: userData.email,
+      // eslint-disable-next-line camelcase
       folder_id: props.item.id
     })
     props.dispatch(fileActions.getFolderContent(props.item.id.toString()))
@@ -69,10 +69,14 @@ async function handleClick(props: FileItemProps, setProgress: React.Dispatch<Set
       const userData = await getLyticsData()
 
       analytics.track('file-download-start', {
+        // eslint-disable-next-line camelcase
         file_id: props.item.id,
+        // eslint-disable-next-line camelcase
         file_size: props.item.size,
+        // eslint-disable-next-line camelcase
         file_type: props.item.type,
         email: userData.email,
+        // eslint-disable-next-line camelcase
         folder_id: props.item.folderId,
         platform: 'mobile'
       })
@@ -107,10 +111,14 @@ async function handleClick(props: FileItemProps, setProgress: React.Dispatch<Set
         const userData = await getLyticsData()
 
         analytics.track('file-download-finished', {
+          // eslint-disable-next-line camelcase
           file_id: props.item.id,
+          // eslint-disable-next-line camelcase
           file_size: props.item.size,
+          // eslint-disable-next-line camelcase
           file_type: props.item.type,
           email: userData.email,
+          // eslint-disable-next-line camelcase
           folder_id: props.item.folderId,
           platform: 'mobile'
         })
@@ -121,10 +129,14 @@ async function handleClick(props: FileItemProps, setProgress: React.Dispatch<Set
         const userData = await getLyticsData()
 
         analytics.track('file-download-error', {
+          // eslint-disable-next-line camelcase
           file_id: props.item.id,
+          // eslint-disable-next-line camelcase
           file_size: props.item.size,
+          // eslint-disable-next-line camelcase
           file_type: props.item.type,
           email: userData.email,
+          // eslint-disable-next-line camelcase
           folder_id: props.item.folderId,
           platform: 'mobile',
           msg: err && err.message

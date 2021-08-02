@@ -1,8 +1,13 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native';
 import strings from '../../../assets/lang/strings';
+import { Reducers } from '../../redux/reducers/reducers';
 
-function EmptyFolder(props: any) {
+interface EmptyFolderProps extends Reducers {
+  isRoot: boolean
+}
+
+function EmptyFolder(props: EmptyFolderProps): JSX.Element {
   const message = props.isRoot
     ? 'Your Internxt Drive is empty!'
     : strings.components.empty_folder.title

@@ -11,8 +11,8 @@ import { getHeaders } from '../../helpers/headers';
 import analytics, { getLyticsUuid } from '../../helpers/lytics';
 import Bold from '../../components/Bold';
 import { Dispatch } from 'redux';
-import { LayoutState } from '../../redux/reducers/layout.reducer';
 import strings from '../../../assets/lang/strings';
+import { Reducers } from '../../redux/reducers/reducers';
 
 function identifyPlanName(bytes: number): string {
   return bytes === 0 ? 'Free 10GB' : prettysize(bytes)
@@ -53,9 +53,8 @@ export async function loadValues(): Promise<{ usage: number, limit: number }> {
 
   return { usage, limit }
 }
-interface SettingsModalProps {
+interface SettingsModalProps extends Reducers {
   user: any
-  layoutState: LayoutState
   dispatch: Dispatch,
   navigation: any
 }
@@ -98,9 +97,7 @@ function SettingsModal(props: SettingsModalProps) {
       swipeThreshold={40}
       swipeToClose={true}
       style={styles.modalSettings}
-      onClosed={() => {
-        props.dispatch(layoutActions.closeSettings())
-      }}
+      onClosed={() => props.dispatch(layoutActions.closeSettings())}
       backButtonClose={true}
       animationDuration={200}>
 

@@ -10,12 +10,12 @@ import { getIcon } from '../../helpers/getIcon';
 import { fileActions, layoutActions } from '../../redux/actions';
 import SettingsItem from '../SettingsModal/SettingsItem';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { updateFileMetadata, updateFolderMetadata } from './actions';
+import { IMetadata, updateFileMetadata, updateFolderMetadata } from './actions';
 import analytics, { getLyticsData } from '../../helpers/lytics';
 import strings from '../../../assets/lang/strings';
+import { Reducers } from '../../redux/reducers/reducers';
 
-interface FileDetailsProps {
-  dispatch?: any
+interface FileDetailsProps extends Reducers {
   showItemModal: boolean
   selectedItems: any[]
   folderContent: any
@@ -52,7 +52,9 @@ function FileDetailsModal(props: FileDetailsProps) {
             props.dispatch(fileActions.deselectAll())
             props.dispatch(layoutActions.closeItemModal())
 
-            const metadata: any = {}
+            const metadata: IMetadata = {
+              itemName: ''
+            }
 
             if (newfilename !== originalfilename) {
               metadata.itemName = newfilename
@@ -70,6 +72,7 @@ function FileDetailsModal(props: FileDetailsProps) {
                   email: userData.email,
                   platform: 'mobile',
                   device: Platform.OS,
+                  // eslint-disable-next-line camelcase
                   folder_id: folder.id
                 }).catch(() => { })
               }
@@ -101,7 +104,9 @@ function FileDetailsModal(props: FileDetailsProps) {
             props.dispatch(fileActions.deselectAll())
             props.dispatch(layoutActions.closeItemModal())
 
-            const metadata: any = {}
+            const metadata: IMetadata = {
+              itemName: ''
+            }
 
             if (newfilename !== originalfilename) {
               metadata.itemName = newfilename
@@ -114,6 +119,7 @@ function FileDetailsModal(props: FileDetailsProps) {
                 email: userData.email,
                 platform: 'mobile',
                 device: Platform.OS,
+                // eslint-disable-next-line camelcase
                 folder_id: file.id
               }).catch(() => { })
             }
@@ -161,7 +167,7 @@ function FileDetailsModal(props: FileDetailsProps) {
             <SettingsItem
               text={
                 <Text>
-                  <Image source={getIcon('move')} style={{ width: 20, height: 20 }} />
+                  <Image source={getIcon('move')} style={styles.w2020} />
                   <Text style={styles.mr20}> </Text>
                   <Text style={styles.cerebriSansBold}> {strings.components.file_and_folder_options.move}</Text>
                 </Text>
@@ -174,7 +180,7 @@ function FileDetailsModal(props: FileDetailsProps) {
             <SettingsItem
               text={
                 <Text>
-                  <Image source={getIcon('share')} style={{ width: 20, height: 14 }} />
+                  <Image source={getIcon('share')} style={styles.w2014} />
                   <Text style={styles.mr20}> </Text>
                   <Text style={{}}> {strings.components.file_and_folder_options.share}</Text>
                 </Text>
@@ -187,7 +193,7 @@ function FileDetailsModal(props: FileDetailsProps) {
 
             <SettingsItem
               text={<Text>
-                <Image source={getIcon('delete')} style={{ width: 16, height: 21 }} />
+                <Image source={getIcon('delete')} style={styles.w1621} />
                 <Text style={styles.mr20}> </Text>
                 <Text style={styles.cerebriSansBold}>  {strings.components.file_and_folder_options.delete}</Text>
               </Text>}
@@ -261,5 +267,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingBottom: 6,
     paddingLeft: 24
-  }
+  },
+  w2020: { width: 20, height: 20 },
+  w1621: { width: 16, height: 21 },
+  w2014: { width: 20, height: 14 }
 })

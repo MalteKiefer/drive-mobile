@@ -1,3 +1,4 @@
+import { AnyAction } from 'redux';
 import { layoutActionTypes } from '../constants';
 
 export interface LayoutState {
@@ -30,7 +31,7 @@ const initialState: LayoutState = {
   showUploadModal: false
 };
 
-export function layoutReducer(state = initialState, action: any): LayoutState {
+export function layoutReducer(state = initialState, action: AnyAction): LayoutState {
   switch (action.type) {
   case layoutActionTypes.OPEN_SEARCH_FORM:
     return {

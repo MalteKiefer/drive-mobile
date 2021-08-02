@@ -2,8 +2,9 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux';
 import { deviceStorage } from '../../helpers';
 import { userActions } from '../../redux/actions';
+import { Reducers } from '../../redux/reducers/reducers';
 
-function EntryPointGateway(props: any): JSX.Element {
+function EntryPointGateway(props: Reducers): JSX.Element {
   const rootFolderId = props.authenticationState.user.root_folder_id;
 
   useEffect(() => {

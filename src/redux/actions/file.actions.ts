@@ -1,6 +1,7 @@
-import { Dispatch } from 'redux';
+import { AnyAction, Dispatch } from 'redux';
 import { getLyticsData } from '../../helpers';
 import analytics from '../../helpers/lytics';
+import { IMetadata } from '../../modals/FileDetailsModal/actions';
 import { store } from '../../store';
 import { fileActionTypes } from '../constants';
 import { fileService } from '../services';
@@ -36,66 +37,66 @@ export const fileActions = {
   updateUploadingFile
 };
 
-function downloadFileStart(fileId: string) {
+function downloadFileStart(fileId: string): AnyAction {
   return { type: fileActionTypes.DOWNLOAD_FILE_START, payload: fileId };
 }
-function downloadFileEnd(fileId: string) {
+function downloadFileEnd(fileId: string): AnyAction {
   return { type: fileActionTypes.DOWNLOAD_FILE_END, payload: fileId };
 }
 
 // Will only download the current selected file defined in props
-function downloadSelectedFileStart() {
+function downloadSelectedFileStart(): AnyAction {
   return { type: fileActionTypes.DOWNLOAD_SELECTED_FILE_START };
 }
 
-function downloadSelectedFileStop() {
+function downloadSelectedFileStop(): AnyAction {
   return { type: fileActionTypes.DOWNLOAD_SELECTED_FILE_STOP };
 }
 
-function uploadFileStart() {
+function uploadFileStart(): AnyAction {
   return { type: fileActionTypes.ADD_FILE_REQUEST };
 }
 
-function addUploadingFile(file: any) {
+function addUploadingFile(file: any): AnyAction {
   return { type: fileActionTypes.ADD_UPLOADING_FILE, payload: file };
 }
 
-function addUploadedFile(file: any) {
+function addUploadedFile(file: any): AnyAction {
   return { type: fileActionTypes.ADD_UPLOADED_FILE, payload: file };
 }
 
-function removeUploadingFile(id: string) {
+function removeUploadingFile(id: string): AnyAction {
   return { type: fileActionTypes.REMOVE_UPLOADING_FILE, payload: id };
 }
 
-function removeUploadedFile(file: any) {
+function removeUploadedFile(file: any): AnyAction {
   return { type: fileActionTypes.REMOVE_UPLOADED_FILE, payload: file };
 }
 
-function uploadFileFinished(name: string) {
+function uploadFileFinished(name: string): AnyAction {
   return { type: fileActionTypes.ADD_FILE_SUCCESS, payload: name };
 }
 
-function uploadFileFailed(id: number) {
+function uploadFileFailed(id: number): AnyAction {
   return { type: fileActionTypes.ADD_FILE_FAILURE, payload: id };
 }
 
-function uploadFileSetProgress(progress: number, id: string) {
+function uploadFileSetProgress(progress: number, id?: string): AnyAction {
   const payload = { progress, id }
 
   return { type: fileActionTypes.ADD_FILE_UPLOAD_PROGRESS, payload };
 }
 
-function uploadFileSetUri(uri: string | undefined) {
+function uploadFileSetUri(uri: string | undefined): AnyAction {
   return { type: fileActionTypes.SET_FILE_UPLOAD_URI, payload: uri };
 }
 
 function fetchIfSameFolder(fileFolder: number) {
-  return (dispatch: Dispatch) => {
+  return (dispatch: Dispatch): AnyAction => {
     const currentFoder = store.getState().filesState.folderContent.currentFolder
 
     if (fileFolder === currentFoder) {
-      dispatch(getFolderContent(currentFoder))
+      return dispatch(getFolderContent(currentFoder))
     }
   }
 }
@@ -104,8 +105,8 @@ function getFolderContent(folderId: string) {
   const id = parseInt(folderId)
 
   if (isNaN(id)) {
-    return (dispatch: Dispatch) => {
-      dispatch(failure(`Folder ID: "${folderId}" is not a number.`));
+    return (dispatch: Dispatch): AnyAction => {
+      return dispatch(failure(Error(`Folder ID: "${folderId}" is not a number.`)));
     };
   }
 
@@ -124,18 +125,18 @@ function getFolderContent(folderId: string) {
       });
   };
 
-  function request() {
+  function request(): AnyAction {
     return { type: fileActionTypes.GET_FILES_REQUEST };
   }
-  function success(payload: any) {
+  function success(payload: any): AnyAction {
     return { type: fileActionTypes.GET_FILES_SUCCESS, payload };
   }
-  function failure(error: any) {
+  function failure(error: Error): AnyAction {
     return { type: fileActionTypes.GET_FILES_FAILURE, error };
   }
 }
 
-function deleteItems(items, folderToReload) {
+function deleteItems(items: any, folderToReload: any): AnyAction {
   return async (dispatch: Dispatch) => {
     dispatch(request());
     fileService
@@ -154,55 +155,45 @@ function deleteItems(items, folderToReload) {
       });
   };
 
-  function request() {
+  function request(): AnyAction {
     return { type: fileActionTypes.DELETE_FILE_REQUEST, payload: items };
   }
 
-  function requestFailure() {
+  function requestFailure(): AnyAction {
     return { type: fileActionTypes.DELETE_FILE_FAILURE };
   }
 
-  function requestSuccess() {
+  function requestSuccess(): AnyAction {
     return { type: fileActionTypes.DELETE_FILE_SUCCESS };
   }
 }
 
-function selectFile(file: any) {
-  return (dispatch: Dispatch) => {
-    dispatch({ type: fileActionTypes.SELECT_FILE, payload: file });
-  };
+function selectFile(file: any): AnyAction {
+  return { type: fileActionTypes.SELECT_FILE, payload: file };
 }
 
-function deselectFile(file: any) {
-  return (dispatch: Dispatch) => {
-    dispatch({ type: fileActionTypes.DESELECT_FILE, payload: file });
-  };
+function deselectFile(file: any): AnyAction {
+  return { type: fileActionTypes.DESELECT_FILE, payload: file };
 }
 
-function deselectAll() {
-  return (dispatch: Dispatch) => {
-    dispatch({ type: fileActionTypes.DESELECT_ALL });
-  };
+function deselectAll(): AnyAction {
+  return { type: fileActionTypes.DESELECT_ALL };
 }
 
-function setSortFunction(sortType) {
+function setSortFunction(sortType: any): AnyAction {
   const sortFunc = fileService.getSortFunction(sortType);
 
-  return (dispatch: Dispatch) => {
-    dispatch({
-      type: fileActionTypes.SET_SORT_TYPE,
-      payload: [sortType, sortFunc]
-    });
+  return {
+    type: fileActionTypes.SET_SORT_TYPE,
+    payload: [sortType, sortFunc]
   };
 }
 
-function setSearchString(searchString: string) {
-  return (dispatch: Dispatch) => {
-    dispatch({
-      type: fileActionTypes.SET_SEARCH_STRING,
-      payload: searchString
-    });
-  };
+function setSearchString(searchString: string): AnyAction {
+  return {
+    type: fileActionTypes.SET_SEARCH_STRING,
+    payload: searchString
+  }
 }
 
 function createFolder(parentFolderId: number, newFolderName: string) {
@@ -220,7 +211,7 @@ function createFolder(parentFolderId: number, newFolderName: string) {
     );
   };
 
-  function request() {
+  function request(): AnyAction {
     return { type: fileActionTypes.CREATE_FOLDER_REQUEST };
   }
   function success(newFolderDetails: any) {
@@ -256,18 +247,18 @@ function moveFile(fileId: string, destination: string) {
     });
   };
 
-  function request() {
+  function request(): AnyAction {
     return { type: fileActionTypes.MOVE_FILES_REQUEST };
   }
-  function success() {
+  function success(): AnyAction {
     return { type: fileActionTypes.MOVE_FILES_SUCCESS };
   }
-  function failure(payload: any) {
+  function failure(payload: any): AnyAction {
     return { type: fileActionTypes.MOVE_FILES_FAILURE, payload };
   }
 }
 
-function setRootFolderContent(folderContent: any) {
+function setRootFolderContent(folderContent: any): AnyAction {
   return { type: fileActionTypes.SET_ROOTFOLDER_CONTENT, payload: folderContent }
 }
 
@@ -285,7 +276,7 @@ function setUri(uri: string | Record<string, string> | undefined | null) {
   return { type: fileActionTypes.SET_URI, payload: uri }
 }
 
-function updateFolderMetadata(metadata: any, folderId) {
+function updateFolderMetadata(metadata: IMetadata, folderId) {
   return (dispatch: Dispatch) => {
     dispatch(request());
 
@@ -299,17 +290,17 @@ function updateFolderMetadata(metadata: any, folderId) {
       });
   };
 
-  function request() {
+  function request(): AnyAction {
     return { type: fileActionTypes.UPDATE_FOLDER_METADATA_REQUEST };
   }
-  function success() {
+  function success(): AnyAction {
     return { type: fileActionTypes.UPDATE_FOLDER_METADATA_SUCCESS };
   }
-  function failure(payload: any) {
+  function failure(payload: any): AnyAction {
     return { type: fileActionTypes.UPDATE_FOLDER_METADATA_FAILURE, payload };
   }
 }
 
-function updateUploadingFile(id: number) {
+function updateUploadingFile(id: number): AnyAction {
   return { type: fileActionTypes.UPDATE_UPLOADING_FILE, payload: id };
 }
