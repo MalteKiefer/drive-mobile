@@ -8,6 +8,8 @@ import { uniqueId } from 'lodash';
 import { uploadFile } from '../../services/upload';
 import { launchCameraAsync, launchImageLibraryAsync, MediaTypeOptions, requestCameraPermissionsAsync, requestMediaLibraryPermissionsAsync } from 'expo-image-picker';
 import { getDocumentAsync } from 'expo-document-picker'
+import Separator from '../../components/Separator';
+import * as Unicons from '@iconscout/react-native-unicons'
 
 function UploadModal(props: any) {
 
@@ -39,6 +41,7 @@ function UploadModal(props: any) {
 
       <SettingsItem
         text={'Upload file'}
+        icon={Unicons.UilUploadAlt}
         onPress={() => {
           const result = getDocumentAsync({
             copyToCacheDirectory: false
@@ -60,6 +63,7 @@ function UploadModal(props: any) {
 
       <SettingsItem
         text={'Take photo & upload'}
+        icon={Unicons.UilCameraPlus}
         onPress={async () => {
           const { status } = await requestCameraPermissionsAsync();
 
@@ -99,6 +103,7 @@ function UploadModal(props: any) {
 
       <SettingsItem
         text={'Upload media'}
+        icon={Unicons.UilImagePlus}
         onPress={async () => {
           const { status } = await requestMediaLibraryPermissionsAsync(false)
 
@@ -128,7 +133,17 @@ function UploadModal(props: any) {
 
       <SettingsItem
         text={'New folder'}
+        icon={Unicons.UilFolderUpload}
         onPress={() => {
+        }}
+      />
+
+      <Separator />
+
+      <SettingsItem
+        text={<Text style={styles.cancelText}>Cancel</Text>}
+        onPress={() => {
+          props.dispatch(layoutActions.closeUploadFileModal());
         }}
       />
     </Modal>
@@ -148,6 +163,10 @@ const styles = StyleSheet.create({
     height: 4,
     margin: 12,
     width: 50
+  },
+  cancelText: {
+    textAlign: 'center',
+    color: '#f00'
   }
 })
 

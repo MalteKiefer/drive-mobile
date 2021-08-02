@@ -1,10 +1,12 @@
 import React from 'react'
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { TouchableHighlight } from 'react-native-gesture-handler'
+import * as Unicons from '@iconscout/react-native-unicons'
 
 interface SettingsItemProps {
   onPress: () => void
-  text: string
+  text: string | JSX.Element
+  icon?: typeof Unicons
 }
 
 export default function SettingsItem(props: SettingsItemProps): JSX.Element {
@@ -13,23 +15,34 @@ export default function SettingsItem(props: SettingsItemProps): JSX.Element {
     style={styles.itemContainer}
     onPress={props.onPress}
   >
-    <Text style={styles.itemText}>{props.text}</Text>
+    <View style={styles.settingsContainer}>
+      {props.icon && <props.icon color={'#0F62FE'} size={25} style={styles.icon} />}
+      <Text style={styles.itemText}>{props.text}</Text>
+    </View>
   </TouchableHighlight>
 
 }
 
 const styles = StyleSheet.create({
+  settingsContainer: {
+    flexDirection: 'row'
+  },
+  icon: {
+    marginRight: 15
+  },
   itemContainer: {
     justifyContent: 'center',
     paddingBottom: 15,
     paddingTop: 5,
-    paddingLeft: 24
+    paddingLeft: 24,
+    paddingRight: 24
   },
   itemText: {
     color: '#000',
     fontFamily: 'NeueEinstellung-Regular',
     fontSize: 19,
     fontWeight: '500',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    flexGrow: 1
   }
 });
