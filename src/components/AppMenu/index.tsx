@@ -82,6 +82,8 @@ function AppMenu(props: AppMenuProps) {
       }
     })
 
+    // TODO: For big files, stat is not working, but on uploadFile works
+    // so do it before uploading or something like that..
     const stat = await RNFetchBlob.fs.stat(finalUri);
 
     console.log('stat', stat);
@@ -284,7 +286,7 @@ function AppMenu(props: AppMenuProps) {
                       fileUploading.id = uniqueId()
 
                       props.dispatch(fileActions.addUploadingFile(fileUploading))
-                      uploadFile(fileUploading, props.filesState.folderContent.currentFolder)
+                      uploadFile(fileUploading, props.filesState.folderContent.currentFolder, 'document')
                     }
                   }
                 },
@@ -309,7 +311,7 @@ function AppMenu(props: AppMenuProps) {
                         fileUploading.id = uniqueId()
 
                         props.dispatch(fileActions.addUploadingFile(fileUploading))
-                        uploadFile(fileUploading, fileUploading.currentFolder)
+                        uploadFile(fileUploading, fileUploading.currentFolder, 'image')
                       }
                     } else {
                       Alert.alert('Camera roll permissions needed to perform this action')
@@ -337,7 +339,7 @@ function AppMenu(props: AppMenuProps) {
                         fileUploading.id = uniqueId()
 
                         props.dispatch(fileActions.addUploadingFile(fileUploading))
-                        uploadFile(fileUploading, props.filesState.folderContent.currentFolder)
+                        uploadFile(fileUploading, props.filesState.folderContent.currentFolder, 'image')
                       }
                     }
                   }
