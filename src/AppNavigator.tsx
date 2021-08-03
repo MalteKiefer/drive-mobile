@@ -46,9 +46,15 @@ function trackScreen(previousScreen: NavigationState, nextScreen: NavigationStat
   }
 }
 
+type ScreenEntry = [name: string, component: { screen: React.ComponentType<JSX.Element> }];
+
 function AppNavigator(): JSX.Element {
-  return <StackNav.Navigator screenOptions={{ headerShown: false }}>
-    {Object.entries(routeConfig).map(([name, component]) => (
+  return <StackNav.Navigator
+    initialRouteName='Login'
+    screenOptions={{
+      headerShown: false
+    }}>
+    {Object.entries(routeConfig).map(([name, component]: ScreenEntry) => (
       <StackNav.Screen key={name} name={name} component={component.screen} />
     ))}
   </StackNav.Navigator>;

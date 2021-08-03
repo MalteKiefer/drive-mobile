@@ -48,6 +48,7 @@ export default function MyTabBar(props: any): JSX.Element {
         return (
           // eslint-disable-next-line react/jsx-key
           <TouchableWithoutFeedback
+            key={`button-tab-${route.name}`}
             accessibilityRole="button"
             accessibilityState={isFocused ? { selected: true } : {}}
             accessibilityLabel={options.tabBarAccessibilityLabel}

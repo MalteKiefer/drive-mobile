@@ -231,7 +231,7 @@ function FileExplorer(props: Reducers): JSX.Element {
     <ShareFilesModal />
     <FreeForYouModal navigation={props.navigation} />
 
-    <AppMenu navigation={props.navigation} />
+    <AppMenu title="Storage" navigation={props.navigation} />
     {props.layoutState.searchActive && <SearchBox />}
 
     {

@@ -2,7 +2,6 @@ import React from 'react';
 import { Reducers } from '../../redux/reducers/reducers';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import FileExplorer from '../FileExplorer';
-// eslint-disable-next-line unused-imports/no-unused-imports
 import Recents from '../Recents';
 import Share from '../Share';
 import Configuration from '../Configuration';
@@ -13,6 +12,7 @@ const Tab = createBottomTabNavigator();
 export default function TabExplorer(props: Reducers): JSX.Element {
   return <Tab.Navigator
     tabBar={props => <MyTabBar {...props} />}
+    initialRouteName="FileExplorer"
     screenOptions={({ route }) => ({
       headerShown: false
     })}
