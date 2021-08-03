@@ -6,12 +6,13 @@ import Recents from '../Recents';
 import Share from '../Share';
 import Configuration from '../Configuration';
 import MyTabBar from './myTabBar';
+import { BottomTabBarProps } from '@react-navigation/bottom-tabs/lib/typescript/src/types'
 
 const Tab = createBottomTabNavigator();
 
 export default function TabExplorer(props: Reducers): JSX.Element {
   return <Tab.Navigator
-    tabBar={props => <MyTabBar {...props} />}
+    tabBar={(tabBarProps: BottomTabBarProps) => <MyTabBar {...{ ...props, ...tabBarProps }} />}
     initialRouteName="FileExplorer"
     screenOptions={({ route }) => ({
       headerShown: false

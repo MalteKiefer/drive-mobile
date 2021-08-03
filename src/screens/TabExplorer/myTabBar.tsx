@@ -1,8 +1,12 @@
 import React from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import * as Unicons from '@iconscout/react-native-unicons'
 import MainIcon from '../../../assets/icons/figma-icons/add-main.svg'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { layoutActions } from '../../redux/actions';
+import { connect } from 'react-redux';
+import { BottomTabBarProps } from '@react-navigation/bottom-tabs/lib/typescript/src/types'
+import { Reducers } from '../../redux/reducers/reducers';
 
 const tabIcons = {
   Drive: Unicons.UilHdd,
@@ -12,8 +16,11 @@ const tabIcons = {
   Settings: Unicons.UilCog
 }
 
+interface MyTabBarProps extends Omit<Reducers, 'navigation'>, BottomTabBarProps {
+}
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default function MyTabBar(props: any): JSX.Element {
+function MyTabBar(props: MyTabBarProps): JSX.Element {
 
   return (
     <View style={styles.tabContainer}>
@@ -26,7 +33,7 @@ export default function MyTabBar(props: any): JSX.Element {
         const onPress = () => {
 
           if (route.name === 'Upload') {
-            return Alert.alert('Upload');
+            props.dispatch(layoutActions.openUploadFileModal());
           }
           const event = props.navigation.emit({
             type: 'tabPress',
@@ -68,6 +75,12 @@ export default function MyTabBar(props: any): JSX.Element {
     </View>
   );
 }
+
+const mapStateToProps = (state: any) => {
+  return { ...state }
+};
+
+export default connect(mapStateToProps)(MyTabBar);
 
 const styles = StyleSheet.create({
   tabContainer: {
