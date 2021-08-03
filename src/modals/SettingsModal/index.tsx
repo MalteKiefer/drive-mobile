@@ -93,12 +93,10 @@ function SettingsModal(props: SettingsModalProps) {
       isOpen={props.layoutState.showSettingsModal}
       position={'bottom'}
       entry={'bottom'}
-      coverScreen={false}
-      swipeThreshold={40}
-      swipeToClose={true}
       style={styles.modalSettings}
       onClosed={() => props.dispatch(layoutActions.closeSettings())}
       backButtonClose={true}
+      swipeArea={50}
       animationDuration={200}>
 
       <View style={styles.drawerKnob}></View>
@@ -168,7 +166,8 @@ const styles = StyleSheet.create({
   modalSettings: {
     borderWidth: 1,
     borderTopLeftRadius: 32,
-    borderTopRightRadius: 32
+    borderTopRightRadius: 32,
+    height: 350
   },
   drawerKnob: {
     alignSelf: 'center',
