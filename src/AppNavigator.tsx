@@ -30,11 +30,6 @@ const routeConfig: RouteConfig = {
   StorageWebView: { screen: StorageWebView }
 };
 
-const navigatorOptions: NavigatorOptions = {
-  initialRouteName: 'Login',
-  headerMode: 'none'
-};
-
 const StackNav = createNativeStackNavigator();
 
 function trackScreen(previousScreen: NavigationState, nextScreen: NavigationState) {
@@ -50,7 +45,7 @@ type ScreenEntry = [name: string, component: { screen: React.ComponentType<JSX.E
 
 function AppNavigator(): JSX.Element {
   return <StackNav.Navigator
-    initialRouteName='Login'
+    initialRouteName='FileExplorer'
     screenOptions={{
       headerShown: false
     }}>
