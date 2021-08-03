@@ -17,7 +17,9 @@ export default function SettingsItem(props: SettingsItemProps): JSX.Element {
   >
     <View style={styles.settingsContainer}>
       {props.icon && <props.icon color={'#0F62FE'} size={25} style={styles.icon} />}
-      <Text style={styles.itemText}>{props.text}</Text>
+
+      {typeof props.text === 'string' ? <Text style={styles.itemText}>{props.text}</Text> : props.text}
+
     </View>
   </TouchableHighlight>
 
