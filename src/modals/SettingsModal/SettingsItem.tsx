@@ -33,8 +33,8 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     justifyContent: 'center',
-    paddingBottom: 15,
-    paddingTop: 5,
+    paddingBottom: 8,
+    paddingTop: 8,
     paddingLeft: 24,
     paddingRight: 24
   },

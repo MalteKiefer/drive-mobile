@@ -186,6 +186,7 @@ const styles = StyleSheet.create({
     opacity: 0.5
   },
   hideInputFieldWrapper: {
+    opacity: 0,
     display: 'none'
   },
   input: {

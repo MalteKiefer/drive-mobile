@@ -6,7 +6,8 @@ import {
   Alert,
   KeyboardAvoidingView,
   TextInput,
-  TouchableHighlight
+  TouchableHighlight,
+  TouchableWithoutFeedback
 } from 'react-native';
 import React, { useEffect, useState } from 'react'
 import { normalize } from '../../helpers';
@@ -68,9 +69,9 @@ function Forgot(props: ForgotProps): JSX.Element {
           <View style={styles.containerHeader}>
             <View style={tailwind('items-center pb-10')}>
               <InternxtLogo />
+              <Text style={styles.subTitle}>Security</Text>
             </View>
-
-            <Text style={tailwind('text-sm')}>
+            <Text style={[tailwind('text-sm'), styles.explication]}>
               {strings.screens.forgot_password.subtitle_1}
 
               <Text style={styles.bold}>{strings.screens.forgot_password.bold}</Text>
@@ -99,11 +100,18 @@ function Forgot(props: ForgotProps): JSX.Element {
                 style={tailwind('bg-blue-60 h-16')}
                 onPress={() => sendDeactivationEmail()}
               >
-                <Text style={tailwind('text-base text-red-60')}>
-                  GGG
+                <Text style={[tailwind('text-base'), styles.buttonLabel]}>
                   {strings.components.buttons.continue}
                 </Text>
               </TouchableHighlight>
+            </View>
+            <View style={tailwind('py-5')}>
+              <TouchableWithoutFeedback
+                style={tailwind('m-5')}
+                onPress={() => props.navigation.replace('Login')}
+              >
+                <Text style={[globalStyle.text.link, globalStyle.text.center]}> Back to login</Text>
+              </TouchableWithoutFeedback>
             </View>
           </View>
         </View>
@@ -122,19 +130,14 @@ function Forgot(props: ForgotProps): JSX.Element {
           ]}
         >
           <View style={styles.containerHeader}>
-            <View style={styles.flexRow}>
-              <Text style={styles.title}>{strings.screens.deactivation_screen.title}</Text>
+            <View style={tailwind('items-center pb-10')}>
+              <InternxtLogo />
+              <Text style={styles.subTitle}>Security</Text>
             </View>
-
-            <Text style={styles.text}>
+            <Text style={[tailwind('text-sm'), styles.explication]}>
               {strings.screens.deactivation_screen.subtitle_1}
+              {strings.screens.deactivation_screen.subtitle_2}
             </Text>
-
-            <View style={styles.grayBox}>
-              <Text style={styles.grayBoxText}>
-                {strings.screens.deactivation_screen.subtitle_2}
-              </Text>
-            </View>
 
             <View style={styles.buttonWrapper}>
               <TouchableHighlight
@@ -142,18 +145,20 @@ function Forgot(props: ForgotProps): JSX.Element {
                 underlayColor="#00aaff"
                 onPress={() => sendDeactivationEmail()}
               >
-                <Text style={styles.buttonOnLabel}>
+                <Text style={[styles.buttonOnLabel, styles.buttonLabel]}>
                   {strings.components.buttons.deactivation}
                 </Text>
               </TouchableHighlight>
             </View>
 
-            <Text
-              style={tailwind('')}
-              onPress={() => props.navigation.replace('Register')}
-            >
-              {strings.components.buttons.sing_up}
-            </Text>
+            <View style={tailwind('py-5')}>
+              <TouchableWithoutFeedback
+                style={tailwind('m-5')}
+                onPress={() => props.navigation.replace('Login')}
+              >
+                <Text style={[globalStyle.text.link, globalStyle.text.center]}> Back to login</Text>
+              </TouchableWithoutFeedback>
+            </View>
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -176,7 +181,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: 'center',
-    borderRadius: 3.4,
+    borderRadius: 10,
     height: normalize(55),
     justifyContent: 'center',
     marginTop: normalize(10),
@@ -199,7 +204,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     flex: 1,
     justifyContent: 'center',
-    padding: normalize(20)
+    paddingLeft: normalize(40),
+    paddingRight: normalize(40)
   },
   containerCentered: {
     alignSelf: 'center',
@@ -208,18 +214,6 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   containerHeader: {
-  },
-  flexRow: {
-    flexDirection: 'row'
-  },
-  grayBox: {
-    backgroundColor: '#f7f7f7',
-    padding: normalize(23)
-  },
-  grayBoxText: {
-    color: '#737880',
-    fontFamily: 'NeueEinstellung-Regular',
-    fontSize: normalize(15)
   },
   halfOpacity: {
     opacity: 0.5
@@ -232,19 +226,19 @@ const styles = StyleSheet.create({
     letterSpacing: -0.2,
     paddingLeft: normalize(20)
   },
-  text: {
-    color: '#737880',
-    fontFamily: 'NeueEinstellung-Regular',
-    fontSize: normalize(15),
-    marginBottom: normalize(20),
-    textAlign: 'justify'
+  explication: {
+    textAlign: 'center',
+    paddingBottom: 30
   },
-  title: {
-    color: '#000',
-    fontFamily: 'NeueEinstellung-Bold',
-    fontSize: normalize(22),
-    letterSpacing: -1.5,
-    marginBottom: normalize(15),
-    marginTop: normalize(-25)
+  subTitle: {
+    color: '#42526E',
+    alignSelf: 'center',
+    paddingTop: 15
+  },
+  buttonLabel: {
+    color: 'white',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    flexGrow: 1
   }
 });
