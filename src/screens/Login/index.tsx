@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
-import { View, Text, KeyboardAvoidingView, StyleSheet, Alert } from 'react-native';
-import { TextInput, TouchableHighlight } from 'react-native-gesture-handler';
+import { View, Text, KeyboardAvoidingView, StyleSheet, Alert, TextInput, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
 import strings from '../../../assets/lang/strings';
 import { deviceStorage } from '../../helpers';
@@ -138,7 +137,7 @@ function Login(props: LoginProps): JSX.Element {
           <TouchableHighlight
             style={[globalStyles.buttonInputStyle.button, globalStyles.buttonInputStyle.block]}
             underlayColor="#4585f5"
-            onPress={() => handleOnPress()}>
+            onPress={handleOnPress}>
             <Text style={styles.buttonOnLabel}>{isLoading ? strings.components.buttons.descrypting : strings.components.buttons.sign_in}</Text>
           </TouchableHighlight>
 

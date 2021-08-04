@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
-import { Text, StyleSheet, View } from 'react-native';
-import { TextInput, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { Text, StyleSheet, View, TextInput, TouchableWithoutFeedback } from 'react-native';
 import * as Unicons from '@iconscout/react-native-unicons'
 import { connect } from 'react-redux';
 import { layoutActions } from '../../redux/actions';

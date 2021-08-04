@@ -1,7 +1,6 @@
 import prettysize from 'prettysize';
 import React, { useEffect, useState } from 'react'
-import { Image, Platform, StyleSheet, Text, View } from 'react-native'
-import { TextInput } from 'react-native-gesture-handler';
+import { Image, Platform, StyleSheet, Text, View, TextInput } from 'react-native'
 import Modal from 'react-native-modalbox'
 import TimeAgo from 'react-native-timeago';
 import { connect } from 'react-redux';
