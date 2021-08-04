@@ -23,6 +23,7 @@ function UploadModal(props: any) {
       isOpen={props.layoutState.showUploadModal}
       position={'bottom'}
       entry={'bottom'}
+      coverScreen={true}
       swipeArea={50}
       style={styles.modalSettings}
       onClosed={() => {

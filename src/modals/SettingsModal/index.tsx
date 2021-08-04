@@ -97,7 +97,8 @@ function SettingsModal(props: SettingsModalProps) {
       onClosed={() => props.dispatch(layoutActions.closeSettings())}
       backButtonClose={true}
       swipeArea={50}
-      animationDuration={200}>
+      animationDuration={200}
+      coverScreen={true}>
 
       <View style={styles.drawerKnob}></View>
 
