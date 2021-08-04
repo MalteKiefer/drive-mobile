@@ -16,7 +16,6 @@ import RNFetchBlob from 'rn-fetch-blob';
 import { WaveIndicator } from 'react-native-indicators'
 import Toast from 'react-native-simple-toast'
 import FreeForYouModal from '../../modals/FreeForYouModal';
-import DriveMenu from '../../components/DriveMenu';
 import SearchBox from '../../components/SearchBox';
 import UploadModal from '../../modals/UploadModal';
 
@@ -232,7 +231,7 @@ function FileExplorer(props: Reducers): JSX.Element {
     <ShareFilesModal />
     <FreeForYouModal navigation={props.navigation} />
 
-    <AppMenu navigation={props.navigation} />
+    <AppMenu title="Storage" navigation={props.navigation} />
     {props.layoutState.searchActive && <SearchBox />}
 
     {
@@ -243,7 +242,6 @@ function FileExplorer(props: Reducers): JSX.Element {
         :
         <FileList />
     }
-    <DriveMenu />
   </View>
 }
 
