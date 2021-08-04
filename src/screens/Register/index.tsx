@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { KeyboardAvoidingView, StyleSheet, TextInput, TouchableOpacity, View, Text, Alert } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  StyleSheet, TextInput, TouchableOpacity,
+  View, Text, Alert,
+  ScrollView, TouchableWithoutFeedback
+} from 'react-native';
 import CheckBox from '../../components/CheckBox'
 import { connect } from 'react-redux';
 import strings from '../../../assets/lang/strings';
@@ -10,7 +15,6 @@ import { apiLogin, validateEmail } from '../Login/access';
 import { doRegister, isNullOrEmpty, isStrongPassword } from './registerUtils';
 import InternxtLogo from '../../../assets/logo.svg'
 import globalStyles from '../../styles/global.style';
-import { ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import analytics from '../../helpers/lytics';
 import * as Unicons from '@iconscout/react-native-unicons';
 import { tailwind } from '../../helpers/designSystem';

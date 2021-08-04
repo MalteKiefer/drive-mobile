@@ -1,6 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native';
-import { TouchableHighlight } from 'react-native-gesture-handler'
+import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
 import * as Unicons from '@iconscout/react-native-unicons'
 
 interface SettingsItemProps {
@@ -17,7 +16,9 @@ export default function SettingsItem(props: SettingsItemProps): JSX.Element {
   >
     <View style={styles.settingsContainer}>
       {props.icon && <props.icon color={'#0F62FE'} size={25} style={styles.icon} />}
-      <Text style={styles.itemText}>{props.text}</Text>
+
+      {typeof props.text === 'string' ? <Text style={styles.itemText}>{props.text}</Text> : props.text}
+
     </View>
   </TouchableHighlight>
 

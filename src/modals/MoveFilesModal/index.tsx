@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Platform } from 'react-native';
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
+import { View, Text, StyleSheet, Platform, FlatList, TouchableOpacity } from 'react-native';
 import Modal from 'react-native-modalbox';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { connect } from 'react-redux';

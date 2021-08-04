@@ -23,9 +23,7 @@ function UploadModal(props: any) {
       isOpen={props.layoutState.showUploadModal}
       position={'bottom'}
       entry={'bottom'}
-      coverScreen={false}
-      swipeThreshold={40}
-      swipeToClose={true}
+      swipeArea={50}
       style={styles.modalSettings}
       onClosed={() => {
         props.dispatch(layoutActions.closeUploadFileModal())
@@ -165,8 +163,12 @@ const styles = StyleSheet.create({
     width: 50
   },
   cancelText: {
+    color: '#f00',
     textAlign: 'center',
-    color: '#f00'
+    flexGrow: 1,
+    fontFamily: 'NeueEinstellung-Regular',
+    fontSize: 19,
+    fontWeight: '500'
   },
   alignCenter: { alignItems: 'center' }
 })

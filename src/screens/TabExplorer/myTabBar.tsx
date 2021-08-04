@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import * as Unicons from '@iconscout/react-native-unicons'
 import MainIcon from '../../../assets/icons/figma-icons/add-main.svg'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { layoutActions } from '../../redux/actions';
 import { connect } from 'react-redux';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs/lib/typescript/src/types'
