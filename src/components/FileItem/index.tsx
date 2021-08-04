@@ -1,6 +1,5 @@
 import React, { SetStateAction, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { fileActions, layoutActions } from '../../redux/actions';
 import RNFetchBlob from 'rn-fetch-blob'

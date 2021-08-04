@@ -1,6 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native';
-import { TouchableHighlight } from 'react-native-gesture-handler'
+import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
 import * as Unicons from '@iconscout/react-native-unicons'
 
 interface SettingsItemProps {

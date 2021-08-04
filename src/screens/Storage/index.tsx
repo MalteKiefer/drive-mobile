@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import prettysize from 'prettysize';
-import { View, Text, StyleSheet, Image, ActivityIndicator, Platform, BackHandler } from 'react-native';
-import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import {
+  View, Text, StyleSheet, Image, ActivityIndicator,
+  Platform, BackHandler, TouchableOpacity, TouchableWithoutFeedback
+} from 'react-native';
 import { connect } from 'react-redux';
 import ProgressBar from '../../components/ProgressBar';
 import { getIcon } from '../../helpers/getIcon';

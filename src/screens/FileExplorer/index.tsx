@@ -65,7 +65,7 @@ function FileExplorer(props: Reducers): JSX.Element {
             }).catch(() => { })
           }
         } catch { }
-      })
+      }).catch(() => { })
     }).catch(() => { })
   }, [])
 
