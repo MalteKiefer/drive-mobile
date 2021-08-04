@@ -35,9 +35,9 @@ function UploadModal(props: any) {
       <View style={styles.drawerKnob}></View>
 
       <View style={styles.alignCenter}>
-        <Text>Upload</Text>
+        <Text style={styles.modalTitle}>Upload</Text>
       </View>
-
+      <Separator />
       <SettingsItem
         text={'Upload file'}
         icon={Unicons.UilUploadAlt}
@@ -138,13 +138,14 @@ function UploadModal(props: any) {
       />
 
       <Separator />
-
-      <SettingsItem
-        text={<Text style={styles.cancelText}>Cancel</Text>}
-        onPress={() => {
-          props.dispatch(layoutActions.closeUploadFileModal());
-        }}
-      />
+      <View style={styles.cancelContainer}>
+        <SettingsItem
+          text={<Text style={styles.cancelText}>Cancel</Text>}
+          onPress={() => {
+            props.dispatch(layoutActions.closeUploadFileModal());
+          }}
+        />
+      </View>
     </Modal>
   )
 }
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
   modalSettings: {
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
-    height: 300
+    height: 350
   },
   drawerKnob: {
     alignSelf: 'center',
@@ -170,6 +171,18 @@ const styles = StyleSheet.create({
     fontFamily: 'NeueEinstellung-Regular',
     fontSize: 19,
     fontWeight: '500'
+  },
+  modalTitle: {
+    color:'#42526E',
+    fontFamily:'Neue-Einstellung',
+    fontSize:16,
+    marginTop: 20,
+    marginBottom: 10,
+    fontWeight:'bold'
+  },
+  cancelContainer: {
+    flexDirection:'column',
+    justifyContent:'center'
   },
   alignCenter: { alignItems: 'center' }
 })
