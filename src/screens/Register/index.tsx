@@ -117,7 +117,7 @@ function Register(props: Reducers): JSX.Element {
   return (
     <KeyboardAvoidingView
       behavior="padding">
-      <ScrollView style={tailwind('p-6 bg-white')}>
+      <ScrollView style={tailwind('p-6 py-0 bg-white')}>
         <View>
           <View style={tailwind('pb-6')}>
             <View style={tailwind('items-center')}>
@@ -262,12 +262,14 @@ function Register(props: Reducers): JSX.Element {
               </View>
             </View>
           </View>
-          <TouchableWithoutFeedback
-            style={tailwind('m-5')}
-            onPress={() => props.navigation.replace('Login')}
-          >
-            <Text style={[globalStyles.text.link, globalStyles.text.center]}>Login in Internxt</Text>
-          </TouchableWithoutFeedback>
+          <View style={tailwind('py-5')}>
+            <TouchableWithoutFeedback
+              style={tailwind('m-5')}
+              onPress={() => props.navigation.replace('Login')}
+            >
+              <Text style={[globalStyles.text.link, globalStyles.text.center]}>Login in Internxt</Text>
+            </TouchableWithoutFeedback>
+          </View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
