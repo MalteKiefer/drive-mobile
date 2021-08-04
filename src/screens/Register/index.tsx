@@ -117,7 +117,7 @@ function Register(props: Reducers): JSX.Element {
   return (
     <KeyboardAvoidingView
       behavior="padding">
-      <ScrollView style={tailwind('p-6 bg-white')}>
+      <ScrollView style={tailwind('p-6 py-0 bg-white')}>
         <View>
           <View style={tailwind('pb-6')}>
             <View style={tailwind('items-center')}>
