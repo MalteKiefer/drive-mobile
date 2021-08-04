@@ -59,7 +59,7 @@ function Recents(props: Reducers): JSX.Element {
 const styles = StyleSheet.create({
   activityIndicator: {
     flex: 1,
-    alignSelf:'center'
+    alignSelf: 'center'
   },
   container: {
     backgroundColor: '#fff',

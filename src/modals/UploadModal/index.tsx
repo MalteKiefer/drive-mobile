@@ -173,16 +173,16 @@ const styles = StyleSheet.create({
     fontWeight: '500'
   },
   modalTitle: {
-    color:'#42526E',
-    fontFamily:'Neue-Einstellung',
-    fontSize:16,
+    color: '#42526E',
+    fontFamily: 'Neue-Einstellung',
+    fontSize: 16,
     marginTop: 20,
     marginBottom: 10,
-    fontWeight:'bold'
+    fontWeight: 'bold'
   },
   cancelContainer: {
-    flexDirection:'column',
-    justifyContent:'center'
+    flexDirection: 'column',
+    justifyContent: 'center'
   },
   alignCenter: { alignItems: 'center' }
 })
