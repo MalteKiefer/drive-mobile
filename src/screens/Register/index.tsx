@@ -262,12 +262,14 @@ function Register(props: Reducers): JSX.Element {
               </View>
             </View>
           </View>
-          <TouchableWithoutFeedback
-            style={tailwind('m-5')}
-            onPress={() => props.navigation.replace('Login')}
-          >
-            <Text style={[globalStyles.text.link, globalStyles.text.center]}>Login in Internxt</Text>
-          </TouchableWithoutFeedback>
+          <View style={tailwind('py-5')}>
+            <TouchableWithoutFeedback
+              style={tailwind('m-5')}
+              onPress={() => props.navigation.replace('Login')}
+            >
+              <Text style={[globalStyles.text.link, globalStyles.text.center]}>Login in Internxt</Text>
+            </TouchableWithoutFeedback>
+          </View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
