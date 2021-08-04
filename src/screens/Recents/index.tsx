@@ -58,12 +58,12 @@ function Recents(props: Reducers): JSX.Element {
 
 const styles = StyleSheet.create({
   activityIndicator: {
-    flex: 1
+    flex: 1,
+    alignSelf:'center'
   },
   container: {
     backgroundColor: '#fff',
-    flex: 1,
-    alignItems: 'center'
+    flex: 1
   },
   fileListContentsScrollView: {
     flexGrow: 1,
