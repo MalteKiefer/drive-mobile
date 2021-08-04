@@ -17,7 +17,7 @@ import * as Unicons from '@iconscout/react-native-unicons';
 
 interface FileItemProps extends Reducers {
   isFolder: boolean
-  item: IFile & IFolder | IUploadingFile
+  item: IFile | IFolder | IUploadingFile
   isLoading?: boolean
 }
 
