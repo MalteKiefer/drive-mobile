@@ -14,7 +14,7 @@ import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import PackageJson from '../../../package.json'
 import { NEWTORK_TIMEOUT } from '../../screens/FileExplorer/init';
 import * as Unicons from '@iconscout/react-native-unicons';
-
+import CheckBox from '../../components/CheckBox'
 interface FileItemProps extends Reducers {
   isFolder: boolean
   item: IFile | IFolder | IUploadingFile
@@ -198,7 +198,12 @@ function FileItem(props: FileItemProps) {
                   setIsLoading(false)
                 })
               }}>
-
+              {isSelectionMode?<View style={styles.itemCheckbox}>
+                <CheckBox
+                  text=''
+                  value={isSelected}
+                ></CheckBox>
+              </View>:null}
               <View style={styles.itemIcon}>
                 {
                   props.isFolder ?
@@ -300,6 +305,9 @@ const styles = StyleSheet.create({
   },
   itemIcon: {
     margin: 20
+  },
+  itemCheckbox: {
+    marginLeft: 20
   },
   mainContainer: {
     alignItems: 'center',
