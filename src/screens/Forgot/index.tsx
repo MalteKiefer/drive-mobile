@@ -6,7 +6,8 @@ import {
   Alert,
   KeyboardAvoidingView,
   TextInput,
-  TouchableHighlight
+  TouchableHighlight,
+  TouchableWithoutFeedback
 } from 'react-native';
 import React, { useEffect, useState } from 'react'
 import { normalize } from '../../helpers';
@@ -68,9 +69,9 @@ function Forgot(props: ForgotProps): JSX.Element {
           <View style={styles.containerHeader}>
             <View style={tailwind('items-center pb-10')}>
               <InternxtLogo />
+              <Text style={styles.subTitle}>Security</Text>
             </View>
-
-            <Text style={tailwind('text-sm')}>
+            <Text style={[tailwind('text-sm'), styles.explication]}>
               {strings.screens.forgot_password.subtitle_1}
 
               <Text style={styles.bold}>{strings.screens.forgot_password.bold}</Text>
@@ -99,11 +100,18 @@ function Forgot(props: ForgotProps): JSX.Element {
                 style={tailwind('bg-blue-60 h-16')}
                 onPress={() => sendDeactivationEmail()}
               >
-                <Text style={tailwind('text-base text-red-60')}>
-                  GGG
+                <Text style={[tailwind('text-base'), styles.buttonLabel]}>
                   {strings.components.buttons.continue}
                 </Text>
               </TouchableHighlight>
+            </View>
+            <View style={tailwind('py-5')}>
+              <TouchableWithoutFeedback
+                style={tailwind('m-5')}
+                onPress={() => props.navigation.replace('Login')}
+              >
+                <Text style={[globalStyle.text.link, globalStyle.text.center]}> Back to login</Text>
+              </TouchableWithoutFeedback>
             </View>
           </View>
         </View>
@@ -199,7 +207,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     flex: 1,
     justifyContent: 'center',
-    padding: normalize(20)
+    paddingLeft: normalize(40),
+    paddingRight: normalize(40)
   },
   containerCentered: {
     alignSelf: 'center',
@@ -239,12 +248,27 @@ const styles = StyleSheet.create({
     marginBottom: normalize(20),
     textAlign: 'justify'
   },
+  explication: {
+    textAlign: 'center',
+    paddingBottom: 30
+  },
   title: {
     color: '#000',
     fontFamily: 'NeueEinstellung-Bold',
     fontSize: normalize(22),
     letterSpacing: -1.5,
-    marginBottom: normalize(15),
-    marginTop: normalize(-25)
+    marginTop: normalize(-25),
+    marginBottom: normalize(15)
+  },
+  subTitle: {
+    color: '#42526E',
+    alignSelf: 'center',
+    paddingTop: 15
+  },
+  buttonLabel: {
+    color: 'white',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    flexGrow: 1
   }
 });
