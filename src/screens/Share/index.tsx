@@ -10,10 +10,10 @@ function Share(props: Reducers): JSX.Element {
 
   return <View style={styles.container}>
     <AppMenu title="Share" />
-    <Text>{loading ? <View style={styles.activityIndicator}>
+    {loading ? <View style={styles.activityIndicator}>
       <WaveIndicator color="#5291ff" size={80} />
     </View>
-      : 'aaa'}</Text>
+      : <Text>aaa</Text>}
   </View>
 }
 
