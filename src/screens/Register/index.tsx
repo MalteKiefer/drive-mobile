@@ -73,7 +73,7 @@ function Register(props: Reducers): JSX.Element {
   }, [props.authenticationState.loggedIn, props.authenticationState.token])
 
   if (showIntro) {
-    return <Intro onFinish={() => setShowIntro(false)} />;
+    return <Intro {...props} onFinish={() => setShowIntro(false)} />;
   }
 
   const handleOnPress = async () => {
@@ -101,7 +101,6 @@ function Register(props: Reducers): JSX.Element {
       const userLoginData = await apiLogin(email)
 
       await props.dispatch(userActions.signin(email, password, userLoginData.sKey, twoFactorCode))
-
     } catch (err) {
       await analytics.track('user-signin-attempted', {
         status: 'error',
@@ -131,9 +130,9 @@ function Register(props: Reducers): JSX.Element {
           </View>
 
           <View style={styles.showInputFieldsWrapper}>
-            <View style={globalStyles.textInputStyle.wrapper}>
+            <View style={[tailwind('input-wrapper my-2'), tailwind(isValidFirstName ? 'input-valid' : 'input-error')]}>
               <TextInput
-                style={styles.input}
+                style={tailwind('input')}
                 value={firstName}
                 onChangeText={value => setFirstName(value)}
                 placeholder={strings.components.inputs.first_name}
@@ -147,13 +146,13 @@ function Register(props: Reducers): JSX.Element {
                 onBlur={() => setFirstNameFocus(false)}
               />
               <Unicons.UilUser
-                style={globalStyles.textInputStyle.icon}
-                color={firstNameFocus ? '#42BE65' : '#7A869A'} />
+                style={tailwind('input-icon')}
+                color={firstNameFocus || isValidFirstName ? '#42BE65' : '#7A869A'} />
             </View>
 
-            <View style={globalStyles.textInputStyle.wrapper}>
+            <View style={[tailwind('input-wrapper my-2'), tailwind(isValidLastName ? 'input-valid' : 'input-error')]}>
               <TextInput
-                style={styles.input}
+                style={tailwind('input')}
                 value={lastName}
                 onChangeText={value => setLastName(value)}
                 placeholder={strings.components.inputs.last_name}
@@ -167,13 +166,13 @@ function Register(props: Reducers): JSX.Element {
                 onBlur={() => setLastNameFocus(false)}
               />
               <Unicons.UilUser
-                style={globalStyles.textInputStyle.icon}
-                color={lastNameFocus ? '#42BE65' : '#7A869A'} />
+                style={tailwind('input-icon')}
+                color={lastNameFocus || isValidLastName ? '#42BE65' : '#7A869A'} />
             </View>
 
-            <View style={globalStyles.textInputStyle.wrapper}>
+            <View style={[tailwind('input-wrapper my-2'), tailwind(isValidEmail ? 'input-valid' : 'input-error')]}>
               <TextInput
-                style={styles.input}
+                style={tailwind('input')}
                 value={email}
                 onChangeText={value => setEmail(value)}
                 placeholder={strings.components.inputs.email}
@@ -189,15 +188,15 @@ function Register(props: Reducers): JSX.Element {
                 onBlur={() => setEmailFocus(false)}
               />
               <Unicons.UilEnvelope
-                style={globalStyles.textInputStyle.icon}
-                color={emailFocus ? '#42BE65' : '#7A869A'} />
+                style={tailwind('input-icon')}
+                color={emailFocus || isValidEmail ? '#42BE65' : '#7A869A'} />
             </View>
           </View>
 
           <View style={styles.showInputFieldsWrapper}>
-            <View style={[globalStyles.textInputStyle.wrapper, !isValidPassword && globalStyles.textInputStyle.error]}>
+            <View style={[tailwind('input-wrapper my-2'), tailwind(isValidPassword ? 'input-valid' : 'input-error')]}>
               <TextInput
-                style={styles.input}
+                style={tailwind('input')}
                 value={password}
                 onChangeText={setPassword}
                 placeholder={strings.components.inputs.password}
@@ -212,13 +211,13 @@ function Register(props: Reducers): JSX.Element {
                 onBlur={() => setPasswordFocus(false)}
               />
               <Unicons.UilEye
-                style={globalStyles.textInputStyle.icon}
-                color={!isValidPassword ? '#f00' : (passwordFocus ? '#42BE65' : '#7A869A')} />
+                style={tailwind('input-icon')}
+                color={isValidPassword || isValidPassword || passwordFocus ? '#42BE65' : '#7A869A'} />
             </View>
 
-            <View style={[globalStyles.textInputStyle.wrapper, password !== confirmPassword && globalStyles.textInputStyle.error]}>
+            <View style={[tailwind('input-wrapper my-2'), tailwind(password === confirmPassword ? 'input-valid' : 'input-error')]}>
               <TextInput
-                style={styles.input}
+                style={tailwind('input')}
                 value={confirmPassword}
                 onChangeText={value => setConfirmPassword(value)}
                 placeholder={strings.components.inputs.confirm_password}
@@ -230,17 +229,17 @@ function Register(props: Reducers): JSX.Element {
                 onBlur={() => setConfirmPasswordFocus(false)}
               />
               <Unicons.UilEye
-                style={globalStyles.textInputStyle.icon}
-                color={password !== confirmPassword ? '#f00' : (confirmPasswordFocus ? '#42BE65' : '#7A869A')} />
+                style={tailwind('input-icon')}
+                color={password === confirmPassword || confirmPasswordFocus ? '#42BE65' : '#7A869A'} />
             </View>
           </View>
         </View>
 
-        <View style={tailwind('mt-5 mb-5')}>
+        <View style={tailwind('my-5')}>
           <Text style={tailwind('text-sm')}>{strings.screens.register_screen.security_subtitle}</Text>
         </View>
 
-        <View style={tailwind('p-5')}>
+        <View style={tailwind('py-2')}>
           <CheckBox
             text="Accept terms, conditions and privacy policy"
             value={acceptPolicy}
@@ -249,24 +248,19 @@ function Register(props: Reducers): JSX.Element {
         </View>
 
         <View>
-          <View style={[styles.containerCentered, isLoading ? styles.halfOpacity : {}]}>
-            <View style={styles.buttonFooterWrapper}>
-              <View style={globalStyles.buttonInputStyle.wrapper}>
-                <TouchableOpacity
-                  disabled={!isValidForm}
-                  style={[globalStyles.buttonInputStyle.button, globalStyles.buttonInputStyle.block]}
-                  onPress={() => handleOnPress()}
-                >
-                  <Text style={styles.buttonOnLabel}>{registerButtonClicked ? strings.components.buttons.creating_button : strings.components.buttons.create}</Text>
-                </TouchableOpacity>
-              </View>
+          <View style={[styles.containerCentered, isLoading || isValidForm ? styles.halfOpacity : {}]}>
+            <View>
+              <TouchableOpacity
+                disabled={!isValidForm}
+                style={[globalStyles.buttonInputStyle.button, globalStyles.buttonInputStyle.block]}
+                onPress={() => handleOnPress()}
+              >
+                <Text style={styles.buttonOnLabel}>{registerButtonClicked ? strings.components.buttons.creating_button : strings.components.buttons.create}</Text>
+              </TouchableOpacity>
             </View>
           </View>
           <View style={tailwind('py-5')}>
-            <TouchableWithoutFeedback
-              style={tailwind('m-5')}
-              onPress={() => props.navigation.replace('Login')}
-            >
+            <TouchableWithoutFeedback onPress={() => props.navigation.replace('Login')}>
               <Text style={[globalStyles.text.link, globalStyles.text.center]}>Login in Internxt</Text>
             </TouchableWithoutFeedback>
           </View>
@@ -277,9 +271,6 @@ function Register(props: Reducers): JSX.Element {
 }
 
 const styles = StyleSheet.create({
-  buttonFooterWrapper: {
-    marginTop: normalize(20)
-  },
   buttonOnLabel: {
     color: '#fff',
     fontFamily: 'NeueEinstellung-Medium',
@@ -292,14 +283,6 @@ const styles = StyleSheet.create({
   },
   halfOpacity: {
     opacity: 0.5
-  },
-  input: {
-    color: '#000',
-    flex: 1,
-    fontFamily: 'NeueEinstellung-Regular',
-    fontSize: normalize(15),
-    letterSpacing: -0.2,
-    paddingLeft: 20
   },
   showInputFieldsWrapper: {
     justifyContent: 'center'

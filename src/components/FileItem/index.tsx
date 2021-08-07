@@ -198,19 +198,17 @@ function FileItem(props: FileItemProps) {
                   setIsLoading(false)
                 })
               }}>
-              {isSelectionMode?<View style={styles.itemCheckbox}>
+              {isSelectionMode ? <View style={styles.itemCheckbox}>
                 <CheckBox
                   text=''
                   value={isSelected}
                 ></CheckBox>
-              </View>:null}
+              </View> : null}
               <View style={styles.itemIcon}>
                 {
                   props.isFolder ?
                     <View>
-                      <FolderIcon
-                        width={30}
-                        height={30} />
+                      <FolderIcon width={30} height={30} />
                     </View>
                     : // once local upload implelemented, remove conditional
                     <IconFile
