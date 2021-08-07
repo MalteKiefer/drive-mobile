@@ -34,6 +34,7 @@ function MyTabBar(props: MyTabBarProps): JSX.Element {
           if (route.name === 'Upload') {
             props.dispatch(layoutActions.openUploadFileModal());
           }
+
           const event = props.navigation.emit({
             type: 'tabPress',
             target: route.key,

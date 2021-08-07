@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, StatusBar, Text, Platform, Linking, Alert, SafeAreaView } from 'react-native';
 import { Provider } from 'react-redux'
 import { store } from './src/store'
 import AppNavigator from './src/AppNavigator';
-import { analyticsSetup, loadEnvVars, loadFonts } from './src/helpers'
-import { NavigationContainer } from '@react-navigation/native';
+import { analyticsSetup, loadEnvVars, loadFonts, trackStackScreen } from './src/helpers'
+import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { fileActions } from './src/redux/actions';
 import ReceiveSharingIntent from 'react-native-receive-sharing-intent';
 
@@ -86,8 +86,27 @@ export default function App(): JSX.Element {
     }
   }, [])
 
+  const navigationRef = useNavigationContainerRef();
+  const routeNameRef = useRef<string>();
+
   return <Provider store={store}>
     <NavigationContainer
+      ref={navigationRef}
+      onReady={() => {
+        const currentRoute = navigationRef.getCurrentRoute();
+
+        routeNameRef.current = currentRoute && currentRoute.name
+      }}
+      onStateChange={(route) => {
+        const previousRouteName = routeNameRef.current;
+        const currentRouteName = navigationRef.getCurrentRoute().name;
+
+        if (previousRouteName !== currentRouteName) {
+          trackStackScreen(route, navigationRef.getCurrentRoute().params);
+        }
+
+        routeNameRef.current = currentRouteName;
+      }}
       linking={linking}
       fallback={<Text>Loading...</Text>}>
       {appInitialized ?
