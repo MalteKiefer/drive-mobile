@@ -8,13 +8,13 @@ import { connect } from 'react-redux';
 import ProgressBar from '../../components/ProgressBar';
 import { getIcon } from '../../helpers/getIcon';
 import PlanCard from './PlanCard';
-import { LinearGradient } from 'expo-linear-gradient';
 import { IPlan, IProduct, storageService } from '../../redux/services';
 import { Reducers } from '../../redux/reducers/reducers';
 import { loadValues } from '../../modals';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import strings from '../../../assets/lang/strings';
+import AppMenu from '../../components/AppMenu';
+import { tailwind } from '../../helpers/designSystem';
 
 interface StorageProps extends Reducers {
   currentPlan: number
@@ -86,65 +86,33 @@ function Storage(props: StorageProps): JSX.Element {
   }, [chosenProduct])
 
   return (
-    <SafeAreaView style={styles.bgWhite}>
+    <View style={styles.bgWhite}>
+      <AppMenu {...props} title={strings.screens.storage.title} hideSearch={true} hideOptions={true} />
+      <View>
+        <View>
+          <Text>Usage</Text>
+        </View>
+        <View style={[tailwind('mx-5 px-5 py-3'), { backgroundColor: '#F4F5F7', borderRadius: 10 }]}>
+          <View>
+            <Text>{strings.screens.storage.space.used.used} {prettysize(usageValues.usage)} {strings.screens.storage.space.used.of} {putLimitUsage()}</Text>
+          </View>
+          <View style={[tailwind('my-2'), {}]}>
+            <ProgressBar
+              styleProgress={styles.h7}
+              totalValue={usageValues.limit}
+              usedValue={usageValues.usage}
+            />
+          </View>
+        </View>
+      </View>
+
+      <View>
+        <View>
+          <Text>Current plan</Text>
+        </View>
+      </View>
+
       <View style={styles.container}>
-        <View style={styles.navigatorContainer}>
-          <View style={styles.backButton}>
-            <TouchableOpacity
-              onPress={() => {
-                props.navigation.replace('FileExplorer')
-              }}
-              style={styles.backTouchable}
-            >
-              <Image style={styles.backIcon} source={getIcon('back')} />
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.backText}>{strings.screens.storage.title}</Text>
-        </View>
-
-        <View style={styles.progressContainer}>
-          <View style={styles.firstRow}>
-            <Text style={styles.progressTitle}>{strings.screens.storage.space.title}</Text>
-
-            <View style={styles.usedSapceContainer}>
-              <Text style={styles.usedSpace}>{strings.screens.storage.space.used.used} </Text>
-              <Text style={[styles.usedSpace, styles.bold]}>{prettysize(usageValues.usage)} </Text>
-              <Text style={styles.usedSpace}>{strings.screens.storage.space.used.of} </Text>
-              <Text style={[styles.usedSpace, styles.bold]}>{putLimitUsage()}</Text>
-            </View>
-          </View>
-
-          <ProgressBar
-            styleProgress={styles.h7}
-            totalValue={usageValues.limit}
-            usedValue={usageValues.usage}
-          />
-
-          <View style={styles.secondRow}>
-            <View style={styles.legend}>
-              {
-                Platform.OS === 'ios' ?
-                  <View style={[styles.circle, styles.blue]}></View>
-                  :
-                  <LinearGradient
-                    colors={['#00b1ff', '#096dff']}
-                    start={[0, 0.18]}
-                    end={[0.18, 1]}
-
-                    style={styles.circle} />
-              }
-
-              <Text style={styles.secondRowText}>{strings.screens.storage.space.legend.used} </Text>
-            </View>
-
-            <View style={styles.legend}>
-              <View style={styles.circle}></View>
-              <Text style={styles.secondRowText}>{strings.screens.storage.space.legend.unused}</Text>
-            </View>
-          </View>
-        </View>
-
         <View style={styles.cardsContainer}>
           {
             !isLoading ?
@@ -211,57 +179,20 @@ function Storage(props: StorageProps): JSX.Element {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  backButton: {
-    flex: 0.1
-  },
-  backIcon: {
-    height: 14,
-    width: 9
-  },
-  backText: {
-    color: 'black',
-    flex: 0.8,
-    fontFamily: 'NeueEinstellung-Medium',
-    fontSize: 16,
-    textAlign: 'center'
-  },
-  backTouchable: {
-    alignItems: 'center',
-    height: wp('10'),
-    justifyContent: 'center',
-    width: wp('10')
-  },
-  blue: {
-    backgroundColor: '#096dff'
-  },
-  bold: {
-    fontFamily: 'NeueEinstellung-Bold'
-  },
   cardsContainer: {
     flexGrow: 1,
     marginLeft: 20,
     paddingTop: 20
   },
-  circle: {
-    backgroundColor: '#ededed',
-    borderRadius: 100,
-    height: 16,
-    marginRight: 6,
-    width: 16
-  },
   container: {
     backgroundColor: 'white',
     height: '100%',
     justifyContent: 'flex-start'
-  },
-  firstRow: {
-    alignItems: 'center',
-    flexDirection: 'row'
   },
   footer: {
     color: '#7e848c',
@@ -271,18 +202,6 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     marginLeft: 0,
     marginTop: 20
-  },
-  legend: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginRight: 30
-  },
-  navigatorContainer: {
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderColor: '#f2f2f2',
-    flexDirection: 'row',
-    height: wp('10')
   },
   paymentBack: {
     alignItems: 'center',
@@ -294,29 +213,6 @@ const styles = StyleSheet.create({
     height: 13,
     marginRight: 10,
     width: 8
-  },
-  progressContainer: {
-    borderBottomWidth: 1,
-    borderColor: '#f2f2f2',
-    justifyContent: 'center',
-    paddingBottom: 45,
-    paddingTop: 30
-  },
-  progressTitle: {
-    color: 'black',
-    flex: 0.5,
-    fontFamily: 'NeueEinstellung-Bold',
-    fontSize: 18,
-    paddingLeft: 20
-  },
-  secondRow: {
-    flexDirection: 'row',
-    marginLeft: 20
-  },
-  secondRowText: {
-    color: '#7e848c',
-    fontFamily: 'NeueEinstellung-Regular',
-    fontSize: 13
   },
   title: {
     color: 'black',
@@ -340,17 +236,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     paddingBottom: Platform.OS === 'android' ? wp('1') : 0,
     paddingLeft: 10
-  },
-  usedSapceContainer: {
-    flexDirection: 'row',
-    flex: 0.5,
-    justifyContent: 'flex-end',
-    paddingRight: 20
-  },
-  usedSpace: {
-    color: 'black',
-    fontFamily: 'NeueEinstellung-Regular',
-    fontSize: 13
   },
   bgWhite: {
     backgroundColor: '#fff'
