@@ -28,16 +28,17 @@ function AppMenu(props: AppMenuProps) {
               <Unicons.UilArrowLeft color={parentFolderId ? '#0F62FE' : '#EBECF0'} size={27} />
             </TouchableWithoutFeedback>
           </View>
-          <View>
+          <View style={styles.fGrow}>
             <Text style={styles.storageText}>{props.title}</Text>
           </View>
-          <View style={styles.openSearchIcon}>
+          <View style={[styles.w50, props.hideSearch ? styles.dNone : {}]}>
             <TouchableWithoutFeedback onPress={() => {
               props.dispatch(layoutActions.openSearch())
             }}>
               <Unicons.UilSearch color='#0F62FE' size={27} />
             </TouchableWithoutFeedback>
-
+          </View>
+          <View style={props.hideOptions && styles.dNone}>
             <TouchableWithoutFeedback
               onPress={() => {
                 props.dispatch(layoutActions.openSettings());
@@ -57,7 +58,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     marginLeft: 17,
-    marginRight: 10
+    marginRight: 10,
+    marginTop: 10,
+    marginBottom: 10
   },
   commonButtons: {
     flexDirection: 'row',
@@ -66,25 +69,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   container: {
-    backgroundColor: '#fff',
     flexDirection: 'row',
     justifyContent: 'flex-start'
   },
   storageText: {
     fontFamily: 'NeueEinstellung-SemiBold',
     fontSize: 24,
-    color: '#42526E'
+    color: '#42526E',
+    textAlign: 'center'
   },
-  openSearchIcon: {
-    width: 70,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  w50: { width: 50 }
+  w50: { width: 50 },
+  fGrow: { flexGrow: 1 },
+  dNone: {
+    opacity: 0
+  }
 });
 
-const mapStateToProps = (state: any) => {
-  return { ...state };
-};
+const mapStateToProps = (state: any) => ({ ...state });
 
 export default connect(mapStateToProps)(AppMenu)
