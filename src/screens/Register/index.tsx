@@ -114,159 +114,161 @@ function Register(props: Reducers): JSX.Element {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior="padding">
-      <ScrollView style={tailwind('p-6 py-0 bg-white')}>
-        <View>
-          <View style={tailwind('pb-6')}>
-            <View style={tailwind('items-center')}>
-              <InternxtLogo width={120} height={40} />
+    <ScrollView>
+      <KeyboardAvoidingView
+        behavior="padding">
+        <View style={tailwind('p-6 py-0 bg-white')}>
+          <View>
+            <View style={tailwind('pb-6')}>
+              <View style={tailwind('items-center mt-5')}>
+                <InternxtLogo width={120} height={40} />
+              </View>
+              <View>
+                <Text style={[globalStyles.text.normal, globalStyles.text.center]}>
+                  {strings.screens.register_screen.create_account_title}
+                </Text>
+              </View>
             </View>
-            <View>
-              <Text style={[globalStyles.text.normal, globalStyles.text.center]}>
-                {strings.screens.register_screen.create_account_title}
-              </Text>
+
+            <View style={styles.showInputFieldsWrapper}>
+              <View style={[tailwind('input-wrapper my-2'), tailwind(isValidFirstName ? 'input-valid' : 'input-error')]}>
+                <TextInput
+                  style={tailwind('input')}
+                  value={firstName}
+                  onChangeText={value => setFirstName(value)}
+                  placeholder={strings.components.inputs.first_name}
+                  placeholderTextColor="#666"
+                  maxLength={64}
+                  autoCapitalize='words'
+                  autoCompleteType='off'
+                  key='name'
+                  autoCorrect={false}
+                  onFocus={() => setFirstNameFocus(true)}
+                  onBlur={() => setFirstNameFocus(false)}
+                />
+                <Unicons.UilUser
+                  style={tailwind('input-icon')}
+                  color={firstNameFocus || isValidFirstName ? '#42BE65' : '#7A869A'} />
+              </View>
+
+              <View style={[tailwind('input-wrapper my-2'), tailwind(isValidLastName ? 'input-valid' : 'input-error')]}>
+                <TextInput
+                  style={tailwind('input')}
+                  value={lastName}
+                  onChangeText={value => setLastName(value)}
+                  placeholder={strings.components.inputs.last_name}
+                  placeholderTextColor="#666"
+                  maxLength={64}
+                  autoCapitalize='words'
+                  autoCompleteType='off'
+                  key='lastname'
+                  autoCorrect={false}
+                  onFocus={() => setLastNameFocus(true)}
+                  onBlur={() => setLastNameFocus(false)}
+                />
+                <Unicons.UilUser
+                  style={tailwind('input-icon')}
+                  color={lastNameFocus || isValidLastName ? '#42BE65' : '#7A869A'} />
+              </View>
+
+              <View style={[tailwind('input-wrapper my-2'), tailwind(isValidEmail ? 'input-valid' : 'input-error')]}>
+                <TextInput
+                  style={tailwind('input')}
+                  value={email}
+                  onChangeText={value => setEmail(value)}
+                  placeholder={strings.components.inputs.email}
+                  placeholderTextColor="#666"
+                  maxLength={64}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCompleteType="off"
+                  autoCorrect={false}
+                  key='mailaddress'
+                  textContentType="emailAddress"
+                  onFocus={() => setEmailFocus(true)}
+                  onBlur={() => setEmailFocus(false)}
+                />
+                <Unicons.UilEnvelope
+                  style={tailwind('input-icon')}
+                  color={emailFocus || isValidEmail ? '#42BE65' : '#7A869A'} />
+              </View>
+            </View>
+
+            <View style={styles.showInputFieldsWrapper}>
+              <View style={[tailwind('input-wrapper my-2'), tailwind(isValidPassword ? 'input-valid' : 'input-error')]}>
+                <TextInput
+                  style={tailwind('input')}
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder={strings.components.inputs.password}
+                  placeholderTextColor="#666"
+                  textContentType="password"
+                  autoCapitalize="none"
+                  autoCompleteType="password"
+                  autoCorrect={false}
+                  secureTextEntry={true}
+                  key='password'
+                  onFocus={() => setPasswordFocus(true)}
+                  onBlur={() => setPasswordFocus(false)}
+                />
+                <Unicons.UilEye
+                  style={tailwind('input-icon')}
+                  color={isValidPassword || isValidPassword || passwordFocus ? '#42BE65' : '#7A869A'} />
+              </View>
+
+              <View style={[tailwind('input-wrapper my-2'), tailwind(password === confirmPassword ? 'input-valid' : 'input-error')]}>
+                <TextInput
+                  style={tailwind('input')}
+                  value={confirmPassword}
+                  onChangeText={value => setConfirmPassword(value)}
+                  placeholder={strings.components.inputs.confirm_password}
+                  placeholderTextColor="#666"
+                  secureTextEntry={true}
+                  textContentType="password"
+                  key='confirmPassword'
+                  onFocus={() => setConfirmPasswordFocus(true)}
+                  onBlur={() => setConfirmPasswordFocus(false)}
+                />
+                <Unicons.UilEye
+                  style={tailwind('input-icon')}
+                  color={password === confirmPassword || confirmPasswordFocus ? '#42BE65' : '#7A869A'} />
+              </View>
             </View>
           </View>
 
-          <View style={styles.showInputFieldsWrapper}>
-            <View style={[tailwind('input-wrapper my-2'), tailwind(isValidFirstName ? 'input-valid' : 'input-error')]}>
-              <TextInput
-                style={tailwind('input')}
-                value={firstName}
-                onChangeText={value => setFirstName(value)}
-                placeholder={strings.components.inputs.first_name}
-                placeholderTextColor="#666"
-                maxLength={64}
-                autoCapitalize='words'
-                autoCompleteType='off'
-                key='name'
-                autoCorrect={false}
-                onFocus={() => setFirstNameFocus(true)}
-                onBlur={() => setFirstNameFocus(false)}
-              />
-              <Unicons.UilUser
-                style={tailwind('input-icon')}
-                color={firstNameFocus || isValidFirstName ? '#42BE65' : '#7A869A'} />
-            </View>
-
-            <View style={[tailwind('input-wrapper my-2'), tailwind(isValidLastName ? 'input-valid' : 'input-error')]}>
-              <TextInput
-                style={tailwind('input')}
-                value={lastName}
-                onChangeText={value => setLastName(value)}
-                placeholder={strings.components.inputs.last_name}
-                placeholderTextColor="#666"
-                maxLength={64}
-                autoCapitalize='words'
-                autoCompleteType='off'
-                key='lastname'
-                autoCorrect={false}
-                onFocus={() => setLastNameFocus(true)}
-                onBlur={() => setLastNameFocus(false)}
-              />
-              <Unicons.UilUser
-                style={tailwind('input-icon')}
-                color={lastNameFocus || isValidLastName ? '#42BE65' : '#7A869A'} />
-            </View>
-
-            <View style={[tailwind('input-wrapper my-2'), tailwind(isValidEmail ? 'input-valid' : 'input-error')]}>
-              <TextInput
-                style={tailwind('input')}
-                value={email}
-                onChangeText={value => setEmail(value)}
-                placeholder={strings.components.inputs.email}
-                placeholderTextColor="#666"
-                maxLength={64}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCompleteType="off"
-                autoCorrect={false}
-                key='mailaddress'
-                textContentType="emailAddress"
-                onFocus={() => setEmailFocus(true)}
-                onBlur={() => setEmailFocus(false)}
-              />
-              <Unicons.UilEnvelope
-                style={tailwind('input-icon')}
-                color={emailFocus || isValidEmail ? '#42BE65' : '#7A869A'} />
-            </View>
+          <View style={tailwind('my-5')}>
+            <Text style={tailwind('text-sm')}>{strings.screens.register_screen.security_subtitle}</Text>
           </View>
 
-          <View style={styles.showInputFieldsWrapper}>
-            <View style={[tailwind('input-wrapper my-2'), tailwind(isValidPassword ? 'input-valid' : 'input-error')]}>
-              <TextInput
-                style={tailwind('input')}
-                value={password}
-                onChangeText={setPassword}
-                placeholder={strings.components.inputs.password}
-                placeholderTextColor="#666"
-                textContentType="password"
-                autoCapitalize="none"
-                autoCompleteType="password"
-                autoCorrect={false}
-                secureTextEntry={true}
-                key='password'
-                onFocus={() => setPasswordFocus(true)}
-                onBlur={() => setPasswordFocus(false)}
-              />
-              <Unicons.UilEye
-                style={tailwind('input-icon')}
-                color={isValidPassword || isValidPassword || passwordFocus ? '#42BE65' : '#7A869A'} />
-            </View>
+          <View style={tailwind('py-2')}>
+            <CheckBox
+              text="Accept terms, conditions and privacy policy"
+              value={acceptPolicy}
+              onChange={(value) => setAcceptPolicy(value)}
+            ></CheckBox>
+          </View>
 
-            <View style={[tailwind('input-wrapper my-2'), tailwind(password === confirmPassword ? 'input-valid' : 'input-error')]}>
-              <TextInput
-                style={tailwind('input')}
-                value={confirmPassword}
-                onChangeText={value => setConfirmPassword(value)}
-                placeholder={strings.components.inputs.confirm_password}
-                placeholderTextColor="#666"
-                secureTextEntry={true}
-                textContentType="password"
-                key='confirmPassword'
-                onFocus={() => setConfirmPasswordFocus(true)}
-                onBlur={() => setConfirmPasswordFocus(false)}
-              />
-              <Unicons.UilEye
-                style={tailwind('input-icon')}
-                color={password === confirmPassword || confirmPasswordFocus ? '#42BE65' : '#7A869A'} />
+          <View>
+            <View style={[styles.containerCentered, isLoading || isValidForm ? styles.halfOpacity : {}]}>
+              <View>
+                <TouchableOpacity
+                  disabled={!isValidForm}
+                  style={[globalStyles.buttonInputStyle.button, globalStyles.buttonInputStyle.block]}
+                  onPress={() => handleOnPress()}
+                >
+                  <Text style={styles.buttonOnLabel}>{registerButtonClicked ? strings.components.buttons.creating_button : strings.components.buttons.create}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={tailwind('py-5')}>
+              <TouchableWithoutFeedback onPress={() => props.navigation.replace('Login')}>
+                <Text style={[globalStyles.text.link, globalStyles.text.center]}>Login in Internxt</Text>
+              </TouchableWithoutFeedback>
             </View>
           </View>
         </View>
-
-        <View style={tailwind('my-5')}>
-          <Text style={tailwind('text-sm')}>{strings.screens.register_screen.security_subtitle}</Text>
-        </View>
-
-        <View style={tailwind('py-2')}>
-          <CheckBox
-            text="Accept terms, conditions and privacy policy"
-            value={acceptPolicy}
-            onChange={(value) => setAcceptPolicy(value)}
-          ></CheckBox>
-        </View>
-
-        <View>
-          <View style={[styles.containerCentered, isLoading || isValidForm ? styles.halfOpacity : {}]}>
-            <View>
-              <TouchableOpacity
-                disabled={!isValidForm}
-                style={[globalStyles.buttonInputStyle.button, globalStyles.buttonInputStyle.block]}
-                onPress={() => handleOnPress()}
-              >
-                <Text style={styles.buttonOnLabel}>{registerButtonClicked ? strings.components.buttons.creating_button : strings.components.buttons.create}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={tailwind('py-5')}>
-            <TouchableWithoutFeedback onPress={() => props.navigation.replace('Login')}>
-              <Text style={[globalStyles.text.link, globalStyles.text.center]}>Login in Internxt</Text>
-            </TouchableWithoutFeedback>
-          </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
 
