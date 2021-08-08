@@ -35,7 +35,7 @@ type ScreenEntry = [name: string, component: { screen: React.ComponentType<JSX.E
 function AppNavigator(): JSX.Element {
   return <StackNav.Navigator
     initialRouteName='FileExplorer'
-    screenOptions={{ headerShown: false }}>
+    screenOptions={{ headerShown: false, statusBarHidden: false }}>
     {Object.entries(routeConfig).map(([name, component]: ScreenEntry) => (
       <StackNav.Screen key={name} name={name} component={component.screen} />
     ))}

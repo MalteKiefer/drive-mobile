@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, StatusBar, Text, Platform, Linking, Alert, SafeAreaView, View } from 'react-native';
+import { StyleSheet, StatusBar, Text, Platform, Linking, Alert, SafeAreaView } from 'react-native';
 import { Provider } from 'react-redux'
 import { store } from './src/store'
 import AppNavigator from './src/AppNavigator';
@@ -114,6 +114,7 @@ export default function App(): JSX.Element {
         <SafeAreaView
           style={styles.appContainer}>
           <StatusBar
+            hidden={false}
             backgroundColor={'#fff'}
             barStyle={'dark-content'} />
 
