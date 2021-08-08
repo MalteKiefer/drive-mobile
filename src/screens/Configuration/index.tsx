@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TouchableHighlight, View } from 'react-native';
+import { GestureResponderEvent, Text, TouchableHighlight, View } from 'react-native';
 import { connect } from 'react-redux';
 import AppMenu from '../../components/AppMenu';
 import { Reducers } from '../../redux/reducers/reducers';
@@ -7,9 +7,14 @@ import * as Unicons from '@iconscout/react-native-unicons'
 import { tailwind } from '../../helpers/designSystem';
 
 function ConfigurationItem(props: {
-  title: string
+  title: string,
+  onPress?: (event: GestureResponderEvent) => void
 }) {
-  return <TouchableHighlight>
+  return <TouchableHighlight onPress={(event) => {
+    if (props.onPress) {
+      props.onPress(event);
+    }
+  }}>
     <View style={[tailwind('bg-white flex-row'), {
       height: 56,
       borderBottomWidth: 1,
@@ -33,7 +38,10 @@ function ConfigurationGap() {
 function Configuration(props: Reducers): JSX.Element {
   return <View>
     <AppMenu {...props} title="Settings" hideSearch={true} hideOptions={true} />
-    <ConfigurationItem title="Storage" />
+    <ConfigurationItem title="Storage"
+      onPress={() => {
+        props.navigation.replace('Storage')
+      }} />
     <ConfigurationItem title="Billing" />
     <ConfigurationGap />
     <ConfigurationItem title="Security" />
