@@ -1,6 +1,5 @@
 import * as url from 'url';
 // import * as https from 'https';
-import { Readable } from 'readable-stream';
 import { ClientRequest, IncomingMessage } from 'http';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 

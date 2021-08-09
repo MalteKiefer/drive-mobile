@@ -1,5 +1,3 @@
-import { Readable } from 'readable-stream';
-
 const DEFAULT_HIGHWATERMARK = 16384;
 
 export function bufferToStream(buf: Buffer, chunkSize: number = DEFAULT_HIGHWATERMARK) {

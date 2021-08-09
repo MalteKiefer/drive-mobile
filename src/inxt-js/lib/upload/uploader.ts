@@ -1,70 +1,85 @@
-import { PassThrough } from 'readable-stream';
 import { EventEmitter } from '../utils/eventEmitter';
+import { createCipheriv } from 'react-native-crypto';
 
 import { FileObjectUpload } from '../../api/FileObjectUpload';
 import { ConcurrentQueue } from '../concurrentQueue';
 import { wrap } from '../utils/error';
 
 export interface UploadRequest {
-  content: Buffer;
   index: number;
-  finishCb?: (result?: any) => void;
+  finishCb?: (err: Error | null, result?: any) => void;
 }
 
 export class UploaderQueue extends ConcurrentQueue<UploadRequest> {
   private eventEmitter = new EventEmitter();
-  private passthrough: PassThrough = new PassThrough();
   private shardIndex = 0;
-  private concurrentUploads = 0;
+  // private concurrentUploads = 0;
   concurrency = 0;
 
   constructor(parallelUploads = 1, expectedUploads = 1, fileObject: FileObjectUpload) {
     super(parallelUploads, expectedUploads, UploaderQueue.upload(fileObject));
 
     this.concurrency = parallelUploads;
-
-    this.passthrough.on('data', this.handleData.bind(this));
-    this.passthrough.on('end', this.end.bind(this));
-    this.passthrough.on('error', (err) => {
-      this.emit('error', wrap('Farmer request error', err));
-    });
   }
 
   private static upload(fileObject: FileObjectUpload) {
-    return (req: UploadRequest) => {
-      return fileObject.uploadShard(req.content, req.content.length, fileObject.frameId, req.index, 3, false)
-        .then((shardMeta) => {
-          fileObject.shardMetas.push(shardMeta);
-        })
-        .finally(() => {
-          if (req.finishCb) {
-            req.finishCb();
-          }
-        });
+    return async (req: UploadRequest) => {
+      let length: number;
+
+      try {
+        let chunk = await fileObject.getFileChunker().getNextChunk();
+
+        chunk = createCipheriv('aes-256-ctr', fileObject.getEncryptionKey(), fileObject.getIndex());
+        length = chunk.length;
+
+        const shardMeta = await fileObject.uploadShard(chunk, chunk.length, fileObject.frameId, req.index, 3, false);
+
+        fileObject.shardMetas.push(shardMeta);
+      } catch (err) {
+        if (req.finishCb) {
+          return req.finishCb(err, length);
+        }
+
+        throw err;
+      }
     };
   }
 
-  getUpstream(): PassThrough {
-    return this.passthrough;
+  start(nShards: number): void {
+    for (let i = 0; i < nShards; i++) {
+      const finishCb = (err: Error | null, chunkLength: number) => {
+        if (err) {
+          return this.emit('error', wrap('Farmer reques error', err));
+        }
+        this.emit('upload-progress', chunkLength);
+      };
+
+      this.push({ index: this.shardIndex++, finishCb });
+    }
   }
 
   handleData(chunk: Buffer): void {
-    this.concurrentUploads++;
+    // this.concurrentUploads++;
 
-    if (this.concurrentUploads === this.concurrency) {
-      this.passthrough.pause();
-    }
+    // if (this.concurrentUploads === this.concurrency) {
+    //   this.passthrough.pause();
+    // }
 
-    const finishCb = () => {
-      this.concurrentUploads--;
-      this.emit('upload-progress', chunk.length);
+    const chunkLength = chunk.length;
 
-      if (this.passthrough.isPaused()) {
-        this.passthrough.resume();
+    const finishCb = (err: Error | null) => {
+      if (err) {
+        return this.emit('error', wrap('Farmer reques error', err));
       }
+      // this.concurrentUploads--;
+      this.emit('upload-progress', chunkLength);
+
+      // if (this.passthrough.isPaused()) {
+      //   this.passthrough.resume();
+      // }
     };
 
-    this.push({ content: chunk, index: this.shardIndex++, finishCb });
+    this.push({ index: this.shardIndex++, finishCb });
   }
 
   emit(event: string, ...args: any[]): void {

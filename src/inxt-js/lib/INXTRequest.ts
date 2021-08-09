@@ -42,7 +42,21 @@ export class INXTRequest {
 
     const cancelToken = source.token;
 
-    this.req = request(this.config, this.method, this.targetUrl, { ...this.params, cancelToken }, this.useProxy).then<JSON>(res => res.data);
+    this.req = request(this.config, this.method, this.targetUrl, { ...this.params, cancelToken }, this.useProxy).then<JSON | K>(res => res.data);
+
+    return this.req;
+  }
+
+  buffer<K>(): Promise<Buffer> {
+    const source = axios.CancelToken.source();
+
+    this.cancel = source.cancel;
+
+    const cancelToken = source.token;
+
+    this.req = request(this.config, this.method, this.targetUrl, { ...this.params, cancelToken }, this.useProxy).then<Buffer>(res => {
+      return Buffer.from(res.request._response, 'base64');
+    });
 
     return this.req;
   }

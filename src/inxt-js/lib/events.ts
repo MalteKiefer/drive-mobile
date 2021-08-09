@@ -34,3 +34,9 @@ export enum FILEOBJECT {
     ERROR = 'fileobject-error',
     END = 'fileobject-end'
 }
+
+export enum Download {
+    Progress = 'download-progress',
+    Error = 'download-error',
+    End = 'download-end'
+}

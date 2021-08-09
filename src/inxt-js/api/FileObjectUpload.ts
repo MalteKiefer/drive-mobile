@@ -1,4 +1,3 @@
-import { Transform } from 'readable-stream';
 import { randomBytes } from 'react-native-crypto';
 
 import { EnvironmentConfig, UploadProgressCallback } from '..';
@@ -10,18 +9,16 @@ import { ContractNegotiated } from '../lib/contracts';
 import { logger } from '../lib/utils/logger';
 
 import { ExchangeReport } from './reports';
-import { Shard } from './shard';
 import { FunnelStream } from '../lib/funnelStream';
-import { determineConcurrency, determineShardSize } from '../lib/utils';
-import { Bridge, CreateEntryFromFrameBody, CreateEntryFromFrameResponse, FrameStaging, InxtApiI, SendShardToNodeResponse } from '../services/api';
+import { determineShardSize } from '../lib/utils';
+import { Bridge, CreateEntryFromFrameBody, CreateEntryFromFrameResponse, FrameStaging, InxtApiI } from '../services/api';
 import { EventEmitter } from '../lib/utils/eventEmitter';
 import { INXTRequest } from '../lib';
-import { wrap } from 'lodash';
-import { UploaderQueue } from '../lib/upload/uploader';
+
 import { ShardObject } from './ShardObject';
-import { UPLOAD_CANCELLED } from './constants';
 import { FileChunker } from '../../lib/chunkUploader';
 import { createCipheriv } from 'react-native-crypto';
+import { wrap } from '../lib/utils/error';
 
 export interface FileMeta {
   size: number;
@@ -188,11 +185,7 @@ export class FileObjectUpload extends EventEmitter {
       fileChunker.on('chunk-error', reject);
 
       fileChunker.on('chunk-end', async (chunkPointers) => {
-        console.log('chunking finished. Uploading and removing chunks');
-
         for (const chunkPointer of chunkPointers) {
-          console.log('Handling chunk: ', chunkPointer.index);
-
           const chunkStream = await fileChunker.getChunk(chunkPointer);
 
           chunkStream.open();
@@ -204,7 +197,6 @@ export class FileObjectUpload extends EventEmitter {
           });
 
           chunkStream.onError((err) => {
-            console.log('chunkStream Error', err.message);
             reject(err);
           });
 
@@ -299,8 +291,6 @@ export class FileObjectUpload extends EventEmitter {
         retries--;
       }
     } while (retries > 0);
-
-    encryptedShard = null;
 
     return shardMeta;
   }

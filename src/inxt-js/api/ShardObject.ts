@@ -1,5 +1,4 @@
 import { AxiosError } from 'axios';
-// import { Readable } from 'stream';
 import { EventEmitter } from '../lib/utils/eventEmitter';
 
 import { INXTRequest } from '../lib';
@@ -124,15 +123,15 @@ export class ShardObject extends EventEmitter {
     });
   }
 
-  // download(): Promise<Readable> {
-  //   if (!this.shard) {
-  //     throw new Error('Provide shard info before trying to download a shard');
-  //   }
+  download(): Promise<Buffer> {
+    if (!this.shard) {
+      throw new Error('Provide shard info before trying to download a shard');
+    }
 
-  //   const req = this.api.getShardFromNode(this.shard);
+    const req = this.api.getShardFromNode(this.shard);
 
-  //   this.requests.push(req);
+    this.requests.push(req);
 
-  //   return req.stream<Readable>();
-  // }
+    return req.buffer();
+  }
 }

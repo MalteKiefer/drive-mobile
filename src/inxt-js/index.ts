@@ -1,7 +1,5 @@
-import { Readable, Transform } from 'readable-stream';
-
 import { upload } from './lib/upload';
-import { Download } from './lib/download';
+import { download, Logger } from './lib/download';
 import { EncryptFilename } from './lib/crypto';
 import { logger } from './lib/utils/logger';
 
@@ -12,7 +10,7 @@ import { FileChunker } from '../lib/chunkUploader';
 
 export type OnlyErrorCallback = (err: Error | null) => void;
 export type UploadFinishCallback = (err: Error | null, response: string | null) => void;
-export type DownloadFinishedCallback = (err: Error | null, fileStream: Readable | null) => void;
+export type DownloadFinishedCallback = (err: Error | null) => void;
 export type DownloadProgressCallback = (progress: number, downloadedBytes: number | null, totalBytes: number | null) => void;
 export type DecryptionProgressCallback = (progress: number, decryptedBytes: number | null, totalBytes: number | null) => void;
 export type UploadProgressCallback = (progress: number, uploadedBytes: number | null, totalBytes: number | null) => void;
@@ -41,6 +39,19 @@ interface UploadFileParams {
   finishedCallback: UploadFinishCallback;
 }
 
+function createLogger(): Logger {
+  return {
+    // eslint-disable-next-line no-console
+    info: console.log,
+    // eslint-disable-next-line no-console
+    debug: console.debug,
+    // eslint-disable-next-line no-console
+    warn: console.warn,
+    // eslint-disable-next-line no-console
+    error: console.error
+  }
+}
+
 export class Environment {
   protected config: EnvironmentConfig;
 
@@ -56,16 +67,20 @@ export class Environment {
     const downloadState = new ActionState(ActionTypes.Download);
 
     if (!this.config.encryptionKey) {
-      options.finishedCallback(Error(ENCRYPTION_KEY_NOT_PROVIDED), null);
+      options.finishedCallback(Error(ENCRYPTION_KEY_NOT_PROVIDED));
       return downloadState;
     }
 
     if (!bucketId) {
-      options.finishedCallback(Error(BUCKET_ID_NOT_PROVIDED), null);
+      options.finishedCallback(Error(BUCKET_ID_NOT_PROVIDED));
       return downloadState;
     }
 
-    Download(this.config, bucketId, fileId, options, downloadState);
+    download(this.config, bucketId, fileId, options.progressCallback, createLogger(), downloadState).then(() => {
+      options.finishedCallback(null);
+    }).catch((err) => {
+      options.finishedCallback(err);
+    });
 
     return downloadState;
   }

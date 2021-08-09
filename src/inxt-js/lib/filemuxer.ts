@@ -1,5 +1,4 @@
 import { Hash, createHash } from 'react-native-crypto';
-import { Readable, PassThrough } from 'readable-stream';
 import { ripemd160 } from './crypto';
 import { DOWNLOAD_CANCELLED, DOWNLOAD_CANCELLED_ERROR } from '../api/constants';
 

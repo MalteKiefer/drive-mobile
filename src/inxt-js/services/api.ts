@@ -257,6 +257,11 @@ export class Bridge extends InxtApi {
     const { address, port } = farmer;
     const targetUrl = `http://${address}:${port}/shards/${hash}?token=${token}`;
 
-    return new INXTRequest(this.config, Methods.Get, targetUrl, { }, this.config.useProxy ?? true);
+    return new INXTRequest(this.config, Methods.Get, targetUrl, {
+      headers: {
+        'content-type': 'application/octet-stream'
+      },
+      responseType: 'arraybuffer'
+    }, this.config.useProxy ?? true);
   }
 }

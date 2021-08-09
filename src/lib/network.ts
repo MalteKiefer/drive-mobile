@@ -1,10 +1,8 @@
 import { Environment } from '../inxt-js';
 import { createHash } from 'react-native-crypto';
-import { PassThrough, Transform } from 'readable-stream';
 
 import { getUser } from '../database/DBUtils.ts/utils';
 import RNFetchBlob from 'rn-fetch-blob';
-import chunkUpload from 'react-native-chunk-upload'
 import { FileChunker } from './chunkUploader';
 import { determineShardSize } from '../inxt-js/lib/utils';
 
@@ -104,31 +102,26 @@ export class Network {
      * @param params Required params for downloading a file
      * @returns
      */
-    downloadFile(bucketId: string, fileId: string, params: IDownloadParams): void {
-    //   if (!bucketId) {
-    //     throw new Error('Bucket id not provided');
-    //   }
+    downloadFile(bucketId: string, fileId: string, params: IDownloadParams): Promise<void> {
+      if (!bucketId) {
+        throw new Error('Bucket id not provided');
+      }
 
-      //   if (!fileId) {
-      //     throw new Error('File id not provided');
-      //   }
+      if (!fileId) {
+        throw new Error('File id not provided');
+      }
 
-      //   return new Promise((resolve, reject) => {
-      //     this.environment.downloadFile(bucketId, fileId, {
-      //       progressCallback: params.progressCallback,
-      //       finishedCallback: (err: Error | null, filecontent: Blob | null) => {
-      //         if (err) {
-      //           return reject(err);
-      //         }
-
-      //         if (!filecontent) {
-      //           return reject(Error('Downloaded file is empty'));
-      //         }
-
-    //         resolve(filecontent);
-    //       }
-    //     });
-    //   });
+      return new Promise((resolve, reject) => {
+        this.environment.downloadFile(bucketId, fileId, {
+          progressCallback: params.progressCallback,
+          finishedCallback: (err: Error | null) => {
+            if (err) {
+              return reject(err);
+            }
+            resolve();
+          }
+        });
+      });
     }
 }
 

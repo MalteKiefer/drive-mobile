@@ -19,6 +19,7 @@ import * as FileSystem from 'expo-file-system'
 import { LinearGradient } from 'expo-linear-gradient';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import PackageJson from '../../../package.json'
+import { getEnvironmentConfig, Network } from '../../lib/network';
 interface FileItemProps extends Reducers {
   isFolder: boolean
   item: IFile & IFolder | IUploadingFile
@@ -83,6 +84,19 @@ async function handleClick(props: FileItemProps, setProgress: React.Dispatch<Set
     const xToken = await deviceStorage.getItem('xToken')
     const xUser = await deviceStorage.getItem('xUser')
     const xUserJson = JSON.parse(xUser || '{}')
+
+    const { bridgeUser, bridgePass, encryptionKey, bucketId } = await getEnvironmentConfig();
+    const network = new Network(bridgeUser, bridgePass, encryptionKey);
+
+    return network.downloadFile(bucketId, props.item.fileId, {
+      progressCallback: (progress) => {
+        setProgress(progress);
+      }
+    }).then(() => {
+      console.log('eoeoeoeeoe');
+    }).catch((err) => {
+      console.log('DOWNLOAD FILE ERROR', err);
+    })
 
     return RNFetchBlob.config({
       appendExt: props.item.type,
