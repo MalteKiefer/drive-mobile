@@ -66,8 +66,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   fileListContentsScrollView: {
-    flexGrow: 1,
-    justifyContent: 'center'
+    flexGrow: 1
   }
 });
 
