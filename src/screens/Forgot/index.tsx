@@ -79,9 +79,9 @@ function Forgot(props: ForgotProps): JSX.Element {
               {strings.screens.forgot_password.subtitle_2}
             </Text>
 
-            <View style={globalStyle.textInputStyle.wrapper}>
+            <View style={tailwind('input-wrapper')}>
               <TextInput
-                style={styles.input}
+                style={tailwind('input')}
                 value={email}
                 onChangeText={(value) => setIsEmail(value)}
                 placeholder={strings.components.inputs.email}
@@ -92,15 +92,15 @@ function Forgot(props: ForgotProps): JSX.Element {
               />
               <Unicons.UilEnvelope
                 color={'#AAA'}
-                style={globalStyle.textInputStyle.icon} />
+                style={tailwind('input-icon')} />
             </View>
 
             <View style={globalStyle.buttonInputStyle.wrapper}>
               <TouchableHighlight
-                style={tailwind('bg-blue-60 h-16')}
+                style={tailwind('btn btn-primary')}
                 onPress={() => sendDeactivationEmail()}
               >
-                <Text style={[tailwind('text-base'), styles.buttonLabel]}>
+                <Text style={tailwind('text-base btn-label')}>
                   {strings.components.buttons.continue}
                 </Text>
               </TouchableHighlight>
@@ -217,14 +217,6 @@ const styles = StyleSheet.create({
   },
   halfOpacity: {
     opacity: 0.5
-  },
-  input: {
-    color: '#000',
-    flex: 1,
-    fontFamily: 'NeueEinstellung-Medium',
-    fontSize: normalize(15),
-    letterSpacing: -0.2,
-    paddingLeft: normalize(20)
   },
   explication: {
     textAlign: 'center',

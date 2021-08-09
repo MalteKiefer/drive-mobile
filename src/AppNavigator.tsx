@@ -1,7 +1,6 @@
 import React from 'react'
-import { CreateNavigatorConfig, NavigationParams, NavigationRoute, NavigationRouteConfigMap, NavigationStackRouterConfig, NavigationState } from 'react-navigation';
-import { StackNavigationConfig, StackNavigationOptions, StackNavigationProp } from 'react-navigation-stack/lib/typescript/src/vendor/types';
-import analytics from './helpers/lytics';
+import { NavigationParams, NavigationRoute, NavigationRouteConfigMap } from 'react-navigation';
+import { StackNavigationOptions, StackNavigationProp } from 'react-navigation-stack/lib/typescript/src/vendor/types';
 import CreateFolder from './screens/CreateFolder';
 import Intro from './screens/Intro';
 import Login from './screens/Login';
@@ -15,7 +14,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabExplorer from './screens/TabExplorer';
 
 type RouteConfig = NavigationRouteConfigMap<StackNavigationOptions, StackNavigationProp<NavigationRoute<NavigationParams>, NavigationParams>, any>
-type NavigatorOptions = CreateNavigatorConfig<StackNavigationConfig, NavigationStackRouterConfig, StackNavigationOptions, StackNavigationProp<NavigationRoute<NavigationParams>, NavigationParams>>
 
 const routeConfig: RouteConfig = {
   EntryPoint: { screen: EntryGateway },
@@ -32,23 +30,12 @@ const routeConfig: RouteConfig = {
 
 const StackNav = createNativeStackNavigator();
 
-function trackScreen(previousScreen: NavigationState, nextScreen: NavigationState) {
-  try {
-    const routeName = nextScreen.routes[0].routeName
-
-    analytics.screen(routeName)
-  } catch {
-  }
-}
-
 type ScreenEntry = [name: string, component: { screen: React.ComponentType<JSX.Element> }];
 
 function AppNavigator(): JSX.Element {
   return <StackNav.Navigator
     initialRouteName='FileExplorer'
-    screenOptions={{
-      headerShown: false
-    }}>
+    screenOptions={{ headerShown: false, statusBarHidden: false }}>
     {Object.entries(routeConfig).map(([name, component]: ScreenEntry) => (
       <StackNav.Screen key={name} name={name} component={component.screen} />
     ))}

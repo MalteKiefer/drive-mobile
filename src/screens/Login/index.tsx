@@ -31,8 +31,11 @@ function Login(props: LoginProps): JSX.Element {
     try {
       const userLoginData = await apiLogin(email)
 
-      if (userLoginData.tfa && !twoFactorCode) { setShowTwoFactor(true) }
-      else { await props.dispatch(userActions.signin(email, password, userLoginData.sKey, twoFactorCode)) }
+      if (userLoginData.tfa && !twoFactorCode) {
+        setShowTwoFactor(true)
+      } else {
+        await props.dispatch(userActions.signin(email, password, userLoginData.sKey, twoFactorCode))
+      }
 
     } catch (err) {
       analytics.track('user-signin-attempted', {
@@ -83,9 +86,9 @@ function Login(props: LoginProps): JSX.Element {
         </View>
 
         <View style={showTwoFactor ? styles.hideInputFieldWrapper : styles.showInputFieldsWrapper}>
-          <View style={globalStyles.textInputStyle.wrapper}>
+          <View style={tailwind('input-wrapper my-2')}>
             <TextInput
-              style={styles.input}
+              style={tailwind('input')}
               value={email}
               onChangeText={value => setEmail(value)}
               placeholder={strings.components.inputs.email}
@@ -98,13 +101,13 @@ function Login(props: LoginProps): JSX.Element {
               editable={!isLoading}
             />
             <Unicons.UilEnvelope
-              style={globalStyles.textInputStyle.icon}
+              style={tailwind('input-icon')}
               color="#7A869A" />
           </View>
 
-          <View style={globalStyles.textInputStyle.wrapper}>
+          <View style={tailwind('input-wrapper my-2')}>
             <TextInput
-              style={styles.input}
+              style={tailwind('input')}
               value={password}
               onChangeText={value => setPassword(value)}
               placeholder={strings.components.inputs.password}
@@ -114,7 +117,7 @@ function Login(props: LoginProps): JSX.Element {
               editable={!isLoading}
             />
             <Unicons.UilEye
-              style={globalStyles.textInputStyle.icon}
+              style={tailwind('input-icon')}
               color="#7A869A" />
           </View>
         </View>
@@ -133,12 +136,12 @@ function Login(props: LoginProps): JSX.Element {
           </View>
         </View>
 
-        <View style={globalStyles.buttonInputStyle.wrapper}>
+        <View>
           <TouchableHighlight
-            style={[globalStyles.buttonInputStyle.button, globalStyles.buttonInputStyle.block]}
+            style={tailwind('btn btn-primary my-5')}
             underlayColor="#4585f5"
             onPress={handleOnPress}>
-            <Text style={styles.buttonOnLabel}>{isLoading ? strings.components.buttons.descrypting : strings.components.buttons.sign_in}</Text>
+            <Text style={tailwind('text-base btn-label')}>{isLoading ? strings.components.buttons.descrypting : strings.components.buttons.sign_in}</Text>
           </TouchableHighlight>
 
           <Text style={[globalStyles.text.link, globalStyles.text.center, globalStyles.text.mt10]} onPress={() => props.navigation.replace('Forgot')}>
@@ -164,12 +167,6 @@ const mapStateToProps = (state: any) => {
 export default connect(mapStateToProps)(Login)
 
 const styles = StyleSheet.create({
-  buttonOnLabel: {
-    color: '#fff',
-    fontFamily: 'NeueEinstellung-Medium',
-    fontSize: normalize(15),
-    textAlign: 'center'
-  },
   container: {
     backgroundColor: '#FFFFFF',
     flex: 1,
