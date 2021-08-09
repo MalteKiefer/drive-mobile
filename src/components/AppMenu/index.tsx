@@ -7,6 +7,9 @@ import { Reducers } from '../../redux/reducers/reducers';
 
 interface AppMenuProps extends Reducers {
   title: string
+  hideSearch?: boolean
+  hideOptions?: boolean
+  onBackPress?: () => void
 }
 
 function AppMenu(props: AppMenuProps) {
@@ -23,28 +26,32 @@ function AppMenu(props: AppMenuProps) {
         <View style={styles.commonButtons}>
           <View style={styles.w50}>
             <TouchableWithoutFeedback onPress={() => {
+              if (props.onBackPress) {
+                return props.onBackPress();
+              }
               props.dispatch(fileActions.getFolderContent(parentFolderId));
             }}>
-              <Unicons.UilArrowLeft color={parentFolderId ? '#0F62FE' : '#EBECF0'} size={27} />
+              <Unicons.UilArrowLeft color={parentFolderId || props.onBackPress ? '#0F62FE' : '#EBECF0'} size={27} />
             </TouchableWithoutFeedback>
           </View>
           <View style={styles.fGrow}>
             <Text style={styles.storageText}>{props.title}</Text>
           </View>
-          <View style={[styles.w50, props.hideSearch ? styles.dNone : {}]}>
-            <TouchableWithoutFeedback onPress={() => {
+          <View style={styles.w50}>
+            {!props.hideSearch && <TouchableWithoutFeedback onPress={() => {
               props.dispatch(layoutActions.openSearch())
             }}>
               <Unicons.UilSearch color='#0F62FE' size={27} />
-            </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback>}
           </View>
-          <View style={props.hideOptions && styles.dNone}>
-            <TouchableWithoutFeedback
-              onPress={() => {
-                props.dispatch(layoutActions.openSettings());
-              }}>
-              <Unicons.UilEllipsisV color='#0F62FE' size={27} />
-            </TouchableWithoutFeedback>
+          <View>
+            {!props.hideOptions &&
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  props.dispatch(layoutActions.openSettings());
+                }}>
+                <Unicons.UilEllipsisV color='#0F62FE' size={27} />
+              </TouchableWithoutFeedback>}
           </View>
         </View>
       </View>
@@ -58,7 +65,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     marginLeft: 17,
-    marginRight: 10,
+    marginRight: 17,
     marginTop: 10,
     marginBottom: 10
   },
@@ -79,10 +86,7 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   w50: { width: 50 },
-  fGrow: { flexGrow: 1 },
-  dNone: {
-    opacity: 0
-  }
+  fGrow: { flexGrow: 1 }
 });
 
 const mapStateToProps = (state: any) => ({ ...state });
