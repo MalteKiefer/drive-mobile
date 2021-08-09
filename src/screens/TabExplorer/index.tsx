@@ -13,7 +13,7 @@ const Tab = createBottomTabNavigator();
 export default function TabExplorer(props: Reducers): JSX.Element {
   return <Tab.Navigator
     tabBar={(tabBarProps: BottomTabBarProps) => <MyTabBar {...{ ...props, ...tabBarProps }} />}
-    initialRouteName="FileExplorer"
+    initialRouteName={'FileExplorer'}
     screenOptions={({ route }) => ({
       headerShown: false
     })}

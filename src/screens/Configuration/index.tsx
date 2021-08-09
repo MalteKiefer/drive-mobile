@@ -40,7 +40,7 @@ function Configuration(props: Reducers): JSX.Element {
     <AppMenu {...props} title="Settings" hideSearch={true} hideOptions={true} />
     <ConfigurationItem title="Storage"
       onPress={() => {
-        props.navigation.replace('Storage')
+        props.navigation.push('Storage')
       }} />
     <ConfigurationItem title="Billing" />
     <ConfigurationGap />

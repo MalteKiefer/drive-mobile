@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { View, StyleSheet, TouchableWithoutFeedback, Text } from 'react-native';
 import * as Unicons from '@iconscout/react-native-unicons'
 import MainIcon from '../../../assets/icons/figma-icons/add-main.svg'
 import { layoutActions } from '../../redux/actions';
@@ -25,6 +25,7 @@ function MyTabBar(props: MyTabBarProps): JSX.Element {
     <View style={styles.tabContainer}>
       {props.state.routes.map((route, index) => {
         const { options } = props.descriptors[route.key];
+
         const label = options.tabBarLabel !== undefined ? options.tabBarLabel : options.title !== undefined ? options.title : route.name;
 
         const isFocused = props.state.index === index;
@@ -65,9 +66,9 @@ function MyTabBar(props: MyTabBarProps): JSX.Element {
           >
             <View style={styles.tabItem}>
               <Icon size={30} color={isFocused ? '#0F62FE' : '#C1C7D0'} />
-              {/*<Text style={{ color: isFocused ? '#0F62FE' : '#C1C7D0' }}>
+              {options.tabBarShowLabel && <Text style={{ color: isFocused ? '#0F62FE' : '#C1C7D0' }}>
                 {label}
-                </Text>*/}
+              </Text>}
             </View>
           </TouchableWithoutFeedback>
         );
@@ -76,9 +77,7 @@ function MyTabBar(props: MyTabBarProps): JSX.Element {
   );
 }
 
-const mapStateToProps = (state: any) => {
-  return { ...state }
-};
+const mapStateToProps = (state: any) => ({ ...state });
 
 export default connect(mapStateToProps)(MyTabBar);
 

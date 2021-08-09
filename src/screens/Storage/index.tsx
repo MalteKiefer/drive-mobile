@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import prettysize from 'prettysize';
 import {
   View, Text, StyleSheet, Image, ActivityIndicator,
-  Platform, BackHandler, TouchableOpacity, TouchableWithoutFeedback
+  Platform, TouchableOpacity, TouchableWithoutFeedback
 } from 'react-native';
 import { connect } from 'react-redux';
-import ProgressBar from '../../components/ProgressBar';
 import { getIcon } from '../../helpers/getIcon';
 import PlanCard from './PlanCard';
 import { IPlan, IProduct, storageService } from '../../redux/services';
@@ -15,6 +14,7 @@ import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import strings from '../../../assets/lang/strings';
 import AppMenu from '../../components/AppMenu';
 import { tailwind } from '../../helpers/designSystem';
+import ProgressBar from '../../components/ProgressBar';
 
 interface StorageProps extends Reducers {
   currentPlan: number
@@ -39,26 +39,19 @@ function Storage(props: StorageProps): JSX.Element {
     return plans
   }
 
-  // BackHandler
-  const backAction = () => {
-    if (!chosenProduct) {
-      props.navigation.replace('FileExplorer')
-    } else {
-      setChosenProduct(undefined)
-    }
-    return true
-  }
+  const parseLimit = () => {
 
-  const putLimitUsage = () => {
-    if (usageValues.limit > 0) {
-      if (usageValues.limit < 108851651149824) {
-        return prettysize(usageValues.limit);
-      } else if (usageValues.limit >= 108851651149824) {
-        return '\u221E';
-      } else {
-        return '...';
-      }
+    if (usageValues.limit === 0) {
+      return '...';
     }
+
+    const infinitePlan = Math.pow(1024, 4) * 99; // 99TB
+
+    if (usageValues.limit >= infinitePlan) {
+      return '\u221E';
+    }
+
+    return prettysize(usageValues.limit);
   }
 
   useEffect(() => {
@@ -79,25 +72,27 @@ function Storage(props: StorageProps): JSX.Element {
         setIsLoading(false)
       })
     }
-
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction)
-
-    return () => backHandler.remove()
   }, [chosenProduct])
 
   return (
     <View style={styles.bgWhite}>
-      <AppMenu {...props} title={strings.screens.storage.title} hideSearch={true} hideOptions={true} />
+      <AppMenu {...props}
+        title={strings.screens.storage.title}
+        onBackPress={() => {
+          props.navigation.goBack()
+        }}
+        hideSearch={true} hideOptions={true} />
       <View>
-        <View>
-          <Text>Usage</Text>
+        <View style={{ alignItems: 'center' }}>
+          <Text style={{ color: 'black', margin: 10 }}>Usage</Text>
         </View>
         <View style={[tailwind('mx-5 px-5 py-3'), { backgroundColor: '#F4F5F7', borderRadius: 10 }]}>
           <View>
-            <Text>{strings.screens.storage.space.used.used} {prettysize(usageValues.usage)} {strings.screens.storage.space.used.of} {putLimitUsage()}</Text>
+            <Text>{strings.screens.storage.space.used.used} {prettysize(usageValues.usage)} {strings.screens.storage.space.used.of} {parseLimit()}</Text>
           </View>
           <View style={[tailwind('my-2'), {}]}>
             <ProgressBar
+              {...props}
               styleProgress={styles.h7}
               totalValue={usageValues.limit}
               usedValue={usageValues.usage}
@@ -107,15 +102,31 @@ function Storage(props: StorageProps): JSX.Element {
       </View>
 
       <View>
-        <View>
-          <Text>Current plan</Text>
+        <View style={{ alignItems: 'center' }}>
+          <Text style={{ color: 'black', margin: 10 }}>Current plan</Text>
         </View>
+      </View>
+
+      <View>
+        <View>
+          <Text style={styles.footer}>{strings.screens.storage.plans.current_plan} {prettysize(usageValues.limit)} {strings.getLanguage() === 'es' ? null : 'plan'}</Text>
+        </View>
+      </View>
+
+      <View style={tailwind('button-wrapper')}>
+        <TouchableWithoutFeedback>
+          <Text>Change plan</Text>
+        </TouchableWithoutFeedback>
       </View>
 
       <View style={styles.container}>
         <View style={styles.cardsContainer}>
           {
-            !isLoading ?
+            isLoading ?
+              <View>
+                <ActivityIndicator color={'gray'} />
+              </View>
+              :
               !chosenProduct ?
                 <View>
                   <View style={styles.titleContainer}>
@@ -169,14 +180,7 @@ function Storage(props: StorageProps): JSX.Element {
                       null
                   }
                 </View>
-              :
-              <View>
-                <ActivityIndicator color={'gray'} />
-              </View>
           }
-          <View>
-            <Text style={styles.footer}>{strings.screens.storage.plans.current_plan} {prettysize(usageValues.limit)} {strings.getLanguage() === 'es' ? null : 'plan'}</Text>
-          </View>
         </View>
       </View>
     </View>
@@ -186,11 +190,9 @@ function Storage(props: StorageProps): JSX.Element {
 const styles = StyleSheet.create({
   cardsContainer: {
     flexGrow: 1,
-    marginLeft: 20,
     paddingTop: 20
   },
   container: {
-    backgroundColor: 'white',
     height: '100%',
     justifyContent: 'flex-start'
   },
