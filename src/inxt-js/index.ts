@@ -8,6 +8,7 @@ import { logger } from './lib/utils/logger';
 import { FileMeta } from './api/FileObjectUpload';
 import { BUCKET_ID_NOT_PROVIDED, ENCRYPTION_KEY_NOT_PROVIDED } from './api/constants';
 import { ActionState, ActionTypes } from './api/ActionState';
+import { FileChunker } from '../lib/chunkUploader';
 
 export type OnlyErrorCallback = (err: Error | null) => void;
 export type UploadFinishCallback = (err: Error | null, response: string | null) => void;
@@ -35,7 +36,7 @@ export interface DownloadFileOptions {
 interface UploadFileParams {
   filename: string;
   fileSize: number;
-  fileContent: Transform;
+  fileContent: FileChunker;
   progressCallback: UploadProgressCallback;
   finishedCallback: UploadFinishCallback;
 }

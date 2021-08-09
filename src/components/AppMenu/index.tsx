@@ -16,14 +16,17 @@ import PackageJson from '../../../package.json'
 import { getUser } from '../../database/DBUtils.ts/utils';
 import { Environment } from '../../inxt-js';
 import { Base64ToUtf8Transform } from '../../inxt-js/lib/base64toUtf8Stream';
+import { createCipheriv, randomBytes } from 'react-native-crypto';
 
-import RNFS from 'react-native-fs';
+import axios from 'axios';
 import { FilesState } from '../../redux/reducers/files.reducer';
 import { getEnvironmentConfig, Network } from '../../lib/network';
 import { LayoutState } from '../../redux/reducers/layout.reducer';
 import { AuthenticationState } from '../../redux/reducers/authentication.reducer';
 import { getHeaders } from '../../helpers/headers';
 import { getItemsLocalStorage } from '../../modals/CreateAlbumModal/init';
+import ChunkUpload, { FileChunker } from '../../lib/chunkUploader';
+import { determineShardSize } from '../../inxt-js/lib/utils';
 
 interface AppMenuProps {
   navigation?: any
@@ -71,6 +74,8 @@ function AppMenu(props: AppMenuProps) {
     const { bridgeUser, bridgePass, encryptionKey, bucketId } = await getEnvironmentConfig();
     const network = new Network(bridgeUser, bridgePass, encryptionKey);
 
+    const stat = await RNFetchBlob.fs.stat(finalUri);
+
     const fileId = await network.uploadFile(bucketId, {
       fileUri: finalUri,
       filepath: finalUri,
@@ -80,13 +85,7 @@ function AppMenu(props: AppMenuProps) {
           props.dispatch(fileActions.uploadFileSetUri(result.uri)) // Set the uri of the file so FileItem can get it as props
         }
       }
-    })
-
-    // TODO: For big files, stat is not working, but on uploadFile works
-    // so do it before uploading or something like that..
-    const stat = await RNFetchBlob.fs.stat(finalUri);
-
-    console.log('stat', stat);
+    });
 
     const folderId = props.filesState.folderContent.id;
     const name = encryptFilename(result.name, folderId);

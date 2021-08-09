@@ -74,6 +74,8 @@ export class FunnelStream {
 
     data.copy(this.internalBuffer, this.internalBufferOffset);
     this.internalBufferOffset += data.length;
+
+    data = null;
   }
 
   end(): void {
@@ -86,5 +88,6 @@ export class FunnelStream {
       this.target.push(this.internalBuffer.slice(0, this.internalBufferOffset));
     }
     this.target.push(null);
+    this.internalBuffer = null;
   }
 }

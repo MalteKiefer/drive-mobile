@@ -10,7 +10,7 @@ import { MIN_SHARD_SIZE, SHARD_MULTIPLE_BACK, MAX_SHARD_SIZE } from '../../api/c
 export function determineConcurrency(desiredRamUsage: number, fileSize: number): number {
   const shardSize = determineShardSize(fileSize);
 
-  return Math.floor(desiredRamUsage / shardSize);
+  return Math.max(Math.floor(desiredRamUsage / shardSize), 1);
 }
 
 function shardSize(hops: number): number {
@@ -51,7 +51,21 @@ export function determineParityShards(totalShards: number): number {
  * @returns Shard size
  */
 export function determineShardSize(fileSize: number): number {
-  const fiftyMb = 50 * 1024 * 1024;
+  return 4095 * 600;
+}
 
-  return Math.min(fiftyMb, _determineShardSize(fileSize));
+export function determineTick(fileSize: number): number {
+  const oneMb = 1024 * 1024;
+  const oneHundredMb = 100 * oneMb;
+  const twoHundredMb = 200 * oneMb;
+
+  if (fileSize < oneHundredMb) {
+    return 50;
+  }
+
+  if (fileSize < twoHundredMb) {
+    return 200;
+  }
+
+  return 1000;
 }

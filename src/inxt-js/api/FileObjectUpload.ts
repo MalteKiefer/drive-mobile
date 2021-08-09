@@ -20,11 +20,13 @@ import { wrap } from 'lodash';
 import { UploaderQueue } from '../lib/upload/uploader';
 import { ShardObject } from './ShardObject';
 import { UPLOAD_CANCELLED } from './constants';
+import { FileChunker } from '../../lib/chunkUploader';
+import { createCipheriv } from 'react-native-crypto';
 
 export interface FileMeta {
   size: number;
   name: string;
-  content: Transform;
+  content: FileChunker;
 }
 
 export class FileObjectUpload extends EventEmitter {
@@ -65,6 +67,18 @@ export class FileObjectUpload extends EventEmitter {
 
   getId(): string {
     return this.id;
+  }
+
+  getFileChunker(): FileChunker {
+    return this.fileMeta.content;
+  }
+
+  getEncryptionKey(): Buffer {
+    return this.fileEncryptionKey;
+  }
+
+  getIndex(): Buffer {
+    return this.index.slice(0, 16);
   }
 
   checkIfIsAborted(): void {
@@ -144,28 +158,11 @@ export class FileObjectUpload extends EventEmitter {
       });
   }
 
-  NodeRejectedShard(encryptedShard: Buffer, shard: Shard): Promise<boolean> {
-    this.checkIfIsAborted();
-
-    const req = this.api.sendShardToNode(shard, encryptedShard);
-
-    this.requests.push(req);
-
-    return req.start<SendShardToNodeResponse>()
-      .then(() => false)
-      .catch((err) => {
-        if (err.response && err.response.status < 400) {
-          return true;
-        }
-        throw wrap('Farmer request error', err);
-      });
-  }
-
   GenerateHmac(shardMetas: ShardMeta[]): string {
     const shardMetasCopy = [...shardMetas].sort((sA, sB) => sA.index - sB.index);
     const hmac = sha512HmacBuffer(this.fileEncryptionKey);
 
-    for (const shardMeta of shardMetas) {
+    for (const shardMeta of shardMetasCopy) {
       hmac.update(Buffer.from(shardMeta.hash, 'hex'));
     }
 
@@ -175,68 +172,79 @@ export class FileObjectUpload extends EventEmitter {
   encrypt(): EncryptStream {
     this.encrypted = true;
 
-    this.funnel.pipe(this.cipher);
-
-    this.fileMeta.content.on('data', (chunk) => {
-      this.funnel.push(chunk);
-    });
-
-    this.fileMeta.content.on('error', (err) => {
-      this.funnel.emit('error', err);
-    });
-
-    this.fileMeta.content.on('end', () => {
-      this.funnel.end();
-    });
-
-    this.funnel.on('error', (err) => {
-      this.cipher.emit('error', err);
-    });
-
     return this.cipher;
   }
 
   private parallelUpload(callback: UploadProgressCallback): Promise<ShardMeta[]> {
-    const ramUsage = 100 * 1024 * 1024; // 100Mb
     const nShards = Math.ceil(this.fileMeta.size / determineShardSize(this.fileMeta.size));
-    const concurrency = Math.min(determineConcurrency(ramUsage, this.fileMeta.size), nShards);
+    const fileChunker = this.fileMeta.content;
+    const uploads = [];
 
-    logger.debug(`Using parallel upload (${nShards} shards, ${concurrency} concurrent uploads)`);
+    let progress = 0;
 
-    const uploader = new UploaderQueue(concurrency, nShards, this);
-
-    let currentBytesUploaded = 0;
-
-    uploader.on('upload-progress', ([bytesUploaded]) => {
-      currentBytesUploaded = updateProgress(this.getSize(), currentBytesUploaded, bytesUploaded, callback);
-    });
-
-    this.on(UPLOAD_CANCELLED, () => {
-      uploader.emit('error', Error('Upload aborted'));
-    });
-
-    const upstream = uploader.getUpstream();
-
-    this.cipher.on('data', (chunk) => {
-      upstream.push(chunk);
-    });
-
-    this.cipher.on('error', (err) => {
-      upstream.emit('error', err);
-    });
-
-    this.cipher.on('end', () => {
-      upstream.end();
-    });
+    const cipher = createCipheriv('aes-256-ctr', this.fileEncryptionKey, this.index.slice(0, 16));
 
     return new Promise((resolve, reject) => {
-      uploader.once('end', () => {
-        resolve(this.shardMetas);
-      });
+      fileChunker.on('chunk-error', reject);
 
-      uploader.once('error', ([err]) => {
-        reject(err);
-      });
+      fileChunker.on('chunk-end', async (chunkPointers) => {
+        console.log('chunking finished. Uploading and removing chunks');
+
+        for (const chunkPointer of chunkPointers) {
+          console.log('Handling chunk: ', chunkPointer.index);
+
+          const chunkStream = await fileChunker.getChunk(chunkPointer);
+
+          chunkStream.open();
+
+          let chunkSlices: Buffer[] = [];
+
+          chunkStream.onData((chunk: string) => {
+            chunkSlices.push(Buffer.from(chunk, FileChunker.defaultEncoding));
+          });
+
+          chunkStream.onError((err) => {
+            console.log('chunkStream Error', err.message);
+            reject(err);
+          });
+
+          await new Promise((forResolve, forReject) => {
+            chunkStream.onEnd(() => {
+              cipher.write(Buffer.concat(chunkSlices));
+
+              const encryptedChunk = cipher.read();
+
+              this.uploadShard(encryptedChunk, encryptedChunk.length, this.frameId, chunkPointer.index, 3, false)
+                .then((shardMeta) => {
+                  progress += (encryptedChunk.length / this.fileMeta.size);
+                  callback(progress, encryptedChunk.length, this.fileMeta.size);
+                  this.shardMetas.push(shardMeta);
+                }).catch((err) => {
+                  forReject(err);
+                }).finally(() => {
+                  uploads.push(fileChunker.destroyChunk(chunkPointer));
+                  chunkSlices = [];
+
+                  forResolve(null);
+                });
+            });
+          });
+        }
+      })
+
+      const uploadFinishedCheckerInterval = setInterval(() => {
+        if (uploads.length === nShards) {
+          Promise.all(uploads).then(() => {
+            clearInterval(uploadFinishedCheckerInterval);
+            resolve(this.shardMetas);
+          }).catch((err) => {
+            clearInterval(uploadFinishedCheckerInterval);
+            reject(err);
+          });
+        }
+      }, 500);
+
+      fileChunker.start(nShards);
     });
   }
 
@@ -276,20 +284,25 @@ export class FileObjectUpload extends EventEmitter {
       });
     });
 
-    return shardObject.upload(encryptedShard)
-      .then((res) => {
+    let retries = attemps;
+
+    do {
+      try {
+        await shardObject.upload(encryptedShard);
+
         logger.info(`Shard ${shardMeta.hash} uploaded succesfully`);
 
-        return res;
-      })
-      .catch((err) => {
-        if (attemps > 1 && !this.aborted) {
-          logger.error(`Upload for shard ${shardMeta.hash} failed. Reason: ${err.message}. Retrying ...`);
+        retries = 0;
+      } catch (err) {
+        logger.error(`Upload for shard ${shardMeta.hash} failed. Reason: ${err.message}. Retrying ...`);
 
-          return this.uploadShard(encryptedShard, shardSize, frameId, index, attemps - 1, parity);
-        }
-        throw wrap('Uploading shard error', err);
-      });
+        retries--;
+      }
+    } while (retries > 0);
+
+    encryptedShard = null;
+
+    return shardMeta;
   }
 
   createBucketEntry(shardMetas: ShardMeta[]): Promise<void> {

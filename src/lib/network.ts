@@ -4,13 +4,16 @@ import { PassThrough, Transform } from 'readable-stream';
 
 import { getUser } from '../database/DBUtils.ts/utils';
 import RNFetchBlob from 'rn-fetch-blob';
+import chunkUpload from 'react-native-chunk-upload'
+import { FileChunker } from './chunkUploader';
+import { determineShardSize } from '../inxt-js/lib/utils';
 
 type ProgressCallback = (progress: number, uploadedBytes: number | null, totalBytes: number | null) => void;
 
 interface IUploadParams {
   filesize: number,
   filepath: string,
-  filecontent: Transform,
+  filecontent: FileChunker,
   progressCallback: ProgressCallback;
 }
 
@@ -29,28 +32,6 @@ interface EnvironmentConfig {
   bridgePass: string,
   encryptionKey: string,
   bucketId: string
-}
-
-/**
- * TODO: Change typing in inxt-js and remove this interface
- */
-interface CreateEntryFromFrameResponse {
-  id: string;
-  index: string;
-  frame: string;
-  bucket: string;
-  mimetype: string;
-  name: string;
-  renewal: string;
-  created: string;
-  hmac: {
-    value: string;
-    type: string;
-  };
-  erasure: {
-    type: string;
-  };
-  size: number;
 }
 
 export class Network {
@@ -74,25 +55,13 @@ export class Network {
     }
 
     async uploadFile(bucketId: string, params: IMobileUploadParams): Promise<string> {
-      const fileStream = await RNFetchBlob.fs.readStream(params.fileUri, 'base64', 4095);
-      const passthrough = new PassThrough();
-
-      fileStream.onError((err) => {
-        passthrough.emit('error', err);
-      });
-
-      fileStream.onData((chunk: string) => {
-        passthrough.push(Buffer.from(chunk, 'base64'));
-      });
-
-      fileStream.onEnd(() => passthrough.end());
-      fileStream.open();
+      const fileChunker = new FileChunker(params.fileUri, determineShardSize(0));
 
       const stat = await RNFetchBlob.fs.stat(params.fileUri);
 
       return this._uploadFile(bucketId, {
         filepath: params.filepath,
-        filecontent: passthrough,
+        filecontent: fileChunker,
         filesize: parseInt(stat.size),
         progressCallback: params.progressCallback
       });

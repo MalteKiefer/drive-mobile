@@ -35,9 +35,11 @@ export class EventEmitter {
   }
 
   emit(event: Event, ...args): void {
-    this.events.get(event).forEach((listener) => {
-      listener.apply(listener, args);
-    });
+    if (this.events.has(event)) {
+      this.events.get(event).forEach((listener) => {
+        listener.apply(listener, args);
+      });
+    }
   }
 
   listenerCount(event: Event): number {
