@@ -42,6 +42,7 @@ function CreateFolderModal(props: Reducers) {
         bottomOffset: 100
       });
     })
+    setFolderName('');
     props.dispatch(layoutActions.closeCreateFolderModal())
     setIsOpen(false)
   }
@@ -58,6 +59,7 @@ function CreateFolderModal(props: Reducers) {
       entry={'bottom'}
       coverScreen={true}
       style={styles.modalSettings}
+      backButtonClose={true}
     >
       <View style={styles.drawerKnob}></View>
       <View style={styles.alignCenter}>
