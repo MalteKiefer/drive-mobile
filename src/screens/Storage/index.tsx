@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import prettysize from 'prettysize';
 import {
   View, Text, StyleSheet, Image, ActivityIndicator,
-  Platform, TouchableOpacity, TouchableWithoutFeedback
+  Platform, TouchableOpacity, TouchableWithoutFeedback, TouchableHighlight
 } from 'react-native';
 import { connect } from 'react-redux';
 import { getIcon } from '../../helpers/getIcon';
@@ -55,9 +55,7 @@ function Storage(props: StorageProps): JSX.Element {
   }
 
   useEffect(() => {
-    loadValues().then(res => {
-      setUsageValues(res)
-    }).catch(() => { })
+    loadValues().then(res => setUsageValues(res)).catch(() => { })
 
     getProducts().then((res) => {
       setProducts(res)
@@ -88,7 +86,7 @@ function Storage(props: StorageProps): JSX.Element {
         </View>
         <View style={[tailwind('mx-5 px-5 py-3'), { backgroundColor: '#F4F5F7', borderRadius: 10 }]}>
           <View>
-            <Text>{strings.screens.storage.space.used.used} {prettysize(usageValues.usage)} {strings.screens.storage.space.used.of} {parseLimit()}</Text>
+            <Text style={{ color: '#42526E' }}>{strings.screens.storage.space.used.used} {prettysize(usageValues.usage)} {strings.screens.storage.space.used.of} {parseLimit()}</Text>
           </View>
           <View style={[tailwind('my-2'), {}]}>
             <ProgressBar
@@ -113,13 +111,18 @@ function Storage(props: StorageProps): JSX.Element {
         </View>
       </View>
 
-      <View style={tailwind('button-wrapper')}>
-        <TouchableWithoutFeedback>
-          <Text>Change plan</Text>
-        </TouchableWithoutFeedback>
+      <View>
+        <TouchableHighlight
+          style={tailwind('btn btn-primary my-5 mx-5')}
+          onPress={() => {
+            props.navigation.push('Billing')
+          }}>
+          <Text style={tailwind('text-base btn-label')}>Change plan</Text>
+        </TouchableHighlight>
+
       </View>
 
-      <View style={styles.container}>
+      <View style={styles.container, { display: 'none' }}>
         <View style={styles.cardsContainer}>
           {
             isLoading ?

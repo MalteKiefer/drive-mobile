@@ -42,7 +42,10 @@ function Configuration(props: Reducers): JSX.Element {
       onPress={() => {
         props.navigation.push('Storage')
       }} />
-    <ConfigurationItem title="Billing" />
+    <ConfigurationItem title="Billing"
+      onPress={() => {
+        props.navigation.push('Billing')
+      }} />
     <ConfigurationGap />
     <ConfigurationItem title="Security" />
     <ConfigurationItem title="Change password" />

@@ -19,6 +19,8 @@ interface FileItemProps extends Reducers {
   isFolder: boolean
   item: IFile | IFolder | IUploadingFile
   isLoading?: boolean
+  nameEncrypted?: boolean
+  selectable?: boolean
 }
 
 async function handleClick(props: FileItemProps, setProgress: React.Dispatch<SetStateAction<number>>) {
@@ -341,8 +343,6 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = (state: any) => {
-  return { ...state };
-};
+const mapStateToProps = (state: any) => ({ ...state });
 
 export default connect(mapStateToProps)(FileItem);

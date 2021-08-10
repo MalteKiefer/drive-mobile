@@ -12,6 +12,7 @@ import StorageWebView from './screens/StorageWebView';
 import EntryGateway from './screens/EntryGateway';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabExplorer from './screens/TabExplorer';
+import Billing from './screens/Billing';
 
 type RouteConfig = NavigationRouteConfigMap<StackNavigationOptions, StackNavigationProp<NavigationRoute<NavigationParams>, NavigationParams>, any>
 
@@ -25,7 +26,8 @@ const routeConfig: RouteConfig = {
   Forgot: { screen: Forgot },
   OutOfSpace: { screen: OutOfSpace },
   Storage: { screen: Storage },
-  StorageWebView: { screen: StorageWebView }
+  StorageWebView: { screen: StorageWebView },
+  Billing: { screen: Billing }
 };
 
 const StackNav = createNativeStackNavigator();
