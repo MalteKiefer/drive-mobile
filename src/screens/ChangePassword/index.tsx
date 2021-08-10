@@ -57,7 +57,7 @@ function ChangePassword(props: any) {
             style={tailwind('input')}
             value={newPassword}
             onChangeText={value => setNewPassword(value)}
-            placeholder={strings.components.inputs.confirm_password}
+            placeholder='New password'
             placeholderTextColor="#666"
             secureTextEntry={true}
             textContentType="password"
