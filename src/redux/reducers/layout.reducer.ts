@@ -13,7 +13,8 @@ export interface LayoutState {
   showShareModal: boolean
   showFreeForYouModal: boolean
   showComingSoonModal: boolean
-  showUploadModal: boolean
+  showUploadModal: boolean,
+  showCreateFolderModal: boolean
 }
 
 const initialState: LayoutState = {
@@ -28,7 +29,8 @@ const initialState: LayoutState = {
   showShareModal: false,
   showFreeForYouModal: false,
   showComingSoonModal: false,
-  showUploadModal: false
+  showUploadModal: false,
+  showCreateFolderModal: false
 };
 
 export function layoutReducer(state = initialState, action: AnyAction): LayoutState {
@@ -146,6 +148,18 @@ export function layoutReducer(state = initialState, action: AnyAction): LayoutSt
     return {
       ...state,
       showComingSoonModal: false
+    }
+  }
+  case layoutActionTypes.OPEN_CREATE_FOLDER_MODAL: {
+    return {
+      ...state,
+      showCreateFolderModal: true
+    }
+  }
+  case layoutActionTypes.CLOSE_CREATE_FOLDER_MODAL: {
+    return {
+      ...state,
+      showCreateFolderModal: false
     }
   }
   default:
