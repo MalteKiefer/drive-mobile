@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
 
 const toastConfig = {
   success: function successToast({ text1, props, ...rest }) {
-    <View style={{
+    return <View style={{
       backgroundColor: '#091E42',
       display: 'flex',
       width: '90%',
@@ -164,7 +164,7 @@ const toastConfig = {
     </View>
   },
   error: function errorToast({ text1, props, ...rest }) {
-    <View style={{
+    return <View style={{
       backgroundColor: '#DA1E28',
       display: 'flex',
       width: '90%',
@@ -183,7 +183,7 @@ const toastConfig = {
     </View>
   },
   warn: function warnToast({ text1, props, ...rest }){
-    <View style={{
+    return <View style={{
       backgroundColor: '#F1C21B',
       display: 'flex',
       width: '90%',
