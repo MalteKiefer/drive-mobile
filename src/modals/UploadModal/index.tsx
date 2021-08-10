@@ -135,6 +135,7 @@ function UploadModal(props: any) {
         icon={Unicons.UilFolderUpload}
         onPress={() => {
           props.dispatch(layoutActions.openCreateFolderModal());
+          props.dispatch(layoutActions.closeUploadFileModal());
         }}
       />
 
