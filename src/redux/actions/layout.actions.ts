@@ -25,7 +25,9 @@ export const layoutActions = {
   openComingSoonModal,
   closeComingSoonModal,
   openUploadFileModal,
-  closeUploadFileModal
+  closeUploadFileModal,
+  openCreateFolderModal,
+  closeCreateFolderModal
 };
 
 function openSearch(): AnyAction {
@@ -125,4 +127,12 @@ function openComingSoonModal(): AnyAction {
 
 function closeComingSoonModal(): AnyAction {
   return { type: layoutActionTypes.CLOSE_COMING_SOON_MODAL };
+}
+
+function openCreateFolderModal(): AnyAction {
+  return { type: layoutActionTypes.OPEN_CREATE_FOLDER_MODAL };
+}
+
+function closeCreateFolderModal(): AnyAction {
+  return { type: layoutActionTypes.CLOSE_CREATE_FOLDER_MODAL };
 }

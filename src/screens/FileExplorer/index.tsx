@@ -18,6 +18,7 @@ import Toast from 'react-native-simple-toast'
 import FreeForYouModal from '../../modals/FreeForYouModal';
 import SearchBox from '../../components/SearchBox';
 import UploadModal from '../../modals/UploadModal';
+import CreateFolderModal from '../../modals/CreateFolderModal';
 
 function FileExplorer(props: Reducers): JSX.Element {
   const [selectedKeyId, setSelectedKeyId] = useState(0)
@@ -230,6 +231,7 @@ function FileExplorer(props: Reducers): JSX.Element {
     <MoveFilesModal />
     <ShareFilesModal />
     <FreeForYouModal navigation={props.navigation} />
+    <CreateFolderModal />
 
     <AppMenu {...props} title="Storage" navigation={props.navigation} />
     {props.layoutState.searchActive && <SearchBox />}
