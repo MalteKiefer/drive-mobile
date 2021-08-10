@@ -9,7 +9,7 @@ import Separator from '../../components/Separator';
 import SettingsItem from '../SettingsModal/SettingsItem';
 import { tailwind } from '../../helpers/designSystem';
 import * as Unicons from '@iconscout/react-native-unicons';
-
+import Toast from 'react-native-toast-message'
 function CreateFolderModal(props: Reducers) {
   const currentFolderId = props.filesState.folderContent && props.filesState.folderContent.currentFolder
   const [isOpen, setIsOpen] = useState(props.layoutState.showCreateFolderModal)
@@ -19,16 +19,28 @@ function CreateFolderModal(props: Reducers) {
 
   useEffect(() => {
     props.layoutState.showCreateFolderModal ? setIsOpen(true) : null
-
   }, [props.layoutState])
 
   const createHandle = () => {
     createFolder({ folderName, parentId: currentFolderId }).then(()=>{
-      alert('folder created')
       props.dispatch(fileActions.getFolderContent(currentFolderId))
-
+      Toast.show({
+        type: 'success',
+        position: 'bottom',
+        text1: 'Folder created',
+        visibilityTime: 5000,
+        autoHide: true,
+        bottomOffset: 100
+      });
     }).catch((err) => {
-      alert(err)
+      Toast.show({
+        type: 'error',
+        position: 'bottom',
+        text1: err.message,
+        visibilityTime: 5000,
+        autoHide: true,
+        bottomOffset: 100
+      });
     })
     props.dispatch(layoutActions.closeCreateFolderModal())
     setIsOpen(false)
