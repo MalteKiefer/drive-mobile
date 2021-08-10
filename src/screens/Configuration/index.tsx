@@ -48,7 +48,10 @@ function Configuration(props: Reducers): JSX.Element {
       }} />
     <ConfigurationGap />
     <ConfigurationItem title="Security" />
-    <ConfigurationItem title="Change password" />
+    <ConfigurationItem title="Change password"
+      onPress={() => {
+        props.navigation.push('ChangePassword')
+      }} />
     <ConfigurationGap />
     <ConfigurationItem title="Contact" />
     <ConfigurationItem title="More info" />
