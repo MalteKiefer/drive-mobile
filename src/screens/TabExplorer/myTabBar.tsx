@@ -6,6 +6,7 @@ import { layoutActions } from '../../redux/actions';
 import { connect } from 'react-redux';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs/lib/typescript/src/types'
 import { Reducers } from '../../redux/reducers/reducers';
+import { normalize } from '../../helpers';
 
 const tabIcons = {
   Drive: Unicons.UilHdd,
@@ -83,20 +84,18 @@ export default connect(mapStateToProps)(MyTabBar);
 
 const styles = StyleSheet.create({
   tabContainer: {
-    paddingTop: 16,
+    paddingTop: normalize(16),
     backgroundColor: '#fff',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     borderTopWidth: 1,
     borderColor: '#C1C7D0',
-    paddingLeft: 19,
-    paddingRight: 19,
-    paddingBottom: 16
+    paddingBottom: normalize(16)
   },
   tabItem: {
     flexDirection: 'column',
     alignItems: 'center',
-    width: 70
+    width: normalize(70)
   }
 });
