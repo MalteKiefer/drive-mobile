@@ -1,5 +1,5 @@
-import { randomBytes, createDecipheriv } from 'react-native-crypto';
-import RNFetchBlob from 'rn-fetch-blob';
+import { createDecipheriv } from 'react-native-crypto';
+import RNFetchBlob, { RNFetchBlobWriteStream } from 'rn-fetch-blob';
 import { doUntil, eachLimit, retry } from 'async';
 
 // import DecryptStream from '../lib/decryptstream';
@@ -202,9 +202,20 @@ export class FileObject extends EventEmitter {
   }
 
   async download(): Promise<void> {
-    const filePath = RNFetchBlob.fs.dirs.DocumentDir + '/pruebaHolaFinal.pdf';
+    const filename = 'pruebaHolaFinal';
+    const extension = 'pdf';
+    let filePath = RNFetchBlob.fs.dirs.DocumentDir + '/' + filename + (extension ? '.' + extension : '');
 
-    console.log('Filepath', filePath);
+    const fileExists = await RNFetchBlob.fs.exists(filePath);
+
+    if (!fileExists) {
+      await RNFetchBlob.fs.createFile(filePath, '', 'utf8');
+    } else {
+      filePath = RNFetchBlob.fs.dirs.DocumentDir + '/' + filename + '-' + Date.now().toString() + (extension ? '.' + extension : '');
+      await RNFetchBlob.fs.createFile(filePath, '', 'utf8');
+    }
+
+    const fileStream: RNFetchBlobWriteStream = await RNFetchBlob.fs.writeStream(filePath, 'base64');
 
     try {
       if (!this.fileInfo) {
@@ -222,16 +233,14 @@ export class FileObject extends EventEmitter {
 
         const shardDecrypted: Buffer = decipher.read();
 
-        console.log('decipher read and write, appending to file');
-
-        await RNFetchBlob.fs.appendFile(filePath, shardDecrypted.toString('base64'), 'base64');
-
-        console.log('appended to file');
+        await fileStream.write(shardDecrypted.toString('base64'));
 
         this.emit(Download.Progress, shardDecrypted.length);
       }
+
+      fileStream.close();
     } catch (err) {
-      console.log('err', err);
+      fileStream.close();
       await RNFetchBlob.fs.unlink(filePath);
       throw wrap('Download shard error', err);
     }
