@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import { decryptText, encryptText, encryptTextWithKey, passToHash, getLyticsData } from '../../helpers';
 import { getHeaders } from '../../helpers/headers';
+import { isJsonString } from '../Register/registerUtils';
 
 export function isStrongPassword(pwd: string): boolean {
   return /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$/.test(pwd);
@@ -19,14 +20,6 @@ export async function getNewBits(): Promise<string> {
     .then(res => res.json())
     .then(res => res.bits)
     .then(bits => decryptText(bits))
-}
-
-export function IsJsonString(str: string): any {
-  try {
-    return JSON.parse(str);
-  } catch (e) {
-    return null;
-  }
 }
 
 async function getSalt(email) {
@@ -77,7 +70,7 @@ export async function doChangePassword(params: ChangePasswordParam): Promise<any
       return res.json()
     } else {
       const body = await res.text()
-      const json = IsJsonString(body)
+      const json = isJsonString(body)
 
       if (json) {
         throw Error(json.message)

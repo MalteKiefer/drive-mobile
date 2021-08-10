@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { fileActions, layoutActions } from '../../redux/actions';
 import * as Unicons from '@iconscout/react-native-unicons';
 import { Reducers } from '../../redux/reducers/reducers';
-import Toast from 'react-native-toast-message';
 
 interface AppMenuProps extends Reducers {
   title: string
@@ -40,15 +39,7 @@ function AppMenu(props: AppMenuProps) {
           </View>
           <View style={styles.w50}>
             {!props.hideSearch && <TouchableWithoutFeedback onPress={() => {
-              // props.dispatch(layoutActions.openSearch())
-              Toast.show({
-                type: 'warn',
-                position: 'bottom',
-                text1: 'Hello',
-                visibilityTime: 5000,
-                autoHide: true,
-                bottomOffset: 100
-              });
+              props.dispatch(layoutActions.openSearch())
             }}>
               <Unicons.UilSearch color='#0F62FE' size={27} />
             </TouchableWithoutFeedback>}

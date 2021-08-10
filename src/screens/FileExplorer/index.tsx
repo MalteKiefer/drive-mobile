@@ -230,15 +230,16 @@ function FileExplorer(props: Reducers): JSX.Element {
   }
 
   return <View style={styles.container}>
-    <FileDetailsModal key={selectedKeyId} />
-    <SettingsModal navigation={props.navigation} />
-    <UploadModal navigation={props.navigation} />
-    <SortModal />
-    <DeleteItemModal />
-    <MoveFilesModal />
-    <ShareFilesModal />
-    <FreeForYouModal navigation={props.navigation} />
-    <CreateFolderModal />
+
+    <FileDetailsModal {...props} key={selectedKeyId} />
+    <SettingsModal {...props} navigation={props.navigation} />
+    <UploadModal {...props} navigation={props.navigation} />
+    <SortModal {...props} />
+    <DeleteItemModal {...props} />
+    <MoveFilesModal {...props} />
+    <ShareFilesModal {...props} />
+    <FreeForYouModal {...props} navigation={props.navigation} />
+    <CreateFolderModal {...props} />
 
     <AppMenu {...props} title="Storage" navigation={props.navigation} />
     {props.layoutState.searchActive && <SearchBox />}

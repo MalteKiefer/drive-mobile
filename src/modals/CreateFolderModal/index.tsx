@@ -22,7 +22,7 @@ function CreateFolderModal(props: Reducers) {
   }, [props.layoutState])
 
   const createHandle = () => {
-    createFolder({ folderName, parentId: currentFolderId }).then(()=>{
+    createFolder({ folderName, parentId: currentFolderId }).then(() => {
       props.dispatch(fileActions.getFolderContent(currentFolderId))
       Toast.show({
         type: 'success',
@@ -41,10 +41,12 @@ function CreateFolderModal(props: Reducers) {
         autoHide: true,
         bottomOffset: 100
       });
-    })
+    });
+
     setFolderName('');
-    props.dispatch(layoutActions.closeCreateFolderModal())
-    setIsOpen(false)
+    props.dispatch(layoutActions.closeCreateFolderModal());
+    setIsOpen(false);
+
   }
 
   return (
@@ -85,7 +87,7 @@ function CreateFolderModal(props: Reducers) {
             color={'#0F62FE'} />
         </View>
         <TouchableHighlight
-          style={[tailwind('btn btn-primary my-3'), emptyName?{ backgroundColor: '#A6C8FF' }:null]}
+          style={[tailwind('btn btn-primary my-3'), emptyName ? { backgroundColor: '#A6C8FF' } : null]}
           underlayColor="#4585f5"
           onPress={createHandle}
           disabled={emptyName}>

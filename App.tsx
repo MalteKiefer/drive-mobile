@@ -182,7 +182,7 @@ const toastConfig = {
       </View>
     </View>
   },
-  warn: function warnToast({ text1, props, ...rest }){
+  warn: function warnToast({ text1, props, ...rest }) {
     return <View style={{
       backgroundColor: '#F1C21B',
       display: 'flex',
@@ -194,7 +194,7 @@ const toastConfig = {
       alignItems: 'center'
     }}>
       <View>
-        <Unicons.UilCheckCircle color="#091E42" size={24} />
+        <Unicons.UilExclamationTriangle color="#091E42" size={24} />
       </View>
       <View style={{ flexGrow: 1, marginLeft: 20 }}>
         <Text style={{ color: '#091E42' }}>{text1}</Text>
