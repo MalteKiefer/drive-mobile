@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, StatusBar, Text, Platform, Linking, Alert, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, Platform, Linking, Alert, SafeAreaView } from 'react-native';
 import { Provider } from 'react-redux'
 import { store } from './src/store'
 import AppNavigator from './src/AppNavigator';
@@ -7,6 +7,8 @@ import { analyticsSetup, loadEnvVars, loadFonts, trackStackScreen } from './src/
 import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { fileActions } from './src/redux/actions';
 import ReceiveSharingIntent from 'react-native-receive-sharing-intent';
+
+process.nextTick = setImmediate;
 
 export default function App(): JSX.Element {
   const [appInitialized, setAppInitialized] = useState(false);
@@ -113,10 +115,6 @@ export default function App(): JSX.Element {
       {appInitialized ?
         <SafeAreaView
           style={styles.appContainer}>
-          <StatusBar
-            hidden={false}
-            backgroundColor={'#fff'}
-            barStyle={'dark-content'} />
 
           <AppNavigator />
         </SafeAreaView>
