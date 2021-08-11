@@ -47,10 +47,12 @@ function closeSettings(): AnyAction {
 }
 
 function openItemModal(item: any): AnyAction {
+  return (dispatch: Dispatch): void => {
   if (item) {
-    return { type: fileActionTypes.SELECT_FILE, payload: item };
+      dispatch({ type: fileActionTypes.SELECT_FILE, payload: item });
   }
-  return { type: layoutActionTypes.OPEN_ITEM_MODAL, payload: item };
+    dispatch({ type: layoutActionTypes.OPEN_ITEM_MODAL, payload: item });
+  };
 }
 
 function closeItemModal(): AnyAction {
