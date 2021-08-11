@@ -1,104 +1,55 @@
-import { Alert, Platform } from 'react-native'
-import RNFetchBlob from 'rn-fetch-blob'
-import analytics, { getLyticsData } from '../helpers/lytics'
-import { fileActions, userActions } from '../redux/actions'
-import { NEWTORK_TIMEOUT } from '../screens/FileExplorer/init'
-import PackageJson from '../../package.json'
-import { Reducers } from '../redux/reducers/reducers'
-import { Dispatch } from 'react'
-import { AnyAction } from 'redux'
+import { getEnvironmentConfig, Network } from '../lib/network'
+import { deviceStorage } from '../helpers'
+import { getHeaders } from '../helpers/headers'
 
-export function uploadFile(props: Reducers & { dispatch: Dispatch<AnyAction> }, result: any, currentFolder: number | undefined): void {
-  props.dispatch(fileActions.uploadFileStart())
+interface FileMeta {
+  progress: number
+  currentFolder: number
+  id: string
+  createdAt: Date,
+  type: string;
+  name: string;
+  size: number;
+  uri: string;
+  lastModified?: number;
+  output?: FileList | null;
+}
 
-  const userData = getLyticsData().then((res) => {
-    analytics.track('file-upload-start', {
-      userId: res.uuid,
-      email: res.email,
-      device: 'mobile'
-    }).catch(() => { })
-  })
+export async function uploadFile(file: FileMeta, progressCallback: (progress: number) => void): Promise<string> {
+  const { bridgeUser, bridgePass, encryptionKey, bucketId } = await getEnvironmentConfig();
+  const params = { fileUri: file.uri, filepath: file.uri, progressCallback };
 
-  try {
-    // Set name for pics/photos
-    if (!result.name) {
-      result.name = result.uri.split('/').pop()
-    }
-    //result.type = 'application/octet-stream';
+  return new Network(bridgeUser, bridgePass, encryptionKey).uploadFile(bucketId, params);
+}
 
-    const token = props.authenticationState.token
-    const mnemonic = props.authenticationState.user.mnemonic
+// TODO: Move to utils or fs
+type FileType = 'document' | 'image';
 
-    const headers = {
-      'Authorization': `Bearer ${token}`,
-      'internxt-mnemonic': mnemonic,
-      'Content-Type': 'multipart/form-data',
-      'internxt-version': PackageJson.version,
-      'internxt-client': 'drive-mobile'
-    };
+export function getFinalUri(fileUri: string, fileType: FileType): string {
+  return fileType === 'document' ? decodeURIComponent(fileUri) : fileUri;
+}
 
-    const regex = /^(.*:\/{0,2})\/?(.*)$/gm
-    const file = result.uri.replace(regex, '$2')
+export interface FileEntry {
+  fileId: string
+  // eslint-disable-next-line camelcase
+  file_id: string
+  type: string,
+  bucket: string
+  size: number
+  // eslint-disable-next-line camelcase
+  folder_id: string
+  name: string,
+  // eslint-disable-next-line camelcase
+  encrypt_version: '03-aes'
+}
 
-    const finalUri = Platform.OS === 'ios' ? RNFetchBlob.wrap(decodeURIComponent(file)) : RNFetchBlob.wrap(result.uri)
+export async function createFileEntry(entry: FileEntry): Promise<any> {
+  const { mnemonic } = await deviceStorage.getUser();
+  const token = await deviceStorage.getToken();
 
-    RNFetchBlob.config({ timeout: NEWTORK_TIMEOUT }).fetch('POST', `${process.env.REACT_NATIVE_API_URL}/api/storage/folder/${currentFolder}/upload`, headers,
-      [
-        { name: 'xfile', filename: result.name, data: finalUri }
-      ])
-      .uploadProgress({ count: 10 }, async (sent, total) => {
-        props.dispatch(fileActions.uploadFileSetProgress(sent / total, result.id))
+  const headers = await getHeaders(token, mnemonic);
+  const body = JSON.stringify({ file: entry });
+  const params = { method: 'post', headers, body };
 
-        if (sent / total >= 1) { // Once upload is finished (on small files it almost never reaches 100% as it uploads really fast)
-          props.dispatch(fileActions.uploadFileSetUri(result.uri)) // Set the uri of the file so FileItem can get it as props
-        }
-      })
-      .then((res) => {
-        props.dispatch(fileActions.removeUploadingFile(result.id))
-        props.dispatch(fileActions.updateUploadingFile(result.id))
-        props.dispatch(fileActions.uploadFileSetUri(undefined))
-        if (res.respInfo.status === 401) {
-          throw res;
-
-        } else if (res.respInfo.status === 402) {
-          // setHasSpace
-
-        } else if (res.respInfo.status === 201) {
-          // CHECK THIS METHOD ONCE LOCAL UPLOAD
-          //props.dispatch(fileActions.fetchIfSameFolder(result.currentFolder))
-
-          analytics.track('file-upload-finished', {
-            userId: userData.uuid,
-            email: userData.email,
-            device: 'mobile'
-          }).catch(() => { })
-
-        } else if (res.respInfo.status !== 502) {
-          Alert.alert('Error', 'Cannot upload file');
-        }
-
-        // CHECK ONCE LOCAL UPLOAD
-        props.dispatch(fileActions.uploadFileFinished(result.name))
-      })
-      .catch((err) => {
-        if (err.status === 401) {
-          props.dispatch(userActions.signout())
-
-        } else {
-          Alert.alert('Error', 'Cannot upload file\n' + err)
-        }
-
-        props.dispatch(fileActions.uploadFileFailed(result.id))
-        props.dispatch(fileActions.uploadFileFinished(result.name))
-      })
-
-  } catch (error) {
-    analytics.track('file-upload-error', {
-      userId: userData.uuid,
-      email: userData.email,
-      device: 'mobile'
-    }).catch(() => { })
-    props.dispatch(fileActions.uploadFileFailed(result.id))
-    props.dispatch(fileActions.uploadFileFinished(result.name))
-  }
+  return fetch(`${process.env.REACT_NATIVE_API_URL}/api/storage/file`, params);
 }
