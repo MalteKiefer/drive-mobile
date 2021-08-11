@@ -1,6 +1,5 @@
 import React from 'react'
 import { View, Text, StyleSheet, Image } from 'react-native'
-import { LinearGradient } from 'expo-linear-gradient';
 import { IPlan, IProduct } from '../../redux/services';
 import { getIcon } from '../../helpers/getIcon';
 import strings from '../../../assets/lang/strings';
@@ -17,10 +16,7 @@ interface PlanCardProps {
 function PlanCard(props: PlanCardProps): JSX.Element {
   return (
     <View style={styles.planContainer}>
-      <LinearGradient
-        start={[0.05, 0.95]}
-        end={[1, 0.95]}
-        colors={['#096dff', '#00b1ff']}
+      <View
         style={styles.borderRadius4}
       >
         <View style={styles.circleGradient}>
@@ -35,7 +31,7 @@ function PlanCard(props: PlanCardProps): JSX.Element {
               </Text>
           }
         </View>
-      </LinearGradient>
+      </View>
 
       <View style={styles.priceContainer}>
         {

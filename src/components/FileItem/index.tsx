@@ -9,12 +9,10 @@ import analytics from '../../helpers/lytics';
 import { IFile, IFolder, IUploadingFile } from '../FileList';
 import { Reducers } from '../../redux/reducers/reducers';
 import * as FileSystem from 'expo-file-system'
-import { LinearGradient } from 'expo-linear-gradient';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import PackageJson from '../../../package.json'
 import { NEWTORK_TIMEOUT } from '../../screens/FileExplorer/init';
 import * as Unicons from '@iconscout/react-native-unicons';
-import CheckBox from '../../components/CheckBox'
 interface FileItemProps extends Reducers {
   isFolder: boolean
   item: IFile | IFolder | IUploadingFile
@@ -200,12 +198,6 @@ function FileItem(props: FileItemProps) {
                   setIsLoading(false)
                 })
               }}>
-              {isSelectionMode ? <View style={styles.itemCheckbox}>
-                <CheckBox
-                  text=''
-                  value={isSelected}
-                ></CheckBox>
-              </View> : null}
               <View style={styles.itemIcon}>
                 {
                   props.isFolder ?
@@ -251,10 +243,7 @@ function FileItem(props: FileItemProps) {
         <View style={styles.progressIndicatorContainer}>
           {
             progressWidth ?
-              <LinearGradient
-                colors={['#00b1ff', '#096dff']}
-                start={[0, 0.7]}
-                end={[0.7, 1]}
+              <View
                 style={[styles.progressIndicator, { width: progressWidth }]} />
               :
               null
@@ -262,10 +251,7 @@ function FileItem(props: FileItemProps) {
 
           {
             props.isLoading ?
-              <LinearGradient
-                colors={['#00b1ff', '#096dff']}
-                start={[0, 0.7]}
-                end={[0.7, 1]}
+              <View
                 style={[styles.progressIndicator, { width: uploadProgressWidth }]} />
               :
               null
@@ -305,9 +291,6 @@ const styles = StyleSheet.create({
   },
   itemIcon: {
     margin: 20
-  },
-  itemCheckbox: {
-    marginLeft: 20
   },
   mainContainer: {
     alignItems: 'center',
