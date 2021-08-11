@@ -25,7 +25,9 @@ export const layoutActions = {
   openComingSoonModal,
   closeComingSoonModal,
   openUploadFileModal,
-  closeUploadFileModal
+  closeUploadFileModal,
+  openCreateFolderModal,
+  closeCreateFolderModal
 };
 
 function openSearch(): AnyAction {
@@ -45,10 +47,12 @@ function closeSettings(): AnyAction {
 }
 
 function openItemModal(item: any): AnyAction {
+  return (dispatch: Dispatch): void => {
   if (item) {
-    return { type: fileActionTypes.SELECT_FILE, payload: item };
+      dispatch({ type: fileActionTypes.SELECT_FILE, payload: item });
   }
-  return { type: layoutActionTypes.OPEN_ITEM_MODAL, payload: item };
+    dispatch({ type: layoutActionTypes.OPEN_ITEM_MODAL, payload: item });
+  };
 }
 
 function closeItemModal(): AnyAction {
@@ -125,4 +129,12 @@ function openComingSoonModal(): AnyAction {
 
 function closeComingSoonModal(): AnyAction {
   return { type: layoutActionTypes.CLOSE_COMING_SOON_MODAL };
+}
+
+function openCreateFolderModal(): AnyAction {
+  return { type: layoutActionTypes.OPEN_CREATE_FOLDER_MODAL };
+}
+
+function closeCreateFolderModal(): AnyAction {
+  return { type: layoutActionTypes.CLOSE_CREATE_FOLDER_MODAL };
 }

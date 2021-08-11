@@ -43,13 +43,14 @@ function Register(props: Reducers): JSX.Element {
   const isValidFirstName = !isNullOrEmpty(firstName)
   const isValidLastName = !isNullOrEmpty(lastName)
   const isValidPassword = isStrongPassword(password);
-  const passwordConfirmed = password === confirmPassword;
+  const isValidConfirmedPassword = confirmPassword && password === confirmPassword;
 
   const isValidForm = isValidEmail
     && isValidFirstName
     && isValidLastName
     && isValidPassword
-    && passwordConfirmed;
+    && isValidConfirmedPassword
+    && acceptPolicy;
 
   const [registerButtonClicked, setRegisterButtonClicked] = useState(false);
 
@@ -216,7 +217,7 @@ function Register(props: Reducers): JSX.Element {
                   color={isValidPassword || isValidPassword || passwordFocus ? '#42BE65' : '#7A869A'} />
               </View>
 
-              <View style={[tailwind('input-wrapper my-2'), tailwind(password === confirmPassword ? 'input-valid' : 'input-error')]}>
+              <View style={[tailwind('input-wrapper my-2'), tailwind(isValidConfirmedPassword ? 'input-valid' : 'input-error')]}>
                 <TextInput
                   style={tailwind('input')}
                   value={confirmPassword}
@@ -231,7 +232,7 @@ function Register(props: Reducers): JSX.Element {
                 />
                 <Unicons.UilEye
                   style={tailwind('input-icon')}
-                  color={password === confirmPassword || confirmPasswordFocus ? '#42BE65' : '#7A869A'} />
+                  color={isValidConfirmedPassword || confirmPasswordFocus ? '#42BE65' : '#7A869A'} />
               </View>
             </View>
           </View>
@@ -244,17 +245,17 @@ function Register(props: Reducers): JSX.Element {
             <CheckBox
               text="Accept terms, conditions and privacy policy"
               value={acceptPolicy}
-              onChange={(value) => setAcceptPolicy(value)}
+              onChange={setAcceptPolicy}
             ></CheckBox>
           </View>
 
           <View>
-            <View style={[styles.containerCentered, isLoading || isValidForm ? styles.halfOpacity : {}]}>
+            <View style={styles.containerCentered}>
               <View>
                 <TouchableOpacity
                   disabled={!isValidForm}
-                  style={[globalStyles.buttonInputStyle.button, globalStyles.buttonInputStyle.block]}
-                  onPress={() => handleOnPress()}
+                  style={[globalStyles.buttonInputStyle.button, globalStyles.buttonInputStyle.block, { backgroundColor: isValidForm ? '#0F62FE' : '#A6C8FF' }]}
+                  onPress={handleOnPress}
                 >
                   <Text style={styles.buttonOnLabel}>{registerButtonClicked ? strings.components.buttons.creating_button : strings.components.buttons.create}</Text>
                 </TouchableOpacity>
@@ -282,9 +283,6 @@ const styles = StyleSheet.create({
   containerCentered: {
     alignSelf: 'stretch',
     justifyContent: 'center'
-  },
-  halfOpacity: {
-    opacity: 0.5
   },
   showInputFieldsWrapper: {
     justifyContent: 'center'

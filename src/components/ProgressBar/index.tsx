@@ -1,6 +1,5 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 
 interface ProgressBarProps {
   usedValue: number
@@ -21,13 +20,14 @@ export default function ProgressBar(props: ProgressBarProps): JSX.Element {
   };
 
   return <View style={styles.container}>
-    <LinearGradient
-      colors={['#0443E7', '#0443E7']}
-      start={[0.5, 0]}
+    <View
       style={[
         styles.inner,
         usedValueStyle.size,
-        styleProgress
+        styleProgress,
+        {
+          backgroundColor: 'blue'
+        }
       ]}
     />
   </View>

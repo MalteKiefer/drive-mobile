@@ -1,5 +1,5 @@
-import React, { Fragment, useState, useRef } from 'react'
-import { View, StyleSheet, TextInput, Text, TouchableWithoutFeedback } from 'react-native'
+import React, { Fragment } from 'react'
+import { View, StyleSheet, Text, TouchableWithoutFeedback } from 'react-native'
 import { connect } from 'react-redux';
 import { fileActions, layoutActions } from '../../redux/actions';
 import * as Unicons from '@iconscout/react-native-unicons';
@@ -13,14 +13,12 @@ interface AppMenuProps extends Reducers {
 }
 
 function AppMenu(props: AppMenuProps) {
-  const [activeSearchBox, setActiveSearchBox] = useState(false)
-  const selectedItems = props.filesState.selectedItems;
-  const textInput = useRef<TextInput>(null)
+  // Hide options menu, it is not finished yet.
+  props.hideOptions = undefined;
 
   const parentFolderId = props?.filesState?.folderContent?.parentId;
 
   return <View style={styles.container}>
-
     <Fragment>
       <View style={styles.buttonContainer}>
         <View style={styles.commonButtons}>
@@ -37,7 +35,7 @@ function AppMenu(props: AppMenuProps) {
           <View style={styles.fGrow}>
             <Text style={styles.storageText}>{props.title}</Text>
           </View>
-          <View style={styles.w50}>
+          <View style={[styles.w50, { alignItems: 'center' }]}>
             {!props.hideSearch && <TouchableWithoutFeedback onPress={() => {
               props.dispatch(layoutActions.openSearch())
             }}>
@@ -45,7 +43,7 @@ function AppMenu(props: AppMenuProps) {
             </TouchableWithoutFeedback>}
           </View>
           <View>
-            {!props.hideOptions &&
+            {props.hideOptions === true &&
               <TouchableWithoutFeedback
                 onPress={() => {
                   props.dispatch(layoutActions.openSettings());

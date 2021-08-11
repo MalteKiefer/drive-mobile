@@ -12,13 +12,9 @@ export interface IFolder {
   icon: any
 }
 
-export interface IUploadingFile {
-  id: number
+export interface IUploadingFile extends IFile {
   currentFolder: number
   progress: number
-  name: string
-  size: number
-  type: string
   uri: string
 }
 

@@ -13,11 +13,12 @@ import ShareFilesModal from '../../modals/ShareFilesModal';
 import { Reducers } from '../../redux/reducers/reducers';
 import analytics, { getLyticsData } from '../../helpers/lytics';
 import RNFetchBlob from 'rn-fetch-blob';
-import { WaveIndicator } from 'react-native-indicators'
-import Toast from 'react-native-simple-toast'
+import Toast from 'react-native-toast-message'
 import FreeForYouModal from '../../modals/FreeForYouModal';
 import SearchBox from '../../components/SearchBox';
 import UploadModal from '../../modals/UploadModal';
+import CreateFolderModal from '../../modals/CreateFolderModal';
+import { WaveIndicator } from 'react-native-indicators';
 
 function FileExplorer(props: Reducers): JSX.Element {
   const [selectedKeyId, setSelectedKeyId] = useState(0)
@@ -122,7 +123,14 @@ function FileExplorer(props: Reducers): JSX.Element {
       if (props.filesState.folderContent && !props.filesState.folderContent.parentId) {
         count++
         if (count < 2) {
-          Toast.show('Try exiting again to close the app')
+          Toast.show({
+            type: 'error',
+            position: 'bottom',
+            text1: 'Try exiting again to close the app',
+            visibilityTime: 5000,
+            autoHide: true,
+            bottomOffset: 100
+          });
         } else {
           BackHandler.exitApp()
         }
@@ -222,14 +230,16 @@ function FileExplorer(props: Reducers): JSX.Element {
   }
 
   return <View style={styles.container}>
-    <FileDetailsModal key={selectedKeyId} />
-    <SettingsModal navigation={props.navigation} />
-    <UploadModal navigation={props.navigation} />
-    <SortModal />
-    <DeleteItemModal />
-    <MoveFilesModal />
-    <ShareFilesModal />
-    <FreeForYouModal navigation={props.navigation} />
+
+    <FileDetailsModal {...props} key={selectedKeyId} />
+    <SettingsModal {...props} navigation={props.navigation} />
+    <UploadModal {...props} navigation={props.navigation} />
+    <SortModal {...props} />
+    <DeleteItemModal {...props} />
+    <MoveFilesModal {...props} />
+    <ShareFilesModal {...props} />
+    <FreeForYouModal {...props} navigation={props.navigation} />
+    <CreateFolderModal {...props} />
 
     <AppMenu {...props} title="Storage" navigation={props.navigation} />
     {props.layoutState.searchActive && <SearchBox />}

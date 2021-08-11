@@ -72,8 +72,6 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = (state: any) => {
-  return { ...state };
-};
+const mapStateToProps = (state: any) => ({ ...state });
 
 export default connect(mapStateToProps)(Share)
