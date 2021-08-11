@@ -107,7 +107,9 @@ function Storage(props: StorageProps): JSX.Element {
 
       <View>
         <View>
-          <Text style={styles.footer}>{strings.screens.storage.plans.current_plan} {prettysize(usageValues.limit)} {strings.getLanguage() === 'es' ? null : 'plan'}</Text>
+          <Text style={styles.footer}>
+            {strings.screens.storage.plans.current_plan} {prettysize(usageValues.limit)} {strings.getLanguage() === 'es' ? null : 'plan'}
+          </Text>
         </View>
       </View>
 

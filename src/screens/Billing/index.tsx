@@ -20,9 +20,10 @@ function BillingTabs() {
 
 function Billing(props: Reducers) {
   return <View style={{ flex: 1, backgroundColor: 'white' }}>
-    <AppMenu {...props} title="Billing" onBackPress={() => {
-      props.navigation.goBack();
-    }} />
+    <AppMenu
+      {...props}
+      title="Billing"
+      onBackPress={() => props.navigation.goBack()} />
 
     <View style={{ flex: 1 }}>
       <BillingTabs />
