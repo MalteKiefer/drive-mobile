@@ -38,7 +38,7 @@ function ConfigurationGap() {
 
 function Configuration(props: Reducers): JSX.Element {
   return <View>
-    <AppMenu {...props} title="Settings" hideSearch={true} hideOptions={true} />
+    <AppMenu title="Settings" hideSearch={true} hideOptions={true} />
     <ConfigurationItem title="Storage"
       onPress={() => {
         props.navigation.push('Storage')

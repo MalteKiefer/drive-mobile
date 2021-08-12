@@ -74,7 +74,7 @@ function Storage(props: StorageProps): JSX.Element {
 
   return (
     <View style={styles.bgWhite}>
-      <AppMenu {...props}
+      <AppMenu
         title={strings.screens.storage.title}
         onBackPress={() => {
           props.navigation.goBack()

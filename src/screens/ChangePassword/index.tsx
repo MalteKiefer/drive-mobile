@@ -55,7 +55,7 @@ function ChangePassword(props: any) {
   const [confirmPasswordFocus, setConfirmPasswordFocus] = useState(false);
 
   return <View>
-    <AppMenu {...props}
+    <AppMenu
       title={strings.components.inputs.password}
       onBackPress={() => {
         props.navigation.goBack()

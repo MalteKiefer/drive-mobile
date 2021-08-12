@@ -27,7 +27,7 @@ function Recents(props: Reducers): JSX.Element {
   useEffect(() => { reloadRecents() }, []);
 
   return <View style={styles.container}>
-    <AppMenu {...props} title="Recents" />
+    <AppMenu title="Recents" />
     {
       loading &&
       <View style={styles.activityIndicator}>
