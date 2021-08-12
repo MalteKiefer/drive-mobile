@@ -29,7 +29,7 @@ function AppMenu(props: AppMenuProps) {
               }
               props.dispatch(fileActions.getFolderContent(parentFolderId));
             }}>
-              <Unicons.UilArrowLeft color={parentFolderId || props.onBackPress ? '#0F62FE' : '#EBECF0'} size={27} />
+              <Unicons.UilArrowLeft color={parentFolderId || props.onBackPress ? '#0F62FE' : '#EBECF0'} size={32} />
             </TouchableWithoutFeedback>
           </View>
           <View style={styles.fGrow}>
@@ -39,7 +39,7 @@ function AppMenu(props: AppMenuProps) {
             {!props.hideSearch && <TouchableWithoutFeedback onPress={() => {
               props.dispatch(layoutActions.openSearch())
             }}>
-              <Unicons.UilSearch color='#0F62FE' size={27} />
+              <Unicons.UilSearch color='#0F62FE' size={32} />
             </TouchableWithoutFeedback>}
           </View>
           <View>
@@ -48,7 +48,7 @@ function AppMenu(props: AppMenuProps) {
                 onPress={() => {
                   props.dispatch(layoutActions.openSettings());
                 }}>
-                <Unicons.UilEllipsisV color='#0F62FE' size={27} />
+                <Unicons.UilEllipsisV color='#0F62FE' size={32} />
               </TouchableWithoutFeedback>}
           </View>
         </View>
@@ -75,7 +75,9 @@ const styles = StyleSheet.create({
   },
   container: {
     flexDirection: 'row',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    marginTop: 10,
+    marginBottom: 10
   },
   storageText: {
     fontFamily: 'NeueEinstellung-SemiBold',

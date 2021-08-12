@@ -66,8 +66,8 @@ function MyTabBar(props: MyTabBarProps): JSX.Element {
             onLongPress={onLongPress}
           >
             <View style={styles.tabItem}>
-              <Icon size={30} color={isFocused ? '#0F62FE' : '#C1C7D0'} />
-              {options.tabBarShowLabel && <Text style={{ color: isFocused ? '#0F62FE' : '#C1C7D0' }}>
+              <Icon size={40} color={isFocused ? '#0F62FE' : '#C1C7D0'} />
+              {!options.tabBarShowLabel && <Text style={{ color: isFocused ? '#0F62FE' : '#C1C7D0', opacity: route.name === 'Upload' ? 0 : 1 }}>
                 {label}
               </Text>}
             </View>
