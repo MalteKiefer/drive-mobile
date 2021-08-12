@@ -40,6 +40,7 @@ function SearchBox(props: Reducers): JSX.Element {
       <View>
         <TouchableWithoutFeedback
           onPress={() => {
+            props.dispatch(fileActions.setSearchString(''));
             props.dispatch(layoutActions.closeSearch())
           }}
           style={styles.cancelWrapper}>
