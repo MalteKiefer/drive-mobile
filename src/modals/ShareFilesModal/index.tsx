@@ -20,7 +20,7 @@ function ShareFilesModal(props: Reducers) {
   const [filename, setFileName] = useState('')
   const [link, setLink] = useState('')
   const [isLoading, setIsLoading] = useState(true)
-  const [inputValue, setInputValue] = useState('1')
+  const [inputValue, setInputValue] = useState('10')
 
   const handleInputChange = (e: string) => {
     setInputValue(e.replace(/[^0-9]/g, ''))
@@ -68,7 +68,6 @@ function ShareFilesModal(props: Reducers) {
     const fileId = file.fileId;
 
     const { bucket, mnemonic, userId, email } = await deviceStorage.getUser();
-
     const network = new Network(email, userId, mnemonic);
     const { index } = await network.getFileInfo(bucket, fileId);
     const fileToken = await network.createFileToken(bucket, fileId, 'PULL');
@@ -92,8 +91,10 @@ function ShareFilesModal(props: Reducers) {
       swipeArea={2}
       onClosed={() => {
         props.dispatch(layoutActions.closeShareModal())
+        setLink('');
         setIsOpen(false)
-        setInputValue('1')
+        setIsLoading(true);
+        setInputValue('10')
       }}
       position='bottom'
       style={styles.modalContainer}>
