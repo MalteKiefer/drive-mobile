@@ -30,7 +30,7 @@ function ChangePassword(props: any) {
       setNewPassword('');
       setConfirmPassword('');
     }).catch(
-      (err) => {
+      (err: Error) => {
         Toast.show({
           type: 'error',
           position: 'bottom',
@@ -47,7 +47,7 @@ function ChangePassword(props: any) {
 
   const isValidPassword = !isNullOrEmpty(password)
   const isValidNewPassword = isStrongPassword(newPassword);
-  const passwordConfirmed = newPassword === confirmPassword;
+  const passwordConfirmed = confirmPassword && newPassword === confirmPassword;
 
   const activeButton = isValidPassword && isValidNewPassword && passwordConfirmed
   const [passwordFocus, setPasswordFocus] = useState(false);

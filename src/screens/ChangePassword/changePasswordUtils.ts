@@ -24,7 +24,7 @@ export async function doChangePassword(params: ChangePasswordParam): Promise<any
   const salt = await getSalt(xUser.email);
 
   if (!salt) {
-    throw new Error('Internal serverr error. Please try later.')
+    throw new Error('Internal server error. Please try later.')
   }
   const hashedCurrentPassword = passToHash({ password: params.password, salt }).hash;
   const encCurrentPass = encryptText(hashedCurrentPassword);
