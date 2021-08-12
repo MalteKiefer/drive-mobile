@@ -1,4 +1,4 @@
-import { randomBytes } from 'react-native-crypto';
+import { randomBytes, createCipheriv } from 'react-native-crypto';
 
 import { EnvironmentConfig, UploadProgressCallback } from '..';
 
@@ -15,8 +15,6 @@ import { EventEmitter } from '../lib/utils/eventEmitter';
 import { INXTRequest } from '../lib';
 
 import { ShardObject } from './ShardObject';
-// import { FileChunker } from '../../lib/chunkUploader';
-import { createCipheriv } from 'react-native-crypto';
 import { wrap } from '../lib/utils/error';
 
 import { FileManager } from '../../lib/fs';
@@ -66,10 +64,6 @@ export class FileObjectUpload extends EventEmitter {
   getId(): string {
     return this.id;
   }
-
-  // getFileChunker(): FileChunker {
-  //   return this.fileMeta.content;
-  // }
 
   getEncryptionKey(): Buffer {
     return this.fileEncryptionKey;

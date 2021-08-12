@@ -14,7 +14,7 @@ import { createEmptyFile, exists, FileManager, getDocumentsDir } from '../../lib
 
 interface FileItemProps extends Reducers {
   isFolder: boolean
-  item: IFile | IFolder | IUploadingFile
+  item: IFile & IFolder & IUploadingFile
   isLoading?: boolean
   nameEncrypted?: boolean
   selectable?: boolean
@@ -60,6 +60,7 @@ function FileItem(props: FileItemProps) {
   function handleFolderClick() {
     trackFolderOpened();
     props.dispatch(fileActions.getFolderContent(props.item.id.toString()));
+    props.dispatch(fileActions.addDepthAbsolutePath([props.item.name]));
   }
 
   async function handleFileClick(): Promise<void> {
@@ -178,7 +179,6 @@ function FileItem(props: FileItemProps) {
   }, [props.item.progress])
 
   const item = props.item
-
   const IconFile = getFileTypeIcon(props.item.type);
 
   return (
@@ -251,8 +251,7 @@ function FileItem(props: FileItemProps) {
             </TouchableOpacity>
           </View>
           {
-            // REMOVE ONCE LOCAL UPLOAD
-            !item.isUploaded ?
+            !item.isUploaded &&
               <View style={styles.buttonDetails}>
                 <TouchableOpacity
                   style={isSelectionMode ? styles.dNone : styles.dFlex}
@@ -260,7 +259,6 @@ function FileItem(props: FileItemProps) {
                   <Unicons.UilEllipsisH size={32} color={'#7A869A'} />
                 </TouchableOpacity>
               </View>
-              : null
           }
         </View>
       </View>

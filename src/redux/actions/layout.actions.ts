@@ -1,4 +1,4 @@
-import { AnyAction } from 'redux';
+import { AnyAction, Dispatch } from 'redux';
 import { layoutActionTypes, fileActionTypes } from '../constants';
 
 export const layoutActions = {
@@ -27,7 +27,9 @@ export const layoutActions = {
   openUploadFileModal,
   closeUploadFileModal,
   openCreateFolderModal,
-  closeCreateFolderModal
+  closeCreateFolderModal,
+  enableBackButton,
+  disableBackButton
 };
 
 function openSearch(): AnyAction {
@@ -46,7 +48,7 @@ function closeSettings(): AnyAction {
   return { type: layoutActionTypes.CLOSE_SETTINGS_MODAL };
 }
 
-function openItemModal(item: any): AnyAction {
+function openItemModal(item: any) {
   return (dispatch: Dispatch): void => {
     if (item) {
       dispatch({ type: fileActionTypes.SELECT_FILE, payload: item });
@@ -137,4 +139,12 @@ function openCreateFolderModal(): AnyAction {
 
 function closeCreateFolderModal(): AnyAction {
   return { type: layoutActionTypes.CLOSE_CREATE_FOLDER_MODAL };
+}
+
+function enableBackButton(): AnyAction {
+  return { type: layoutActionTypes.ENABLE_BACK_BUTTON };
+}
+
+function disableBackButton(): AnyAction {
+  return { type: layoutActionTypes.DISABLE_BACK_BUTTON };
 }

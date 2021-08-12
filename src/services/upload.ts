@@ -2,7 +2,7 @@ import { getEnvironmentConfig, Network } from '../lib/network'
 import { deviceStorage } from '../helpers'
 import { getHeaders } from '../helpers/headers'
 
-interface FileMeta {
+export interface FileMeta {
   progress: number
   currentFolder: number
   id: string
@@ -13,11 +13,12 @@ interface FileMeta {
   uri: string;
   lastModified?: number;
   output?: FileList | null;
+  path: string
 }
 
 export async function uploadFile(file: FileMeta, progressCallback: (progress: number) => void): Promise<string> {
   const { bridgeUser, bridgePass, encryptionKey, bucketId } = await getEnvironmentConfig();
-  const params = { fileUri: file.uri, filepath: file.uri, progressCallback };
+  const params = { fileUri: file.uri, filepath: file.path, progressCallback };
 
   return new Network(bridgeUser, bridgePass, encryptionKey).uploadFile(bucketId, params);
 }

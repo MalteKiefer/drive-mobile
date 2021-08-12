@@ -9,37 +9,39 @@ import { launchImageLibrary } from 'react-native-image-picker';
 
 import { fileActions, layoutActions } from '../../redux/actions';
 import SettingsItem from '../SettingsModal/SettingsItem';
-import { createFileEntry, FileEntry, getFinalUri, uploadFile } from '../../services/upload';
+import { createFileEntry, FileEntry, getFinalUri, uploadFile, FileMeta } from '../../services/upload';
 import Separator from '../../components/Separator';
 import * as Unicons from '@iconscout/react-native-unicons'
 import analytics from '../../helpers/lytics';
 import { deviceStorage, encryptFilename } from '../../helpers';
 import { stat } from '../../lib/fs';
-import Toast from 'react-native-toast-message'
+import { Reducers } from '../../redux/reducers/reducers';
+import { renameIfAlreadyExists } from '../../lib';
 
-interface FileMeta {
-  progress: number
-  currentFolder: number
-  id: string
-  createdAt: Date,
-  type: string;
-  name: string;
-  size: number;
-  uri: string;
-  lastModified?: number;
-  output?: FileList | null;
+function getFileExtension(uri: string) {
+  const regex = /^(.*:\/{0,2})\/?(.*)$/gm;
+  const fileUri = uri.replace(regex, '$2');
+
+  return fileUri.split('.').pop();
 }
 
-function UploadModal(props: any) {
-  const currentFolder =
-    props.filesState?.folderContent?.currentFolder
-    ||
-    props.authenticationState?.user?.root_folder_id || 123; // TODO: Fix this
+function removeExtension(filename: string) {
+  const extension = filename.split('.').pop();
 
-  async function upload(result: FileMeta, fileType: 'document' | 'image') {
+  return filename.substring(0, filename.length - (extension.length + 1));
+}
+
+function UploadModal(props: Reducers) {
+  const currentFolder = props.filesState?.folderContent?.currentFolder ||
+    props.authenticationState.user?.root_folder_id;
+
+  async function upload(res: FileMeta, fileType: 'document' | 'image') {
     function progressCallback(progress: number) {
-      props.dispatch(fileActions.uploadFileSetProgress(progress, result.id));
+      props.dispatch(fileActions.uploadFileSetProgress(progress, res.id));
     }
+
+    // TODO: Refactor this to avoid coupling input object to redux provided object
+    const result = { ...res };
 
     // Set name for pics/photos
     if (!result.name) {
@@ -53,9 +55,10 @@ function UploadModal(props: any) {
 
     result.uri = finalUri;
     result.type = fileType;
+    result.path = props.filesState.absolutePath + result.name;
 
-    const fileId = await uploadFile(result, progressCallback);
     const fileStat = await stat(finalUri);
+    const fileId = await uploadFile(result, progressCallback);
 
     const folderId = result.currentFolder.toString();
     const name = encryptFilename(result.name, folderId);
@@ -88,6 +91,14 @@ function UploadModal(props: any) {
     analytics.track('file-upload-error', uploadErrorTrack).catch(() => null);
   }
 
+  function uploadSuccess(file: { id: string }) {
+    trackUploadSuccess();
+
+    props.dispatch(fileActions.removeUploadingFile(file.id));
+    props.dispatch(fileActions.updateUploadingFile(file.id));
+    props.dispatch(fileActions.uploadFileSetUri(undefined));
+  }
+
   return (
     <Modal
       isOpen={props.layoutState.showUploadModal}
@@ -112,34 +123,39 @@ function UploadModal(props: any) {
         text={'Upload file'}
         icon={Unicons.UilUploadAlt}
         onPress={async () => {
-          // const result: DocumentResult = await getDocumentAsync({
-          //   multiple: true,
-          //   copyToCacheDirectory: true
-          // })
-          try {
-            const result = await DocumentPicker.pickMultiple({ type: [DocumentPicker.types.allFiles] });
-            const file: any = result[0]
+          const result: DocumentResult = await getDocumentAsync({
+            copyToCacheDirectory: true
+          })
 
+          if (result.type !== 'cancel') {
+            const file: any = result
+            const filesAtSameLevel = props.filesState.folderContent.files.map(file => {
+              return { name: removeExtension(file.name), type: file.type };
+            });
+
+            file.name = renameIfAlreadyExists(filesAtSameLevel, removeExtension(file.name), getFileExtension(file.uri))[2] + '.' + getFileExtension(file.uri);
             file.progress = 0
-            file.currentFolder = currentFolder
-            file.createdAt = new Date()
+            file.type = getFileExtension(result.uri);
+            file.currentFolder = currentFolder;
+            file.createdAt = new Date();
+            file.updatedAt = new Date();
             file.id = uniqueId();
 
             trackUploadStart();
             props.dispatch(fileActions.uploadFileStart());
             props.dispatch(fileActions.addUploadingFile(file));
 
+            props.dispatch(layoutActions.closeUploadFileModal());
+
             upload(file, 'document').then(() => {
-              trackUploadSuccess();
-              props.dispatch(fileActions.removeUploadingFile(file.id));
-              props.dispatch(fileActions.updateUploadingFile(file.id));
-              props.dispatch(fileActions.uploadFileSetUri(undefined));
+              uploadSuccess(file);
             }).catch(err => {
               trackUploadError(err);
               props.dispatch(fileActions.uploadFileFailed(file.id));
               Alert.alert('Error', 'Cannot upload file due to: ' + err.message);
             }).finally(() => {
               props.dispatch(fileActions.uploadFileFinished(file.name));
+              props.dispatch(fileActions.getFolderContent(currentFolder));
             });
 
           } catch (err) {
@@ -170,7 +186,7 @@ function UploadModal(props: any) {
               error = err;
             })
 
-            if (error || !result) {
+            if (error) {
               return Alert.alert(error?.message);
             }
 
@@ -187,11 +203,26 @@ function UploadModal(props: any) {
               }
               file.progress = 0
               file.currentFolder = currentFolder
-              file.createdAt = new Date()
+              file.createdAt = new Date();
+              file.updatedAt = new Date();
               file.id = uniqueId()
 
-              props.dispatch(fileActions.addUploadingFile(file))
-              // upload(file);
+              trackUploadStart();
+              props.dispatch(fileActions.uploadFileStart());
+              props.dispatch(fileActions.addUploadingFile(file));
+
+              props.dispatch(layoutActions.closeUploadFileModal());
+
+              upload(file, 'image').then(() => {
+                uploadSuccess(file);
+              }).catch(err => {
+                trackUploadError(err);
+                props.dispatch(fileActions.uploadFileFailed(file.id));
+                Alert.alert('Error', 'Cannot upload file due to: ' + err.message);
+              }).finally(() => {
+                props.dispatch(fileActions.uploadFileFinished(file.name));
+                props.dispatch(fileActions.getFolderContent(currentFolder));
+              });
             }
           }
         }}
@@ -209,19 +240,38 @@ function UploadModal(props: any) {
                 const result = response.assets[0]
                 const fileUploading: any = result
 
-                // Set name for pics/photos
-                if (!fileUploading.name) {
-                  fileUploading.name = result.uri.split('/').pop()
-                }
-                fileUploading.progress = 0
-                fileUploading.currentFolder = currentFolder
-                fileUploading.createdAt = new Date()
-                fileUploading.id = uniqueId()
+            if (!result.cancelled) {
+              const file: any = result
 
-                props.dispatch(fileActions.addUploadingFile(fileUploading))
-                // upload(fileUploading);
+              // Set name for pics/photos
+              if (!file.name) {
+                file.name = result.uri.split('/').pop()
               }
-            });
+              file.progress = 0
+              file.currentFolder = currentFolder
+              file.createdAt = new Date();
+              file.updatedAt = new Date();
+              file.id = uniqueId();
+
+              trackUploadStart();
+              props.dispatch(fileActions.uploadFileStart());
+              props.dispatch(fileActions.addUploadingFile(file));
+
+              props.dispatch(layoutActions.closeUploadFileModal());
+
+              upload(file, 'image').then(() => {
+                uploadSuccess(file);
+              }).catch(err => {
+                trackUploadError(err);
+                props.dispatch(fileActions.uploadFileFailed(file.id));
+                Alert.alert('Error', 'Cannot upload file due to: ' + err.message);
+              }).finally(() => {
+                props.dispatch(fileActions.uploadFileFinished(file.name));
+                props.dispatch(fileActions.getFolderContent(currentFolder));
+              });
+            }
+          } else {
+            Alert.alert('Camera roll permissions needed to perform this action')
           }
         }}/>
 

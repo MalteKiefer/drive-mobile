@@ -18,17 +18,18 @@ function AppMenu(props: AppMenuProps) {
   props.hideOptions = undefined;
 
   const parentFolderId = props?.filesState?.folderContent?.parentId;
+  const backButtonEnabled = props.layoutState.backButtonEnabled;
 
   return <View style={styles.container}>
     <Fragment>
       <View style={styles.buttonContainer}>
         <View style={styles.commonButtons}>
           <View style={styles.w50}>
-            <TouchableWithoutFeedback onPress={() => {
+            <TouchableWithoutFeedback disabled={!backButtonEnabled} onPress={() => {
               if (props.onBackPress) {
                 return props.onBackPress();
               }
-              props.dispatch(fileActions.getFolderContent(parentFolderId));
+              props.dispatch(fileActions.goBack(parentFolderId));
             }}>
               <Unicons.UilArrowLeft color={parentFolderId || props.onBackPress ? '#0F62FE' : '#EBECF0'} size={32} />
             </TouchableWithoutFeedback>

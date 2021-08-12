@@ -127,7 +127,7 @@ export class Environment {
 
         const fileToUpload: FileMeta = { fileUri, name, size };
 
-        upload(this.config, bucketId, fileToUpload, params, uploadState);
+        return upload(this.config, bucketId, fileToUpload, params, uploadState);
       })
       .catch((err: Error) => {
         logger.error(`Error encrypting filename due to ${err.message}`);
