@@ -89,4 +89,4 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state: any) => ({ ...state });
 
-export default connect(mapStateToProps)(AppMenu)
+export default connect<Reducers>(mapStateToProps)(AppMenu)

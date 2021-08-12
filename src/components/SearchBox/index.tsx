@@ -85,4 +85,4 @@ const mapStateToProps = (state: any) => {
   return { ...state };
 };
 
-export default connect(mapStateToProps)(SearchBox)
+export default connect<Reducers>(mapStateToProps)(SearchBox)

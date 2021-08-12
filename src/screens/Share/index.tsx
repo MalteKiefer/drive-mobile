@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import { Reducers } from '../../redux/reducers/reducers';
 import AppMenu from '../../components/AppMenu';
 import { WaveIndicator } from 'react-native-indicators';
-import { getShareList } from '../../services/shares';
+import { getShareList, IShare } from '../../services/shares';
 import FileItem from '../../components/FileItem';
 
 function Share(props: Reducers): JSX.Element {
   const [loading, setLoading] = useState(true);
-  const [shares, setShares] = useState([]);
+  const [shares, setShares] = useState<IShare[]>([]);
   const [refreshing, setRefreshing] = useState(false)
 
   const reloadShares = async (limit?: number) => {
@@ -48,8 +48,8 @@ function Share(props: Reducers): JSX.Element {
         contentContainerStyle={styles.fileListContentsScrollView}
       >
         <View>
-          {shares.map(item => {
-            return <FileItem {...props} key={item.id} item={item.fileInfo} isFolder={false}>
+          {shares.map((item, i) => {
+            return <FileItem key={i} item={item.fileInfo} isFolder={false}>
             </FileItem>
           })}
         </View>

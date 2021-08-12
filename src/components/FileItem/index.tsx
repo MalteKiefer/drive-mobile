@@ -335,4 +335,4 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state: any) => ({ ...state });
 
-export default connect(mapStateToProps)(FileItem);
+export default connect<Reducers>(mapStateToProps)(FileItem);
