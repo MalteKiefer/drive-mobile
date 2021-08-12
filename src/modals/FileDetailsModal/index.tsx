@@ -1,6 +1,6 @@
 import prettysize from 'prettysize';
 import React, { useEffect, useState } from 'react'
-import { Image, Platform, StyleSheet, Text, View, TextInput } from 'react-native'
+import { Image, Platform, StyleSheet, Text, View, TextInput, TouchableHighlight } from 'react-native'
 import Modal from 'react-native-modalbox'
 import TimeAgo from 'react-native-timeago';
 import { connect } from 'react-redux';
@@ -9,10 +9,12 @@ import { getIcon } from '../../helpers/getIcon';
 import { fileActions, layoutActions } from '../../redux/actions';
 import SettingsItem from '../SettingsModal/SettingsItem';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { IMetadata, updateFileMetadata, updateFolderMetadata } from './actions';
+import { IMetadata, updateFileMetadata } from './actions';
 import analytics, { getLyticsData } from '../../helpers/lytics';
 import strings from '../../../assets/lang/strings';
 import { Reducers } from '../../redux/reducers/reducers';
+import * as Unicons from '@iconscout/react-native-unicons';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 interface FileDetailsProps extends Reducers {
   showItemModal: boolean
@@ -52,6 +54,9 @@ function FileDetailsModal(props: FileDetailsProps) {
             props.dispatch(fileActions.deselectAll())
             props.dispatch(layoutActions.closeItemModal())
 
+            // OLD MODAL was a form to edit on the fly the file metadata. Now is just a simple modal with links.
+            // The next code should be migrated to a new component.
+            /*
             const metadata: IMetadata = {
               itemName: ''
             }
@@ -77,21 +82,67 @@ function FileDetailsModal(props: FileDetailsProps) {
                 }).catch(() => { })
               }
             }
+            */
           }}
           backButtonClose={true}
           animationDuration={200}
         >
           <View style={styles.drawerKnob}></View>
 
-          <TextInput
+          <Text
+            numberOfLines={1}
+            ellipsizeMode={'tail'}
             style={styles.folderName}
-            onChangeText={value => {
-              setNewFileName(value)
-            }}
-            value={newfilename}
-          />
+          >{file.name}</Text>
 
           <Separator />
+
+          <View>
+            <TouchableWithoutFeedback style={{ flexDirection: 'row', alignItems: 'center', padding: 20, paddingLeft: 20 }}>
+              <View style={{ paddingRight: 10 }}>
+                <Unicons.UilEdit color="#0F62FE" size={30} />
+              </View>
+              <View>
+                <Text style={{ fontFamily: 'NeueEinstellung-Regular' }}>Rename</Text>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+
+          <View>
+            <TouchableHighlight
+              underlayColor={'#eee'}
+              onPress={() => {
+                props.dispatch(layoutActions.closeItemModal())
+                props.dispatch(layoutActions.openDeleteModal())
+              }}>
+              <View
+                style={{ flexDirection: 'row', alignItems: 'center', padding: 20, paddingLeft: 20 }}>
+                <View style={{ paddingRight: 10 }}>
+                  <Unicons.UilTrashAlt color="#DA1E28" size={30} />
+                </View>
+                <View>
+                  <Text style={{ fontFamily: 'NeueEinstellung-Regular', color: '#DA1E28' }}>Delete</Text>
+                </View>
+              </View>
+            </TouchableHighlight>
+          </View>
+
+          <Separator />
+
+          <View>
+            <TouchableHighlight
+              underlayColor={'#eee'}
+              style={{
+                alignItems: 'center',
+                padding: 20
+              }}
+              onPress={() => {
+                props.dispatch(fileActions.deselectAll())
+                props.dispatch(layoutActions.closeItemModal())
+              }}>
+              <Text style={{ color: '#DA1E28' }}>Cancel</Text>
+            </TouchableHighlight>
+          </View>
 
         </Modal>
         :
@@ -238,8 +289,10 @@ const styles = StyleSheet.create({
   },
   folderName: {
     fontFamily: 'NeueEinstellung-Bold',
+    textAlign: 'center',
     fontSize: 20,
-    marginLeft: 26,
+    marginLeft: 20,
+    marginRight: 20,
     padding: 0 // Remove default padding Android
   },
   infoContainer: {
@@ -250,7 +303,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 32
   },
   modalFolder: {
-    height: hp('90%') < 550 ? 550 : Math.min(600, hp('90%')),
+    height: hp('90%') < 550 ? 550 : Math.min(380, hp('90%')),
     marginTop: wp('12')
   },
   modalSettingsFile: {
