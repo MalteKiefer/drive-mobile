@@ -28,7 +28,7 @@ function Share(props: Reducers): JSX.Element {
   useEffect(() => { reloadShares() }, []);
 
   return <View style={styles.container}>
-    <AppMenu title="Shared" />
+    <AppMenu {...props} title="Shared" hideSearch={true} hideBackPress={true}/>
     {
       loading &&
       <View style={styles.activityIndicator}>
