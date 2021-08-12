@@ -38,7 +38,7 @@ export async function doChangePassword(params: ChangePasswordParam): Promise<any
   let privateKeyEncrypted;
 
   try {
-  const privateKey = Buffer.from(xUser.privateKey, 'base64').toString();
+    const privateKey = Buffer.from(xUser.privateKey, 'base64').toString();
 
     privateKeyEncrypted = AesUtils.encrypt(privateKey, params.newPassword);
   } catch {

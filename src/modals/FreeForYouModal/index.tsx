@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Modal from 'react-native-modalbox'
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { layoutActions } from '../../redux/actions';
+import strings from '../../../assets/lang/strings';
 
 interface IFreeForYou {
   layoutState: any
@@ -37,7 +38,7 @@ function FreeForYouModal(props: IFreeForYou) {
             setIsOpen(false)
           }}
         >
-          <Text style={styles.buttonText}>Close</Text>
+          <Text style={styles.buttonText}>{strings.generic.close}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.button, styles.blue]}
@@ -46,7 +47,7 @@ function FreeForYouModal(props: IFreeForYou) {
             props.navigation.replace('Storage')
           }}
         >
-          <Text style={[styles.buttonText, styles.white]}>Upgrade</Text>
+          <Text style={[styles.buttonText, styles.white]}>{strings.generic.upgrade}</Text>
         </TouchableOpacity>
       </View>
     </Modal>

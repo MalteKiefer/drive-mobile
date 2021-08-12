@@ -66,10 +66,10 @@ function ChangePassword(props: any) {
       hideSearch={true} hideOptions={true} />
     <View style={styles.mainContainer}>
       <View style={styles.titleContainer}>
-        <Text style={styles.titleText}>Change password</Text>
+        <Text style={styles.titleText}>{strings.screens.change_password.title}</Text>
       </View>
       <View style={styles.titleContainer}>
-        <Text style={styles.subtitleText}>Remember that if you change your password, you will be signed out in all your devices. You will need these credentials for logining in again.</Text>
+        <Text style={styles.subtitleText}>{strings.screens.change_password.warning}</Text>
       </View>
       <View style={styles.container}>
         <View style={[tailwind('input-wrapper my-2'), tailwind(isValidPassword ? 'input-valid' : 'input-error')]}>
@@ -125,7 +125,7 @@ function ChangePassword(props: any) {
           underlayColor="#4585f5"
           onPress={handleOnPress}
           disabled={!activeButton || isLoading}>
-          <Text style={tailwind('text-base btn-label')}>Change password</Text>
+          <Text style={tailwind('text-base btn-label')}>{strings.screens.change_password.title}</Text>
         </TouchableHighlight>
       </View>
     </View>

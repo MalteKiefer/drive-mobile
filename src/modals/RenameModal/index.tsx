@@ -7,6 +7,7 @@ import { Reducers } from '../../redux/reducers/reducers';
 import Separator from '../../components/Separator';
 import { tailwind } from '../../helpers/designSystem';
 import * as Unicons from '@iconscout/react-native-unicons';
+import strings from '../../../assets/lang/strings';
 
 function RenameModal(props: Reducers) {
   const currentFolderId = props.filesState.folderContent && props.filesState.folderContent.currentFolder
@@ -46,7 +47,7 @@ function RenameModal(props: Reducers) {
     >
       <View style={styles.drawerKnob}></View>
       <View style={styles.alignCenter}>
-        <Text style={styles.modalTitle}>Rename {props.filesState.selectedFile && props.filesState.selectedFile.name}</Text>
+        <Text style={styles.modalTitle}>{strings.generic.rename} {props.filesState.selectedFile && props.filesState.selectedFile.name}</Text>
       </View>
       <Separator />
       <View style={styles.container}>
@@ -72,7 +73,7 @@ function RenameModal(props: Reducers) {
           underlayColor="#4585f5"
           onPress={renameHandle}
           disabled={emptyName || isLoading}>
-          <Text style={tailwind('text-base btn-label')}>Rename</Text>
+          <Text style={tailwind('text-base btn-label')}>{strings.generic.rename}</Text>
         </TouchableHighlight>
       </View>
 
@@ -86,7 +87,7 @@ function RenameModal(props: Reducers) {
             props.dispatch(fileActions.deselectAll())
             props.dispatch(layoutActions.closeRenameModal())
           }}>
-          <Text style={{ color: '#DA1E28' }}>Cancel</Text>
+          <Text style={{ color: '#DA1E28' }}>{strings.generic.cancel}</Text>
         </TouchableHighlight>
       </View>
 

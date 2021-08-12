@@ -106,7 +106,7 @@ function FileDetailsModal(props: FileDetailsProps) {
                   <Unicons.UilEdit color="#0F62FE" size={30} />
                 </View>
                 <View>
-                  <Text style={{ fontFamily: 'NeueEinstellung-Regular' }}>Rename</Text>
+                  <Text style={{ fontFamily: 'NeueEinstellung-Regular' }}>{strings.generic.rename}</Text>
                 </View>
 
               </View>
@@ -126,7 +126,7 @@ function FileDetailsModal(props: FileDetailsProps) {
                   <Unicons.UilTrashAlt color="#DA1E28" size={30} />
                 </View>
                 <View>
-                  <Text style={{ fontFamily: 'NeueEinstellung-Regular', color: '#DA1E28' }}>Delete</Text>
+                  <Text style={{ fontFamily: 'NeueEinstellung-Regular', color: '#DA1E28' }}>{strings.generic.delete}</Text>
                 </View>
               </View>
             </TouchableHighlight>
@@ -145,7 +145,7 @@ function FileDetailsModal(props: FileDetailsProps) {
                 props.dispatch(fileActions.deselectAll())
                 props.dispatch(layoutActions.closeItemModal())
               }}>
-              <Text style={{ color: '#DA1E28' }}>Cancel</Text>
+              <Text style={{ color: '#DA1E28' }}>{strings.generic.cancel}</Text>
             </TouchableHighlight>
           </View>
 

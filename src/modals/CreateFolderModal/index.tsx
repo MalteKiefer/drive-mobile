@@ -10,6 +10,7 @@ import SettingsItem from '../SettingsModal/SettingsItem';
 import { tailwind } from '../../helpers/designSystem';
 import * as Unicons from '@iconscout/react-native-unicons';
 import Toast from 'react-native-toast-message'
+import strings from '../../../assets/lang/strings';
 function CreateFolderModal(props: Reducers) {
   const currentFolderId = props.filesState.folderContent && props.filesState.folderContent.currentFolder
   const [isOpen, setIsOpen] = useState(props.layoutState.showCreateFolderModal)
@@ -68,7 +69,7 @@ function CreateFolderModal(props: Reducers) {
     >
       <View style={styles.drawerKnob}></View>
       <View style={styles.alignCenter}>
-        <Text style={styles.modalTitle}>Create folder</Text>
+        <Text style={styles.modalTitle}>{strings.screens.create_folder.title}</Text>
       </View>
       <Separator />
       <View style={styles.container}>
@@ -94,14 +95,14 @@ function CreateFolderModal(props: Reducers) {
           underlayColor="#4585f5"
           onPress={createHandle}
           disabled={emptyName || isLoading}>
-          <Text style={tailwind('text-base btn-label')}>Create folder</Text>
+          <Text style={tailwind('text-base btn-label')}>{strings.screens.create_folder.title}</Text>
         </TouchableHighlight>
       </View>
 
       <Separator />
       <View style={styles.cancelContainer}>
         <SettingsItem
-          text={<Text style={styles.cancelText}>Cancel</Text>}
+          text={<Text style={styles.cancelText}>{strings.generic.cancel}</Text>}
           onPress={() => {
             props.dispatch(layoutActions.closeCreateFolderModal());
           }}

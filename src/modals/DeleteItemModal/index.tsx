@@ -7,6 +7,7 @@ import { fileActions, layoutActions } from '../../redux/actions';
 import { Reducers } from '../../redux/reducers/reducers';
 import * as Unicons from '@iconscout/react-native-unicons';
 import Separator from '../../components/Separator';
+import strings from '../../../assets/lang/strings';
 
 function DeleteItemModal(props: Reducers) {
   const selectedItems = props.filesState.selectedItems
@@ -41,7 +42,7 @@ function DeleteItemModal(props: Reducers) {
           <Text style={{
             textAlign: 'center',
             fontFamily: 'NeueEinstellung-Bold'
-          }}>Delete item</Text>
+          }}>{strings.modals.delete_modal.title}</Text>
         </View>
 
         <View>
@@ -49,7 +50,7 @@ function DeleteItemModal(props: Reducers) {
             textAlign: 'center',
             fontFamily: 'NeueEinstellung-Regular',
             margin: 10
-          }}>Are you sure you want to delete this item?</Text>
+          }}>{strings.modals.delete_modal.warning}</Text>
         </View>
 
         <Separator />
@@ -67,7 +68,7 @@ function DeleteItemModal(props: Reducers) {
                 <Unicons.UilTrashAlt color="#DA1E28" size={30} />
               </View>
               <View>
-                <Text style={{ fontFamily: 'NeueEinstellung-Regular', color: '#DA1E28' }}>Delete permanently</Text>
+                <Text style={{ fontFamily: 'NeueEinstellung-Regular', color: '#DA1E28' }}>{strings.modals.delete_modal.confirm_delete}</Text>
               </View>
             </View>
           </TouchableHighlight>
@@ -85,7 +86,7 @@ function DeleteItemModal(props: Reducers) {
             onPress={() => {
               setIsOpen(false)
             }}>
-            <Text style={{ color: '#DA1E28' }}>Cancel</Text>
+            <Text style={{ color: '#DA1E28' }}>{strings.generic.cancel}</Text>
           </TouchableHighlight>
         </View>
 
