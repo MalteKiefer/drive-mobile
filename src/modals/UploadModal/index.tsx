@@ -3,9 +3,8 @@ import { View, StyleSheet, Text, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { uniqueId } from 'lodash';
 import Modal from 'react-native-modalbox';
-import { launchCameraAsync, requestCameraPermissionsAsync, requestMediaLibraryPermissionsAsync } from 'expo-image-picker';
-import DocumentPicker from 'react-native-document-picker';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { launchCameraAsync, launchImageLibraryAsync, MediaTypeOptions, requestCameraPermissionsAsync, requestMediaLibraryPermissionsAsync } from 'expo-image-picker';
+import { DocumentResult, getDocumentAsync } from 'expo-document-picker';
 
 import { fileActions, layoutActions } from '../../redux/actions';
 import SettingsItem from '../SettingsModal/SettingsItem';
@@ -157,18 +156,6 @@ function UploadModal(props: Reducers) {
               props.dispatch(fileActions.uploadFileFinished(file.name));
               props.dispatch(fileActions.getFolderContent(currentFolder));
             });
-
-          } catch (err) {
-            if (!DocumentPicker.isCancel(err)) {
-              Toast.show({
-                type: 'err',
-                position: 'bottom',
-                text1: err.message,
-                visibilityTime: 5000,
-                autoHide: true,
-                bottomOffset: 100
-              });
-            }
           }
         }}
       />
@@ -235,10 +222,7 @@ function UploadModal(props: Reducers) {
           const { status } = await requestMediaLibraryPermissionsAsync(false)
 
           if (status === 'granted') {
-            launchImageLibrary({ selectionLimit: 0, mediaType: 'mixed' }, (response) => {
-              if (response.assets) {
-                const result = response.assets[0]
-                const fileUploading: any = result
+            const result = await launchImageLibraryAsync({ mediaTypes: MediaTypeOptions.All })
 
             if (!result.cancelled) {
               const file: any = result
@@ -273,7 +257,8 @@ function UploadModal(props: Reducers) {
           } else {
             Alert.alert('Camera roll permissions needed to perform this action')
           }
-        }}/>
+        }}
+      />
 
       <SettingsItem
         text={'New folder'}
