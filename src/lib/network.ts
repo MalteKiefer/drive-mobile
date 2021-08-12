@@ -1,6 +1,7 @@
 import { createHash } from 'react-native-crypto';
 import RNFetchBlob from 'rn-fetch-blob';
 import { Environment } from '../@inxt-js';
+import { FileInfo } from '../@inxt-js/api/fileinfo';
 
 import { deviceStorage } from '../helpers';
 import { FileManager } from './fs';
@@ -112,6 +113,14 @@ export class Network {
         });
       });
     }
+
+    getFileInfo(bucketId: string, fileId: string): Promise<FileInfo> {
+      return this.environment.getFileInfo(bucketId, fileId);
+    }
+
+    createFileToken(bucketId: string, fileId: string, operation: 'PULL' | 'PUSH'): Promise<string> {
+      return this.environment.createFileToken(bucketId, fileId, operation);
+    }
 }
 
 /**
@@ -126,3 +135,5 @@ export function getEnvironmentConfig(): Promise<EnvironmentConfig> {
     bucketId: user.bucket
   }));
 }
+
+export const generateFileKey = Environment.utils.generateFileKey;

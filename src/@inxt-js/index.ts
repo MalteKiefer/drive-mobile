@@ -1,12 +1,14 @@
 import { upload } from './lib/upload';
 import { download, Logger } from './lib/download';
-import { EncryptFilename } from './lib/crypto';
+import { EncryptFilename, GenerateFileKey } from './lib/crypto';
 import { logger } from './lib/utils/logger';
 
 import { FileMeta } from './api/FileObjectUpload';
 import { BUCKET_ID_NOT_PROVIDED, ENCRYPTION_KEY_NOT_PROVIDED } from './api/constants';
 import { ActionState, ActionTypes } from './api/actionState';
 import { FileManager } from '../lib/fs';
+import { FileInfo, GetFileInfo } from './api/fileinfo';
+import { Bridge, CreateFileTokenResponse } from './services/api';
 
 export type OnlyErrorCallback = (err: Error | null) => void;
 export type UploadFinishCallback = (err: Error | null, response: string | null) => void;
@@ -53,8 +55,14 @@ function createLogger(): Logger {
   }
 }
 
+const utils = {
+  generateFileKey: GenerateFileKey
+};
+
 export class Environment {
   protected config: EnvironmentConfig;
+
+  static utils = utils;
 
   constructor(config: EnvironmentConfig) {
     this.config = config;
@@ -137,6 +145,30 @@ export class Environment {
       });
 
     return uploadState;
+  }
+
+  /**
+   * Gets file info
+   * @param bucketId Bucket id where file is stored
+   * @param fileId
+   * @returns file info
+   */
+  getFileInfo(bucketId: string, fileId: string): Promise<FileInfo> {
+    return GetFileInfo(this.config, bucketId, fileId);
+  }
+
+  /**
+   * Creates file token
+   * @param bucketId Bucket id where file is stored
+   * @param fileId File id
+   * @param operation
+   * @param cb
+   */
+  createFileToken(bucketId: string, fileId: string, operation: 'PUSH' | 'PULL'): Promise<string> {
+    return new Bridge(this.config).createFileToken(bucketId, fileId, operation).start<CreateFileTokenResponse>()
+      .then((res) => {
+        return res.token;
+      });
   }
 
   /**
