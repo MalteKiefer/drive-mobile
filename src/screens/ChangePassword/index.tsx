@@ -6,17 +6,50 @@ import AppMenu from '../../components/AppMenu';
 import strings from '../../../assets/lang/strings';
 import { tailwind } from '../../helpers/designSystem';
 import * as Unicons from '@iconscout/react-native-unicons'
+import { doChangePassword } from './changePasswordUtils'
+import Toast from 'react-native-toast-message'
 
 function ChangePassword(props: any) {
   const [password, setPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const handleOnPress = () => {}
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleOnPress = () => {
+    setIsLoading(true)
+    doChangePassword({ password, newPassword }).then(() => {
+      Toast.show({
+        type: 'success',
+        position: 'bottom',
+        text1: 'Password changed',
+        visibilityTime: 5000,
+        autoHide: true,
+        bottomOffset: 100
+      });
+      setPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    }).catch(
+      (err) => {
+        Toast.show({
+          type: 'error',
+          position: 'bottom',
+          text1: err.message,
+          visibilityTime: 5000,
+          autoHide: true,
+          bottomOffset: 100
+        });
+      }
+    ).finally(() => {
+      setIsLoading(false)
+    })
+  }
 
   const isValidPassword = !isNullOrEmpty(password)
   const isValidNewPassword = isStrongPassword(newPassword);
   const passwordConfirmed = newPassword === confirmPassword;
 
+  const activeButton = isValidPassword && isValidNewPassword && passwordConfirmed
   const [passwordFocus, setPasswordFocus] = useState(false);
   const [newPasswordFocus, setNewPasswordFocus] = useState(false);
   const [confirmPasswordFocus, setConfirmPasswordFocus] = useState(false);
@@ -85,9 +118,10 @@ function ChangePassword(props: any) {
             color={confirmPasswordFocus && passwordConfirmed ? '#42BE65' : '#7A869A'} />
         </View>
         <TouchableHighlight
-          style={tailwind('btn btn-primary my-5')}
+          style={[tailwind('btn btn-primary my-5'), (activeButton && !isLoading) ? null: { backgroundColor: '#A6C8FF' }]}
           underlayColor="#4585f5"
-          onPress={handleOnPress}>
+          onPress={handleOnPress}
+          disabled={!activeButton || isLoading}>
           <Text style={tailwind('text-base btn-label')}>Change password</Text>
         </TouchableHighlight>
       </View>
