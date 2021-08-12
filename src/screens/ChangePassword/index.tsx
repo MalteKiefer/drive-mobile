@@ -54,7 +54,10 @@ function ChangePassword(props: any) {
   const [newPasswordFocus, setNewPasswordFocus] = useState(false);
   const [confirmPasswordFocus, setConfirmPasswordFocus] = useState(false);
 
-  return <View>
+  return <View style={{
+    backgroundColor: 'white',
+    flex: 1
+  }}>
     <AppMenu
       title={strings.components.inputs.password}
       onBackPress={() => {
@@ -153,7 +156,7 @@ const styles = StyleSheet.create({
     fontFamily: 'NeueEinstellung-Regular'
   },
   mainContainer: {
-    marginHorizontal: 40
+    paddingHorizontal: 40
   },
   container: {
     padding: 8
