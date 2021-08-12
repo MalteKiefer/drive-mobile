@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import prettysize from 'prettysize';
 import {
   View, Text, StyleSheet, Image, ActivityIndicator,
-  Platform, TouchableOpacity, TouchableWithoutFeedback, TouchableHighlight
+  Platform, TouchableOpacity, TouchableWithoutFeedback
 } from 'react-native';
 import { connect } from 'react-redux';
 import { getIcon } from '../../helpers/getIcon';
@@ -73,8 +73,8 @@ function Storage(props: StorageProps): JSX.Element {
   }, [chosenProduct])
 
   return (
-    <View style={styles.bgWhite}>
-      <AppMenu {...props}
+    <View style={[tailwind('bg-white'), { flexGrow: 1 }]}>
+      <AppMenu
         title={strings.screens.storage.title}
         onBackPress={() => {
           props.navigation.goBack()
@@ -107,13 +107,14 @@ function Storage(props: StorageProps): JSX.Element {
 
       <View>
         <View>
-          <Text style={styles.footer}>
+          <Text style={[styles.footer, { textAlign: 'center' }]}>
             {strings.screens.storage.plans.current_plan} {prettysize(usageValues.limit)} {strings.getLanguage() === 'es' ? null : 'plan'}
           </Text>
         </View>
       </View>
 
       <View>
+        {/*
         <TouchableHighlight
           style={tailwind('btn btn-primary my-5 mx-5')}
           onPress={() => {
@@ -121,6 +122,7 @@ function Storage(props: StorageProps): JSX.Element {
           }}>
           <Text style={tailwind('text-base btn-label')}>Change plan</Text>
         </TouchableHighlight>
+        */ }
 
       </View>
 
@@ -243,9 +245,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     paddingBottom: Platform.OS === 'android' ? wp('1') : 0,
     paddingLeft: 10
-  },
-  bgWhite: {
-    backgroundColor: '#fff'
   },
   h7: { height: 7 }
 })

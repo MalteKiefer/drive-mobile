@@ -1,25 +1,10 @@
-import _ from 'lodash'
 import { decryptText, encryptText, encryptTextWithKey, passToHash, getLyticsData } from '../../helpers';
 import { getHeaders } from '../../helpers/headers';
 import { isJsonString } from '../Register/registerUtils';
-
-export function isStrongPassword(pwd: string): boolean {
-  return /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$/.test(pwd);
-}
-
-export function isNullOrEmpty(input: string): boolean {
-  return _.isEmpty(input)
-}
+import AesUtils from '../../helpers/aesUtils'
 interface ChangePasswordParam {
   password: string
   newPassword: string
-}
-
-export async function getNewBits(): Promise<string> {
-  return fetch(`${process.env.REACT_NATIVE_API_URL}/api/bits`)
-    .then(res => res.json())
-    .then(res => res.bits)
-    .then(bits => decryptText(bits))
 }
 
 async function getSalt(email) {
@@ -50,7 +35,7 @@ export async function doChangePassword(params: ChangePasswordParam): Promise<any
 
   const encryptedMnemonic = encryptTextWithKey(xUser.mnemonic, params.newPassword);
   const privateKey = Buffer.from(xUser.privateKey, 'base64').toString();
-  const privateKeyEncrypted = 'AesUtils.encrypt(privateKey, newPassword)';
+  const privateKeyEncrypted = AesUtils.encrypt(privateKey, params.newPassword);
   // const encSalt = encryptText(hashedCurrentPassword.salt);
   // const mnemonic = await getNewBits()
   // const encMnemonic = encryptTextWithKey(mnemonic, params.password);
@@ -61,7 +46,7 @@ export async function doChangePassword(params: ChangePasswordParam): Promise<any
     body: JSON.stringify({
       currentPassword: encCurrentPass,
       newPassword: encNewPass,
-      encSalt: encryptedNewSalt,
+      newSalt: encryptedNewSalt,
       mnemonic: encryptedMnemonic,
       privateKey: privateKeyEncrypted
     })
@@ -73,7 +58,7 @@ export async function doChangePassword(params: ChangePasswordParam): Promise<any
       const json = isJsonString(body)
 
       if (json) {
-        throw Error(json.message)
+        throw Error(json.error)
       } else {
         throw Error(body)
       }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { GestureResponderEvent, Text, TouchableHighlight, View } from 'react-native';
+import { GestureResponderEvent, Linking, Text, TouchableHighlight, View } from 'react-native';
 import { connect } from 'react-redux';
 import AppMenu from '../../components/AppMenu';
 import { Reducers } from '../../redux/reducers/reducers';
@@ -38,7 +38,7 @@ function ConfigurationGap() {
 
 function Configuration(props: Reducers): JSX.Element {
   return <View>
-    <AppMenu {...props} title="Settings" hideSearch={true} hideOptions={true} />
+    <AppMenu {...props} title="Settings" hideSearch={true} hideOptions={true} hideBackPress={true}/>
     <ConfigurationItem title="Storage"
       onPress={() => {
         props.navigation.push('Storage')
@@ -54,8 +54,14 @@ function Configuration(props: Reducers): JSX.Element {
         props.navigation.push('ChangePassword')
       }} />
     <ConfigurationGap />
-    <ConfigurationItem title="Contact" />
-    <ConfigurationItem title="More info" />
+    <ConfigurationItem title="Contact"
+      onPress={() => {
+        Linking.openURL('https://help.internxt.com')
+      }} />
+    <ConfigurationItem title="More info"
+      onPress={() => {
+        Linking.openURL('https://internxt.com')
+      }} />
     <ConfigurationItem title="Log out"
       onPress={() => {
         props.dispatch(userActions.signout())

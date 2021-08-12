@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import RNFS from 'react-native-fs';
 import RNFetchBlob from 'rn-fetch-blob';
 
@@ -12,7 +13,8 @@ export function getDocumentsDir(): string {
 }
 
 export function getDownloadsDir(): string {
-  return RNFS.DownloadDirectoryPath;
+  // MainBundlePath is only available on iOS
+  return Platform.OS === 'ios' ? RNFS.MainBundlePath : RNFS.DownloadDirectoryPath;
 }
 
 export function getTemporaryDir(): string {
