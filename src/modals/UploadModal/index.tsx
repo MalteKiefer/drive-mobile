@@ -216,6 +216,8 @@ function UploadModal(props: any) {
         text={'New folder'}
         icon={Unicons.UilFolderUpload}
         onPress={() => {
+          props.dispatch(layoutActions.openCreateFolderModal());
+          props.dispatch(layoutActions.closeUploadFileModal());
         }}
       />
 
@@ -264,7 +266,9 @@ const styles = StyleSheet.create({
   },
   cancelContainer: {
     flexDirection: 'column',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    flexGrow: 1,
+    marginBottom: 16
   },
   alignCenter: { alignItems: 'center' }
 })
