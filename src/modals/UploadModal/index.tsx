@@ -3,8 +3,9 @@ import { View, StyleSheet, Text, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { uniqueId } from 'lodash';
 import Modal from 'react-native-modalbox';
-import { launchCameraAsync, launchImageLibraryAsync, MediaTypeOptions, requestCameraPermissionsAsync, requestMediaLibraryPermissionsAsync } from 'expo-image-picker';
-import { DocumentResult, getDocumentAsync } from 'expo-document-picker';
+import { launchCameraAsync, requestCameraPermissionsAsync, requestMediaLibraryPermissionsAsync } from 'expo-image-picker';
+import DocumentPicker from 'react-native-document-picker';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 import { fileActions, layoutActions } from '../../redux/actions';
 import SettingsItem from '../SettingsModal/SettingsItem';
@@ -14,6 +15,7 @@ import * as Unicons from '@iconscout/react-native-unicons'
 import analytics from '../../helpers/lytics';
 import { deviceStorage, encryptFilename } from '../../helpers';
 import { stat } from '../../lib/fs';
+import Toast from 'react-native-toast-message'
 
 interface FileMeta {
   progress: number
@@ -110,12 +112,13 @@ function UploadModal(props: any) {
         text={'Upload file'}
         icon={Unicons.UilUploadAlt}
         onPress={async () => {
-          const result: DocumentResult = await getDocumentAsync({
-            copyToCacheDirectory: false
-          })
-
-          if (result.type !== 'cancel') {
-            const file: any = result
+          // const result: DocumentResult = await getDocumentAsync({
+          //   multiple: true,
+          //   copyToCacheDirectory: true
+          // })
+          try {
+            const result = await DocumentPicker.pickMultiple({ type: [DocumentPicker.types.allFiles] });
+            const file: any = result[0]
 
             file.progress = 0
             file.currentFolder = currentFolder
@@ -138,6 +141,18 @@ function UploadModal(props: any) {
             }).finally(() => {
               props.dispatch(fileActions.uploadFileFinished(file.name));
             });
+
+          } catch (err) {
+            if (!DocumentPicker.isCancel(err)) {
+              Toast.show({
+                type: 'err',
+                position: 'bottom',
+                text1: err.message,
+                visibilityTime: 5000,
+                autoHide: true,
+                bottomOffset: 100
+              });
+            }
           }
         }}
       />
@@ -189,28 +204,26 @@ function UploadModal(props: any) {
           const { status } = await requestMediaLibraryPermissionsAsync(false)
 
           if (status === 'granted') {
-            const result = await launchImageLibraryAsync({ mediaTypes: MediaTypeOptions.All })
+            launchImageLibrary({ selectionLimit: 0, mediaType: 'mixed' }, (response) => {
+              if (response.assets) {
+                const result = response.assets[0]
+                const fileUploading: any = result
 
-            if (!result.cancelled) {
-              const fileUploading: any = result
+                // Set name for pics/photos
+                if (!fileUploading.name) {
+                  fileUploading.name = result.uri.split('/').pop()
+                }
+                fileUploading.progress = 0
+                fileUploading.currentFolder = currentFolder
+                fileUploading.createdAt = new Date()
+                fileUploading.id = uniqueId()
 
-              // Set name for pics/photos
-              if (!fileUploading.name) {
-                fileUploading.name = result.uri.split('/').pop()
+                props.dispatch(fileActions.addUploadingFile(fileUploading))
+                // upload(fileUploading);
               }
-              fileUploading.progress = 0
-              fileUploading.currentFolder = currentFolder
-              fileUploading.createdAt = new Date()
-              fileUploading.id = uniqueId()
-
-              props.dispatch(fileActions.addUploadingFile(fileUploading))
-              // upload(fileUploading);
-            }
-          } else {
-            Alert.alert('Camera roll permissions needed to perform this action')
+            });
           }
-        }}
-      />
+        }}/>
 
       <SettingsItem
         text={'New folder'}

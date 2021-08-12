@@ -10,6 +10,7 @@ interface AppMenuProps extends Reducers {
   hideSearch?: boolean
   hideOptions?: boolean
   onBackPress?: () => void
+  hideBackPress?: boolean
 }
 
 function AppMenu(props: AppMenuProps) {
