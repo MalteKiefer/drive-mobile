@@ -1,10 +1,12 @@
 import { AnyAction, Dispatch } from 'redux';
+import { IUploadingFile } from '../../components/FileList';
 import { getLyticsData } from '../../helpers';
 import analytics from '../../helpers/lytics';
 import { IMetadata } from '../../modals/FileDetailsModal/actions';
 import { store } from '../../store';
 import { fileActionTypes } from '../constants';
 import { fileService } from '../services';
+import { layoutActions } from './layout.actions';
 import { userActions } from './user.actions';
 
 export const fileActions = {
@@ -34,7 +36,10 @@ export const fileActions = {
   removeUploadingFile,
   removeUploadedFile,
   fetchIfSameFolder,
-  updateUploadingFile
+  updateUploadingFile,
+  addDepthAbsolutePath,
+  removeDepthAbsolutePath,
+  goBack
 };
 
 function downloadFileStart(fileId: string): AnyAction {
@@ -57,7 +62,7 @@ function uploadFileStart(): AnyAction {
   return { type: fileActionTypes.ADD_FILE_REQUEST };
 }
 
-function addUploadingFile(file: any): AnyAction {
+function addUploadingFile(file: IUploadingFile): AnyAction {
   return { type: fileActionTypes.ADD_UPLOADING_FILE, payload: file };
 }
 
@@ -301,6 +306,53 @@ function updateFolderMetadata(metadata: IMetadata, folderId) {
   }
 }
 
-function updateUploadingFile(id: number): AnyAction {
+function updateUploadingFile(id: string): AnyAction {
   return { type: fileActionTypes.UPDATE_UPLOADING_FILE, payload: id };
+}
+
+function addDepthAbsolutePath(levelsToAdd: string[]): AnyAction {
+  return { type: fileActionTypes.ADD_DEPTH_ABSOLUTE_PATH, payload: levelsToAdd };
+}
+
+function removeDepthAbsolutePath(nLevels: number): AnyAction {
+  return { type: fileActionTypes.REMOVE_DEPTH_ABSOLUTE_PATH, payload: nLevels };
+}
+
+function goBack(folderId: string) {
+  const id = parseInt(folderId)
+
+  if (isNaN(id)) {
+    return (dispatch: Dispatch): AnyAction => {
+      return dispatch(failure(Error(`Folder ID: "${folderId}" is not a number.`)));
+    };
+  }
+
+  return (dispatch: Dispatch) => {
+    dispatch(layoutActions.disableBackButton());
+    dispatch(request());
+    fileService
+      .getFolderContent(id)
+      .then((data: any) => {
+        data.currentFolder = id;
+        dispatch(success(data));
+      }).catch(error => {
+        dispatch(failure(error));
+        if (error.status === 401) {
+          dispatch(userActions.signout());
+        }
+      }).finally(() => {
+        dispatch(removeDepthAbsolutePath(1));
+        dispatch(layoutActions.enableBackButton());
+      })
+  };
+
+  function request(): AnyAction {
+    return { type: fileActionTypes.GET_FILES_REQUEST };
+  }
+  function success(payload: any): AnyAction {
+    return { type: fileActionTypes.GET_FILES_SUCCESS, payload };
+  }
+  function failure(error: Error): AnyAction {
+    return { type: fileActionTypes.GET_FILES_FAILURE, error };
+  }
 }

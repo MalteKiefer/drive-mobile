@@ -14,7 +14,8 @@ export interface LayoutState {
   showFreeForYouModal: boolean
   showComingSoonModal: boolean
   showUploadModal: boolean,
-  showCreateFolderModal: boolean
+  showCreateFolderModal: boolean,
+  backButtonEnabled: boolean
 }
 
 const initialState: LayoutState = {
@@ -30,7 +31,8 @@ const initialState: LayoutState = {
   showFreeForYouModal: false,
   showComingSoonModal: false,
   showUploadModal: false,
-  showCreateFolderModal: false
+  showCreateFolderModal: false,
+  backButtonEnabled: true
 };
 
 export function layoutReducer(state = initialState, action: AnyAction): LayoutState {
@@ -160,6 +162,18 @@ export function layoutReducer(state = initialState, action: AnyAction): LayoutSt
     return {
       ...state,
       showCreateFolderModal: false
+    }
+  }
+  case layoutActionTypes.ENABLE_BACK_BUTTON: {
+    return {
+      ...state,
+      backButtonEnabled: true
+    }
+  }
+  case layoutActionTypes.DISABLE_BACK_BUTTON: {
+    return {
+      ...state,
+      backButtonEnabled: false
     }
   }
   default:

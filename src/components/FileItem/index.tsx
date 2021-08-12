@@ -14,7 +14,7 @@ import { createEmptyFile, exists, FileManager, getDocumentsDir } from '../../lib
 
 interface FileItemProps extends Reducers {
   isFolder: boolean
-  item: IFile | IFolder | IUploadingFile
+  item: IFile & IFolder & IUploadingFile
   isLoading?: boolean
 }
 
@@ -58,6 +58,7 @@ function FileItem(props: FileItemProps) {
   function handleFolderClick() {
     trackFolderOpened();
     props.dispatch(fileActions.getFolderContent(props.item.id.toString()));
+    props.dispatch(fileActions.addDepthAbsolutePath([props.item.name]));
   }
 
   async function handleFileClick(): Promise<void> {
@@ -176,7 +177,6 @@ function FileItem(props: FileItemProps) {
   }, [props.item.progress])
 
   const item = props.item
-
   const IconFile = getFileTypeIcon(props.item.type);
 
   return (
