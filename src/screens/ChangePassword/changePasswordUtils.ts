@@ -34,11 +34,15 @@ export async function doChangePassword(params: ChangePasswordParam): Promise<any
   const encryptedNewSalt = encryptText(hashedNewPassword.salt)
 
   const encryptedMnemonic = encryptTextWithKey(xUser.mnemonic, params.newPassword);
+
+  let privateKeyEncrypted;
+
+  try {
   const privateKey = Buffer.from(xUser.privateKey, 'base64').toString();
-  const privateKeyEncrypted = AesUtils.encrypt(privateKey, params.newPassword);
-  // const encSalt = encryptText(hashedCurrentPassword.salt);
-  // const mnemonic = await getNewBits()
-  // const encMnemonic = encryptTextWithKey(mnemonic, params.password);
+
+    privateKeyEncrypted = AesUtils.encrypt(privateKey, params.newPassword);
+  } catch {
+  }
 
   return fetch(`${process.env.REACT_NATIVE_API_URL}/api/user/password`, {
     method: 'PATCH',
