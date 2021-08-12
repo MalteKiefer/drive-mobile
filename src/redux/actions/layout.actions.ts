@@ -48,9 +48,9 @@ function closeSettings(): AnyAction {
 
 function openItemModal(item: any): AnyAction {
   return (dispatch: Dispatch): void => {
-  if (item) {
+    if (item) {
       dispatch({ type: fileActionTypes.SELECT_FILE, payload: item });
-  }
+    }
     dispatch({ type: layoutActionTypes.OPEN_ITEM_MODAL, payload: item });
   };
 }

@@ -14,7 +14,9 @@ function Share(props: Reducers): JSX.Element {
 
   const reloadShares = async (limit?: number) => {
     return getShareList().then((shareList) => {
-      setShares(shareList);
+      const shareListFiltered = shareList.filter(s => !!s.fileInfo);
+
+      setShares(shareListFiltered);
     }).catch(err => {
       Alert.alert('Cannot load shares', err.message);
     }).finally(() => {
