@@ -17,6 +17,10 @@ export function getDownloadsDir(): string {
   return Platform.OS === 'ios' ? RNFS.MainBundlePath : RNFS.DownloadDirectoryPath;
 }
 
+export function moveFile(source: string, target: string): Promise<void> {
+  return RNFS.moveFile(source, target);
+}
+
 export function getTemporaryDir(): string {
   return RNFS.TemporaryDirectoryPath;
 }
@@ -107,6 +111,7 @@ export class FileManager {
     return {
       next: () => {
         pos += chunkSize;
+
         return readFile(this.fileUri, chunkSize, pos - chunkSize);
       }
     }

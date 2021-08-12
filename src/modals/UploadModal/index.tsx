@@ -15,12 +15,19 @@ import analytics from '../../helpers/lytics';
 import { deviceStorage, encryptFilename } from '../../helpers';
 import { stat } from '../../lib/fs';
 import { Reducers } from '../../redux/reducers/reducers';
+import { renameIfAlreadyExists } from '../../lib';
 
 function getFileExtension(uri: string) {
   const regex = /^(.*:\/{0,2})\/?(.*)$/gm;
   const fileUri = uri.replace(regex, '$2');
 
   return fileUri.split('.').pop();
+}
+
+function removeExtension(filename: string) {
+  const extension = filename.split('.').pop();
+
+  return filename.substring(0, filename.length - (extension.length + 1));
 }
 
 function UploadModal(props: Reducers) {
@@ -116,12 +123,16 @@ function UploadModal(props: Reducers) {
         icon={Unicons.UilUploadAlt}
         onPress={async () => {
           const result: DocumentResult = await getDocumentAsync({
-            copyToCacheDirectory: false
+            copyToCacheDirectory: true
           })
 
           if (result.type !== 'cancel') {
             const file: any = result
+            const filesAtSameLevel = props.filesState.folderContent.files.map(file => {
+              return { name: removeExtension(file.name), type: file.type };
+            });
 
+            file.name = renameIfAlreadyExists(filesAtSameLevel, removeExtension(file.name), getFileExtension(file.uri))[2] + '.' + getFileExtension(file.uri);
             file.progress = 0
             file.type = getFileExtension(result.uri);
             file.currentFolder = currentFolder;
@@ -179,7 +190,8 @@ function UploadModal(props: Reducers) {
               }
               file.progress = 0
               file.currentFolder = currentFolder
-              file.createdAt = new Date()
+              file.createdAt = new Date();
+              file.updatedAt = new Date();
               file.id = uniqueId()
 
               trackUploadStart();
@@ -221,8 +233,9 @@ function UploadModal(props: Reducers) {
               }
               file.progress = 0
               file.currentFolder = currentFolder
-              file.createdAt = new Date()
-              file.id = uniqueId()
+              file.createdAt = new Date();
+              file.updatedAt = new Date();
+              file.id = uniqueId();
 
               trackUploadStart();
               props.dispatch(fileActions.uploadFileStart());
