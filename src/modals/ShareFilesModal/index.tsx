@@ -10,6 +10,9 @@ import { IFile, IFolder } from '../../components/FileList';
 import { Reducers } from '../../redux/reducers/reducers';
 import Clipboard from 'expo-clipboard'
 import strings from '../../../assets/lang/strings';
+import { generateShareLink } from '../../@inxt-js/services/share';
+import { deviceStorage } from '../../helpers';
+import { generateFileKey, Network } from '../../lib/network';
 
 function ShareFilesModal(props: Reducers) {
   const [isOpen, setIsOpen] = useState(props.layoutState.showShareModal)
@@ -64,16 +67,23 @@ function ShareFilesModal(props: Reducers) {
   const getFileToken = async (file: IFile, views: number) => {
     const fileId = file.fileId;
 
-    return fetch(`${process.env.REACT_NATIVE_API_URL}/api/storage/share/file/${fileId}`, {
-      method: 'POST',
-      headers: await getHeaders(),
-      body: JSON.stringify({ 'isFolder': false, 'views': views })
-    }).then(res => {
-      if (res.status !== 200) {
-        throw Error('Cannot download file')
-      }
-      return res.json()
-    }).then(data => data.token);
+    const { bucket, mnemonic, userId, email } = await deviceStorage.getUser();
+
+    const network = new Network(email, userId, mnemonic);
+    const { index } = await network.getFileInfo(bucket, fileId);
+    const fileToken = await network.createFileToken(bucket, fileId, 'PULL');
+    const fileEncryptionKey = await generateFileKey(mnemonic, bucket, Buffer.from(index, 'hex'));
+
+    const generatedLink = await generateShareLink(await getHeaders(), fileId, {
+      bucket,
+      fileToken,
+      isFolder: false,
+      views,
+      encryptionKey: fileEncryptionKey.toString('hex')
+    });
+
+    setLink(generatedLink);
+    return generatedLink;
   };
 
   return (
