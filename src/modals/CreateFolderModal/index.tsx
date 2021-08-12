@@ -14,6 +14,7 @@ function CreateFolderModal(props: Reducers) {
   const currentFolderId = props.filesState.folderContent && props.filesState.folderContent.currentFolder
   const [isOpen, setIsOpen] = useState(props.layoutState.showCreateFolderModal)
   const [folderName, setFolderName] = useState('');
+  const [isLoading, setIsLoading] = useState(false)
 
   const emptyName = folderName === ''
 
@@ -22,6 +23,7 @@ function CreateFolderModal(props: Reducers) {
   }, [props.layoutState])
 
   const createHandle = () => {
+    setIsLoading(true);
     createFolder({ folderName, parentId: currentFolderId }).then(() => {
       props.dispatch(fileActions.getFolderContent(currentFolderId))
       Toast.show({
@@ -32,6 +34,7 @@ function CreateFolderModal(props: Reducers) {
         autoHide: true,
         bottomOffset: 100
       });
+      setFolderName('');
     }).catch((err) => {
       Toast.show({
         type: 'error',
@@ -41,11 +44,11 @@ function CreateFolderModal(props: Reducers) {
         autoHide: true,
         bottomOffset: 100
       });
+    }).finally(() => {
+      props.dispatch(layoutActions.closeCreateFolderModal());
+      setIsOpen(false);
+      setIsLoading(false);
     });
-
-    setFolderName('');
-    props.dispatch(layoutActions.closeCreateFolderModal());
-    setIsOpen(false);
 
   }
 
@@ -87,10 +90,10 @@ function CreateFolderModal(props: Reducers) {
             color={'#0F62FE'} />
         </View>
         <TouchableHighlight
-          style={[tailwind('btn btn-primary my-3'), emptyName ? { backgroundColor: '#A6C8FF' } : null]}
+          style={[tailwind('btn btn-primary my-3'), emptyName || isLoading ? { backgroundColor: '#A6C8FF' } : null]}
           underlayColor="#4585f5"
           onPress={createHandle}
-          disabled={emptyName}>
+          disabled={emptyName || isLoading}>
           <Text style={tailwind('text-base btn-label')}>Create folder</Text>
         </TouchableHighlight>
       </View>
