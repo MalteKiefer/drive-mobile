@@ -249,8 +249,7 @@ function FileItem(props: FileItemProps) {
             </TouchableOpacity>
           </View>
           {
-            // REMOVE ONCE LOCAL UPLOAD
-            !item.isUploaded ?
+            !item.isUploaded &&
               <View style={styles.buttonDetails}>
                 <TouchableOpacity
                   style={isSelectionMode ? styles.dNone : styles.dFlex}
@@ -258,7 +257,6 @@ function FileItem(props: FileItemProps) {
                   <Unicons.UilEllipsisH color={'#7A869A'} />
                 </TouchableOpacity>
               </View>
-              : null
           }
         </View>
       </View>
