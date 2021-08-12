@@ -5,6 +5,7 @@ import { uniqueId } from 'lodash';
 import Modal from 'react-native-modalbox';
 import { launchCameraAsync, launchImageLibraryAsync, MediaTypeOptions, requestCameraPermissionsAsync, requestMediaLibraryPermissionsAsync } from 'expo-image-picker';
 import { DocumentResult, getDocumentAsync } from 'expo-document-picker';
+import Toast from 'react-native-toast-message';
 
 import { fileActions, layoutActions } from '../../redux/actions';
 import SettingsItem from '../SettingsModal/SettingsItem';
@@ -16,6 +17,7 @@ import { deviceStorage, encryptFilename } from '../../helpers';
 import { stat } from '../../lib/fs';
 import { Reducers } from '../../redux/reducers/reducers';
 import { renameIfAlreadyExists } from '../../lib';
+import { UPLOAD_FILES_LIMIT } from '../../lib/constants';
 
 function getFileExtension(uri: string) {
   const regex = /^(.*:\/{0,2})\/?(.*)$/gm;
@@ -127,11 +129,25 @@ function UploadModal(props: Reducers) {
           })
 
           if (result.type !== 'cancel') {
+            if (result.size > UPLOAD_FILES_LIMIT) {
+              props.dispatch(layoutActions.closeUploadFileModal());
+              Toast.show({
+                type: 'error',
+                position: 'bottom',
+                text1: 'Max supported upload size is 1GB',
+                visibilityTime: 5000,
+                autoHide: true,
+                bottomOffset: 100
+              });
+              return;
+            }
+
             const file: any = result
             const filesAtSameLevel = props.filesState.folderContent.files.map(file => {
               return { name: removeExtension(file.name), type: file.type };
             });
 
+            // TODO: Refactor this shit
             file.name = renameIfAlreadyExists(filesAtSameLevel, removeExtension(file.name), getFileExtension(file.uri))[2] + '.' + getFileExtension(file.uri);
             file.progress = 0
             file.type = getFileExtension(result.uri);
