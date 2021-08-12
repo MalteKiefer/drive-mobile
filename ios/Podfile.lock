@@ -357,10 +357,10 @@ PODS:
     - React
   - react-native-safe-area-context (3.2.0):
     - React-Core
-  - react-native-udp (2.7.0):
-    - React
   - react-native-unicons (1.0.3):
     - React
+  - react-native-viewpager (5.0.12):
+    - React-Core
   - react-native-webview (11.6.2):
     - React-Core
   - React-RCTActionSheet (0.63.4):
@@ -463,8 +463,6 @@ PODS:
     - Firebase (~> 7.7)
     - Firebase/Core (~> 7.7)
     - FirebaseAnalytics (~> 7.7)
-  - TcpSockets (3.3.2):
-    - React
   - UMAppLoader (2.2.0)
   - UMCore (7.1.1)
   - UMReactNativeAdapter (6.3.5):
@@ -527,8 +525,8 @@ DEPENDENCIES:
   - react-native-randombytes (from `../node_modules/react-native-randombytes`)
   - react-native-receive-sharing-intent (from `../node_modules/react-native-receive-sharing-intent`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
-  - react-native-udp (from `../node_modules/react-native-udp`)
   - "react-native-unicons (from `../node_modules/@iconscout/react-native-unicons`)"
+  - react-native-viewpager (from `../node_modules/react-native-pager-view`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -552,7 +550,6 @@ DEPENDENCIES:
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
-  - TcpSockets (from `../node_modules/react-native-tcp`)
   - UMAppLoader (from `../node_modules/unimodules-app-loader/ios`)
   - "UMCore (from `../node_modules/@unimodules/core/ios`)"
   - "UMReactNativeAdapter (from `../node_modules/@unimodules/react-native-adapter/ios`)"
@@ -674,10 +671,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-receive-sharing-intent"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
-  react-native-udp:
-    :path: "../node_modules/react-native-udp"
   react-native-unicons:
     :path: "../node_modules/@iconscout/react-native-unicons"
+  react-native-viewpager:
+    :path: "../node_modules/react-native-pager-view"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
   React-RCTActionSheet:
@@ -724,8 +721,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNSVG:
     :path: "../node_modules/react-native-svg"
-  TcpSockets:
-    :path: "../node_modules/react-native-tcp"
   UMAppLoader:
     :path: "../node_modules/unimodules-app-loader/ios"
   UMCore:
@@ -799,8 +794,8 @@ SPEC CHECKSUMS:
   react-native-randombytes: 421f1c7d48c0af8dbcd471b0324393ebf8fe7846
   react-native-receive-sharing-intent: 648f1eb35ae70886a8733d6be949042aa5111ffb
   react-native-safe-area-context: f0906bf8bc9835ac9a9d3f97e8bde2a997d8da79
-  react-native-udp: ff9d13e523f2b58e6bc5d4d32321ac60671b5dc9
   react-native-unicons: 3f98688cbfc9f47e3ae45dd1560b7a2ab65075f4
+  react-native-viewpager: 98a850d1c7ac6263122d82618a77062a5f427073
   react-native-webview: 193d233c29eacce1f42ca2637dab7ba79c25a6de
   React-RCTActionSheet: 89a0ca9f4a06c1f93c26067af074ccdce0f40336
   React-RCTAnimation: 1bde3ecc0c104c55df246eda516e0deb03c4e49b
@@ -825,7 +820,6 @@ SPEC CHECKSUMS:
   RNScreens: 21b73c94c9117e1110a79ee0ee80c93ccefed8ce
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   Segment-Firebase: 709fff402c50f74c218482603683edd42785cbf9
-  TcpSockets: 14306fb79f9750ea7d2ddd02d8bed182abb01797
   UMAppLoader: 21af63390e55c82e037fb9752d93114a80ecf16e
   UMCore: 2f671796d7439604a1cf8ac7bbe5809cd5c50437
   UMReactNativeAdapter: f808906d586a16cebdc3844d86e1bdb8f114a873
@@ -834,4 +828,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 335c96b9032a3cb407820454995825a437984eb7
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.10.2
