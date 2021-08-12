@@ -19,6 +19,7 @@ import SearchBox from '../../components/SearchBox';
 import UploadModal from '../../modals/UploadModal';
 import CreateFolderModal from '../../modals/CreateFolderModal';
 import { WaveIndicator } from 'react-native-indicators';
+import RenameModal from '../../modals/RenameModal';
 
 function FileExplorer(props: Reducers): JSX.Element {
   const [selectedKeyId, setSelectedKeyId] = useState(0)
@@ -240,6 +241,7 @@ function FileExplorer(props: Reducers): JSX.Element {
     <ShareFilesModal {...props} />
     <FreeForYouModal {...props} navigation={props.navigation} />
     <CreateFolderModal {...props} />
+    <RenameModal />
 
     <AppMenu title="Storage" />
     {props.layoutState.searchActive && <SearchBox />}

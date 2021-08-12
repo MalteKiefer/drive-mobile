@@ -29,7 +29,9 @@ export const layoutActions = {
   openCreateFolderModal,
   closeCreateFolderModal,
   enableBackButton,
-  disableBackButton
+  disableBackButton,
+  openRenameModal,
+  closeRenameModal
 };
 
 function openSearch(): AnyAction {
@@ -147,4 +149,12 @@ function enableBackButton(): AnyAction {
 
 function disableBackButton(): AnyAction {
   return { type: layoutActionTypes.DISABLE_BACK_BUTTON };
+}
+
+function openRenameModal(): AnyAction {
+  return { type: layoutActionTypes.OPEN_RENAME_MODAL }
+}
+
+function closeRenameModal(): AnyAction {
+  return { type: layoutActionTypes.CLOSE_RENAME_MODAL }
 }
