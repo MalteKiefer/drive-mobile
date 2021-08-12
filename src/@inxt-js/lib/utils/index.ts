@@ -51,7 +51,35 @@ export function determineParityShards(totalShards: number): number {
  * @returns Shard size
  */
 export function determineShardSize(fileSize: number): number {
-  return 4095 * 600;
+  const oneMb = 1024 * 1024;
+
+  const thirtyMb = 30 * oneMb;
+  const fiftyMb = 50 * oneMb;
+  const oneHundredMb = 100 * oneMb;
+  const twoHundredMb = 200 * oneMb;
+  const fourHundredMb = 400 * oneMb;
+
+  if (fileSize < thirtyMb) {
+    return 4095 * 600; // 2Mb (rounded to base64 compatible size)
+  }
+
+  if (fileSize < fiftyMb) {
+    return 4095 * 600 * 3; // 7Mb
+  }
+
+  if (fileSize < oneHundredMb) {
+    return 4095 * 600 * 5; // 12Mb
+  }
+
+  if (fileSize < twoHundredMb) {
+    return 4095 * 600 * 10; // 24Mb
+  }
+
+  if (fileSize < fourHundredMb) {
+    return 4095 * 600 * 15; // 37Mb
+  }
+
+  return 4095 * 600 * 20; // 49Mb
 }
 
 export function determineTick(fileSize: number): number {
