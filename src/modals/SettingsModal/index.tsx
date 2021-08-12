@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, Linking, ActivityIndicator, Alert } from 'react-native';
+import React from 'react'
+import { View, Text, StyleSheet, Linking, Alert } from 'react-native';
 import Modal from 'react-native-modalbox'
-import ProgressBar from '../../components/ProgressBar';
 import { layoutActions, userActions } from '../../redux/actions';
 import SettingsItem from './SettingsItem';
 import prettysize from 'prettysize'
@@ -9,7 +8,6 @@ import Separator from '../../components/Separator';
 import { connect } from 'react-redux';
 import { getHeaders } from '../../helpers/headers';
 import analytics, { getLyticsUuid } from '../../helpers/lytics';
-import Bold from '../../components/Bold';
 import { Dispatch } from 'redux';
 import strings from '../../../assets/lang/strings';
 import { Reducers } from '../../redux/reducers/reducers';
@@ -61,33 +59,6 @@ interface SettingsModalProps extends Reducers {
 
 function SettingsModal(props: SettingsModalProps) {
 
-  const [usageValues, setUsageValues] = useState({ usage: 0, limit: 0 })
-  const [isLoadingUsage, setIsLoadingUpdate] = useState(false)
-
-  useEffect(() => {
-    if (props.layoutState.showSettingsModal) {
-      setIsLoadingUpdate(true)
-      loadValues().then(values => {
-        setUsageValues(values)
-      }).catch(() => { })
-        .finally(() => {
-          setIsLoadingUpdate(false)
-        })
-    }
-  }, [props.layoutState.showSettingsModal])
-
-  const putLimitUsage = () => {
-    if (usageValues.limit > 0) {
-      if (usageValues.limit < 108851651149824) {
-        return prettysize(usageValues.limit);
-      } else if (usageValues.limit >= 108851651149824) {
-        return '\u221E';
-      } else {
-        return '...';
-      }
-    }
-  }
-
   return (
     <Modal
       isOpen={props.layoutState.showSettingsModal}
@@ -106,23 +77,6 @@ function SettingsModal(props: SettingsModalProps) {
         {props.user.name}{' '}
         {props.user.lastname}
       </Text>
-
-      <ProgressBar
-        styleProgress={styles.progressHeight}
-        totalValue={usageValues.limit}
-        usedValue={usageValues.usage}
-      />
-
-      {isLoadingUsage ?
-        <ActivityIndicator color={'#00f'} />
-        :
-        <Text style={styles.usageText}>
-          <Text>{strings.screens.storage.space.used.used} </Text>
-          <Bold>{prettysize(usageValues.usage)}</Bold>
-          <Text> {strings.screens.storage.space.used.of} </Text>
-          <Bold>{putLimitUsage()}</Bold>
-        </Text>
-      }
 
       <Separator />
 
@@ -184,15 +138,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 26,
     marginTop: 10
-  },
-  progressHeight: {
-    height: 6
-  },
-  usageText: {
-    fontFamily: 'NeueEinstellung-Regular',
-    fontSize: 15,
-    paddingBottom: 0,
-    paddingLeft: 24
   }
 })
 

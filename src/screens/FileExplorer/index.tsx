@@ -13,12 +13,12 @@ import ShareFilesModal from '../../modals/ShareFilesModal';
 import { Reducers } from '../../redux/reducers/reducers';
 import analytics, { getLyticsData } from '../../helpers/lytics';
 import RNFetchBlob from 'rn-fetch-blob';
-import { WaveIndicator } from 'react-native-indicators'
 import Toast from 'react-native-toast-message'
 import FreeForYouModal from '../../modals/FreeForYouModal';
 import SearchBox from '../../components/SearchBox';
 import UploadModal from '../../modals/UploadModal';
 import CreateFolderModal from '../../modals/CreateFolderModal';
+import { WaveIndicator } from 'react-native-indicators';
 
 function FileExplorer(props: Reducers): JSX.Element {
   const [selectedKeyId, setSelectedKeyId] = useState(0)

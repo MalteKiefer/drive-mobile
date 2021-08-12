@@ -5,6 +5,7 @@ import AppMenu from '../../components/AppMenu';
 import { Reducers } from '../../redux/reducers/reducers';
 import * as Unicons from '@iconscout/react-native-unicons'
 import { tailwind } from '../../helpers/designSystem';
+import { userActions } from '../../redux/actions';
 
 function ConfigurationItem(props: {
   title: string,
@@ -42,14 +43,23 @@ function Configuration(props: Reducers): JSX.Element {
       onPress={() => {
         props.navigation.push('Storage')
       }} />
-    <ConfigurationItem title="Billing" />
+    <ConfigurationItem title="Billing"
+      onPress={() => {
+        props.navigation.push('Billing')
+      }} />
     <ConfigurationGap />
     <ConfigurationItem title="Security" />
-    <ConfigurationItem title="Change password" />
+    <ConfigurationItem title="Change password"
+      onPress={() => {
+        props.navigation.push('ChangePassword')
+      }} />
     <ConfigurationGap />
     <ConfigurationItem title="Contact" />
     <ConfigurationItem title="More info" />
-    <ConfigurationItem title="Log out" />
+    <ConfigurationItem title="Log out"
+      onPress={() => {
+        props.dispatch(userActions.signout())
+      }} />
   </View>
 }
 const mapStateToProps = (state: any) => {
