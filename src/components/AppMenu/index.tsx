@@ -10,6 +10,7 @@ interface AppMenuProps extends Reducers {
   hideSearch?: boolean
   hideOptions?: boolean
   onBackPress?: () => void
+  hideBackPress?: boolean
 }
 
 function AppMenu(props: AppMenuProps) {
@@ -23,14 +24,15 @@ function AppMenu(props: AppMenuProps) {
       <View style={styles.buttonContainer}>
         <View style={styles.commonButtons}>
           <View style={styles.w50}>
-            <TouchableWithoutFeedback onPress={() => {
-              if (props.onBackPress) {
-                return props.onBackPress();
-              }
-              props.dispatch(fileActions.getFolderContent(parentFolderId));
-            }}>
-              <Unicons.UilArrowLeft color={parentFolderId || props.onBackPress ? '#0F62FE' : '#EBECF0'} size={27} />
-            </TouchableWithoutFeedback>
+            {props.hideBackPress? <></> :
+              <TouchableWithoutFeedback onPress={() => {
+                if (props.onBackPress) {
+                  return props.onBackPress();
+                }
+                props.dispatch(fileActions.getFolderContent(parentFolderId));
+              }}>
+                <Unicons.UilArrowLeft color={parentFolderId || props.onBackPress ? '#0F62FE' : '#EBECF0'} size={27} />
+              </TouchableWithoutFeedback>}
           </View>
           <View style={styles.fGrow}>
             <Text style={styles.storageText}>{props.title}</Text>
