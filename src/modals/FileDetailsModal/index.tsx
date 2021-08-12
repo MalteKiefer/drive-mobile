@@ -1,18 +1,17 @@
 import prettysize from 'prettysize';
 import React, { useEffect, useState } from 'react'
-import { Image, Platform, StyleSheet, Text, View, TextInput } from 'react-native'
+import { StyleSheet, Text, View, TouchableHighlight } from 'react-native'
 import Modal from 'react-native-modalbox'
 import TimeAgo from 'react-native-timeago';
 import { connect } from 'react-redux';
 import Separator from '../../components/Separator';
-import { getIcon } from '../../helpers/getIcon';
 import { fileActions, layoutActions } from '../../redux/actions';
 import SettingsItem from '../SettingsModal/SettingsItem';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { IMetadata, updateFileMetadata, updateFolderMetadata } from './actions';
-import analytics, { getLyticsData } from '../../helpers/lytics';
 import strings from '../../../assets/lang/strings';
 import { Reducers } from '../../redux/reducers/reducers';
+import * as Unicons from '@iconscout/react-native-unicons';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 interface FileDetailsProps extends Reducers {
   showItemModal: boolean
@@ -52,6 +51,9 @@ function FileDetailsModal(props: FileDetailsProps) {
             props.dispatch(fileActions.deselectAll())
             props.dispatch(layoutActions.closeItemModal())
 
+            // OLD MODAL was a form to edit on the fly the file metadata. Now is just a simple modal with links.
+            // The next code should be migrated to a new component.
+            /*
             const metadata: IMetadata = {
               itemName: ''
             }
@@ -77,21 +79,67 @@ function FileDetailsModal(props: FileDetailsProps) {
                 }).catch(() => { })
               }
             }
+            */
           }}
           backButtonClose={true}
           animationDuration={200}
         >
           <View style={styles.drawerKnob}></View>
 
-          <TextInput
+          <Text
+            numberOfLines={1}
+            ellipsizeMode={'tail'}
             style={styles.folderName}
-            onChangeText={value => {
-              setNewFileName(value)
-            }}
-            value={newfilename}
-          />
+          >{file.name}</Text>
 
           <Separator />
+
+          <View>
+            <TouchableWithoutFeedback style={{ flexDirection: 'row', alignItems: 'center', padding: 20, paddingLeft: 20 }}>
+              <View style={{ paddingRight: 10 }}>
+                <Unicons.UilEdit color="#0F62FE" size={30} />
+              </View>
+              <View>
+                <Text style={{ fontFamily: 'NeueEinstellung-Regular' }}>Rename</Text>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+
+          <View>
+            <TouchableHighlight
+              underlayColor={'#eee'}
+              onPress={() => {
+                props.dispatch(layoutActions.closeItemModal())
+                props.dispatch(layoutActions.openDeleteModal())
+              }}>
+              <View
+                style={{ flexDirection: 'row', alignItems: 'center', padding: 20, paddingLeft: 20 }}>
+                <View style={{ paddingRight: 10 }}>
+                  <Unicons.UilTrashAlt color="#DA1E28" size={30} />
+                </View>
+                <View>
+                  <Text style={{ fontFamily: 'NeueEinstellung-Regular', color: '#DA1E28' }}>Delete</Text>
+                </View>
+              </View>
+            </TouchableHighlight>
+          </View>
+
+          <Separator />
+
+          <View>
+            <TouchableHighlight
+              underlayColor={'#eee'}
+              style={{
+                alignItems: 'center',
+                padding: 20
+              }}
+              onPress={() => {
+                props.dispatch(fileActions.deselectAll())
+                props.dispatch(layoutActions.closeItemModal())
+              }}>
+              <Text style={{ color: '#DA1E28' }}>Cancel</Text>
+            </TouchableHighlight>
+          </View>
 
         </Modal>
         :
@@ -105,6 +153,7 @@ function FileDetailsModal(props: FileDetailsProps) {
             props.dispatch(fileActions.deselectAll())
             props.dispatch(layoutActions.closeItemModal())
 
+            /*
             const metadata: IMetadata = {
               itemName: ''
             }
@@ -124,6 +173,7 @@ function FileDetailsModal(props: FileDetailsProps) {
                 folder_id: file.id
               }).catch(() => { })
             }
+            */
           }}
           backButtonClose={true}
           backdropPressToClose={true}
@@ -131,11 +181,11 @@ function FileDetailsModal(props: FileDetailsProps) {
         >
           <View style={styles.drawerKnob}></View>
 
-          <TextInput
+          <View
             style={styles.fileName}
-            onChangeText={value => setNewFileName(value)}
-            value={newfilename}
-          />
+          >
+            <Text style={{ fontSize: 15, textAlign: 'center', margin: 10 }}>{newfilename}{file && file.type ? '.' + file.type : ''}</Text>
+          </View>
 
           <Separator />
 
@@ -165,6 +215,7 @@ function FileDetailsModal(props: FileDetailsProps) {
           <Separator />
 
           <View style={styles.optionsContainer}>
+            {/*
             <SettingsItem
               text={
                 <Text>
@@ -177,15 +228,15 @@ function FileDetailsModal(props: FileDetailsProps) {
                 props.dispatch(layoutActions.openMoveFilesModal());
               }}
             />
+            */}
 
             <SettingsItem
-              text={
-                <Text>
-                  <Image source={getIcon('share')} style={styles.w2014} />
-                  <Text style={styles.mr20}> </Text>
-                  <Text style={{}}> {strings.components.file_and_folder_options.share}</Text>
-                </Text>
-              }
+              text={<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ margin: 10 }}>
+                  <Unicons.UilShare color="#0F62FE" />
+                </View>
+                <Text style={{}}>{strings.components.file_and_folder_options.share}</Text>
+              </View>}
               onPress={() => {
                 props.dispatch(layoutActions.closeItemModal())
                 props.dispatch(layoutActions.openShareModal())
@@ -193,11 +244,13 @@ function FileDetailsModal(props: FileDetailsProps) {
             />
 
             <SettingsItem
-              text={<Text>
-                <Image source={getIcon('delete')} style={styles.w1621} />
-                <Text style={styles.mr20}> </Text>
-                <Text style={styles.cerebriSansBold}>  {strings.components.file_and_folder_options.delete}</Text>
-              </Text>}
+              text={<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ margin: 10 }}>
+                  <Unicons.UilTrashAlt color="#DA1E28" />
+                </View>
+
+                <Text style={styles.cerebriSansBold}>{strings.components.file_and_folder_options.delete}</Text>
+              </View>}
               onPress={() => {
                 props.dispatch(layoutActions.openDeleteModal())
               }}
@@ -219,7 +272,7 @@ export default connect(mapStateToProps)(FileDetailsModal)
 
 const styles = StyleSheet.create({
   cerebriSansBold: {
-    fontFamily: 'NeueEinstellung-Bold'
+    fontFamily: 'NeueEinstellung-Regular'
   },
   drawerKnob: {
     alignSelf: 'center',
@@ -238,8 +291,10 @@ const styles = StyleSheet.create({
   },
   folderName: {
     fontFamily: 'NeueEinstellung-Bold',
+    textAlign: 'center',
     fontSize: 20,
-    marginLeft: 26,
+    marginLeft: 20,
+    marginRight: 20,
     padding: 0 // Remove default padding Android
   },
   infoContainer: {
@@ -250,26 +305,20 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 32
   },
   modalFolder: {
-    height: hp('90%') < 550 ? 550 : Math.min(600, hp('90%')),
+    height: hp('90%') < 550 ? 550 : Math.min(380, hp('90%')),
     marginTop: wp('12')
   },
   modalSettingsFile: {
     height: 'auto'
-  },
-  mr20: {
-    marginRight: 20
   },
   optionsContainer: {
     marginBottom: 15
   },
   textDefault: {
     fontFamily: 'NeueEinstellung-Regular',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
     paddingBottom: 6,
     paddingLeft: 24
-  },
-  w2020: { width: 20, height: 20 },
-  w1621: { width: 16, height: 21 },
-  w2014: { width: 20, height: 14 }
+  }
 })
