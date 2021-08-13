@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Alert, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Alert, TouchableOpacity, ActivityIndicator, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import { fileActions, layoutActions } from '../../redux/actions';
 import { deviceStorage, FolderIcon, getFileTypeIcon } from '../../helpers';
@@ -98,8 +98,14 @@ function FileItem(props: FileItemProps) {
     return downloadFile(props.item.fileId, {
       fileManager,
       progressCallback: (progress) => { setProgress(progress); }
-    }).then(() => {
+    }).then(async () => {
       trackDownloadSuccess();
+
+      if (Platform.OS === 'android') {
+        const { uri } = await FileSystem.getInfoAsync('file://' + destinationPath);
+
+        return showFileViewer(uri);
+      }
 
       return showFileViewer(destinationPath);
     }).catch((err) => {
