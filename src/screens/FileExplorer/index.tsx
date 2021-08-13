@@ -4,22 +4,13 @@ import AppMenu from '../../components/AppMenu'
 import { fileActions, userActions } from '../../redux/actions';
 import { connect } from 'react-redux';
 import FileList from '../../components/FileList';
-import SettingsModal, { loadValues } from '../../modals/SettingsModal';
-import FileDetailsModal from '../../modals/FileDetailsModal';
-import SortModal from '../../modals/SortModal';
-import DeleteItemModal from '../../modals/DeleteItemModal';
-import MoveFilesModal from '../../modals/MoveFilesModal';
-import ShareFilesModal from '../../modals/ShareFilesModal';
+import { loadValues } from '../../modals/SettingsModal';
 import { Reducers } from '../../redux/reducers/reducers';
 import analytics, { getLyticsData } from '../../helpers/lytics';
 import RNFetchBlob from 'rn-fetch-blob';
 import Toast from 'react-native-toast-message'
-import FreeForYouModal from '../../modals/FreeForYouModal';
 import SearchBox from '../../components/SearchBox';
-import UploadModal from '../../modals/UploadModal';
-import CreateFolderModal from '../../modals/CreateFolderModal';
 import { WaveIndicator } from 'react-native-indicators';
-import RenameModal from '../../modals/RenameModal';
 
 function FileExplorer(props: Reducers): JSX.Element {
   const [selectedKeyId, setSelectedKeyId] = useState(0)
@@ -231,18 +222,6 @@ function FileExplorer(props: Reducers): JSX.Element {
   }
 
   return <View style={styles.container}>
-
-    <FileDetailsModal {...props} key={selectedKeyId} />
-    <SettingsModal {...props} navigation={props.navigation} />
-    <UploadModal {...props} navigation={props.navigation} />
-    <SortModal {...props} />
-    <DeleteItemModal {...props} />
-    <MoveFilesModal {...props} />
-    <ShareFilesModal {...props} />
-    <FreeForYouModal {...props} navigation={props.navigation} />
-    <CreateFolderModal {...props} />
-    <RenameModal />
-
     <AppMenu title="Storage" />
     {props.layoutState.searchActive && <SearchBox />}
 

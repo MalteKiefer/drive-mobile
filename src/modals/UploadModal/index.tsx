@@ -35,7 +35,7 @@ function removeExtension(filename: string) {
 
 function UploadModal(props: Reducers) {
   const currentFolder = props.filesState?.folderContent?.currentFolder ||
-    props.authenticationState.user?.root_folder_id;
+    props?.authenticationState?.user?.root_folder_id;
 
   async function upload(res: FileMeta, fileType: 'document' | 'image') {
     function progressCallback(progress: number) {

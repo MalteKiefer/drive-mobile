@@ -8,21 +8,46 @@ import Configuration from '../Configuration';
 import MyTabBar from './myTabBar';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs/lib/typescript/src/types'
 import VoidScreen from '../VoidScreen';
+import SettingsModal from '../../modals/SettingsModal';
+import { View } from 'react-native';
+import FileDetailsModal from '../../modals/FileDetailsModal';
+import UploadModal from '../../modals/UploadModal';
+import RenameModal from '../../modals/RenameModal';
+import CreateFolderModal from '../../modals/CreateFolderModal';
+import ShareFilesModal from '../../modals/ShareFilesModal';
+import DeleteItemModal from '../../modals/DeleteItemModal';
+import FreeForYouModal from '../../modals/FreeForYouModal';
+import SortModal from '../../modals/SortModal';
+import MoveFilesModal from '../../modals/MoveFilesModal';
 
 const Tab = createBottomTabNavigator();
 
 export default function TabExplorer(props: Reducers): JSX.Element {
-  return <Tab.Navigator
-    tabBar={(tabBarProps: BottomTabBarProps) => <MyTabBar {...{ ...props, ...tabBarProps }} />}
-    initialRouteName={'FileExplorer'}
-    screenOptions={({ route }) => ({
-      headerShown: false
-    })}
-  >
-    <Tab.Screen name="Drive" component={FileExplorer} />
-    <Tab.Screen name="Recents" component={Recents} />
-    <Tab.Screen name="Upload" component={VoidScreen} />
-    <Tab.Screen name="Share" component={Share} />
-    <Tab.Screen name="Settings" component={Configuration} />
-  </ Tab.Navigator>
+  return <View style={{ flex: 1 }}>
+    <FileDetailsModal {...props} />
+    <SettingsModal {...props} navigation={props.navigation} />
+    <UploadModal {...props} navigation={props.navigation} />
+    <SortModal {...props} />
+    <DeleteItemModal {...props} />
+    <MoveFilesModal {...props} />
+    <ShareFilesModal {...props} />
+    <FreeForYouModal {...props} navigation={props.navigation} />
+    <CreateFolderModal {...props} />
+    <RenameModal />
+
+    <Tab.Navigator
+      tabBar={(tabBarProps: BottomTabBarProps) => <MyTabBar {...{ ...props, ...tabBarProps }} />}
+      initialRouteName={'FileExplorer'}
+      style={{ borderWidth: 1 }}
+      screenOptions={({ route }) => ({
+        headerShown: false
+      })}
+    >
+      <Tab.Screen name="Drive" component={FileExplorer} />
+      <Tab.Screen name="Recents" component={Recents} />
+      <Tab.Screen name="Upload" component={VoidScreen} />
+      <Tab.Screen name="Share" component={Share} />
+      <Tab.Screen name="Settings" component={Configuration} />
+    </ Tab.Navigator>
+  </View>
 }
