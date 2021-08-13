@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, StyleSheet, Text, Alert } from 'react-native';
+import { View, StyleSheet, Text, Alert, Platform } from 'react-native';
 import { connect, useSelector } from 'react-redux';
 import { uniqueId } from 'lodash';
 import Modal from 'react-native-modalbox';
@@ -61,6 +61,11 @@ function UploadModal(props: Reducers) {
     result.path = filesState.absolutePath + result.name;
 
     const fileStat = await stat(finalUri);
+
+    if (Platform.OS === 'android' && fileType === 'image') {
+      result.uri = 'file:///' + result.uri;
+    }
+
     const fileId = await uploadFile(result, progressCallback);
 
     const folderId = result.currentFolder.toString();
