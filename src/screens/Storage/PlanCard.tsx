@@ -27,7 +27,7 @@ function PlanCard(props: PlanCardProps): JSX.Element {
               </Text>
               :
               <Text style={styles.text}>
-                €{(parseInt(props.price) / 100).toFixed(2)}
+                {'€'}{(parseInt(props.price) / 100).toFixed(2)}
               </Text>
           }
         </View>
@@ -37,9 +37,9 @@ function PlanCard(props: PlanCardProps): JSX.Element {
         {
           !props.chosen ?
             <View style={styles.priceBackground}>
-              <Text style={styles.price}>€{props.price}</Text>
+              <Text style={styles.price}>{'€'}{props.price}</Text>
 
-              <Text style={[styles.price, styles.grey]}>/{strings.screens.storage.plans.month}</Text>
+              <Text style={[styles.price, styles.grey]}>{'/'}{strings.screens.storage.plans.month}</Text>
 
               {
                 props.currentPlan && props.size ?

@@ -213,7 +213,7 @@ function Register(props: Reducers): JSX.Element {
                   onBlur={() => setPasswordFocus(false)}
                 />
                 <Unicons.UilEye
-                  style={tailwind('input-icon')}
+                  style={[tailwind('input-icon'), { display: 'none' }]}
                   color={isValidPassword || isValidPassword || passwordFocus ? '#42BE65' : '#7A869A'} />
               </View>
 
@@ -231,7 +231,7 @@ function Register(props: Reducers): JSX.Element {
                   onBlur={() => setConfirmPasswordFocus(false)}
                 />
                 <Unicons.UilEye
-                  style={tailwind('input-icon')}
+                  style={[tailwind('input-icon'), { display: 'none' }]}
                   color={isValidConfirmedPassword || confirmPasswordFocus ? '#42BE65' : '#7A869A'} />
               </View>
             </View>
@@ -253,8 +253,8 @@ function Register(props: Reducers): JSX.Element {
             <View style={styles.containerCentered}>
               <View>
                 <TouchableOpacity
-                  disabled={!isValidForm}
-                  style={[globalStyles.buttonInputStyle.button, globalStyles.buttonInputStyle.block, { backgroundColor: isValidForm ? '#0F62FE' : '#A6C8FF' }]}
+                  disabled={!isValidForm || registerButtonClicked}
+                  style={[globalStyles.buttonInputStyle.button, globalStyles.buttonInputStyle.block, { backgroundColor: isValidForm || registerButtonClicked ? '#0F62FE' : '#A6C8FF' }]}
                   onPress={handleOnPress}
                 >
                   <Text style={styles.buttonOnLabel}>{registerButtonClicked ? strings.components.buttons.creating_button : strings.components.buttons.create}</Text>
@@ -263,7 +263,7 @@ function Register(props: Reducers): JSX.Element {
             </View>
             <View style={tailwind('py-5')}>
               <TouchableWithoutFeedback onPress={() => props.navigation.replace('Login')}>
-                <Text style={[globalStyles.text.link, globalStyles.text.center]}>Login in Internxt</Text>
+                <Text style={[globalStyles.text.link, globalStyles.text.center]}>{strings.screens.login_screen.title}</Text>
               </TouchableWithoutFeedback>
             </View>
           </View>

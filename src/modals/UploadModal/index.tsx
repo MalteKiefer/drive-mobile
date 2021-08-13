@@ -18,6 +18,7 @@ import { stat } from '../../lib/fs';
 import { Reducers } from '../../redux/reducers/reducers';
 import { renameIfAlreadyExists } from '../../lib';
 import { UPLOAD_FILES_LIMIT } from '../../lib/constants';
+import strings from '../../../assets/lang/strings';
 
 function getFileExtension(uri: string) {
   const regex = /^(.*:\/{0,2})\/?(.*)$/gm;
@@ -34,7 +35,7 @@ function removeExtension(filename: string) {
 
 function UploadModal(props: Reducers) {
   const currentFolder = props.filesState?.folderContent?.currentFolder ||
-    props.authenticationState.user?.root_folder_id;
+    props?.authenticationState?.user?.root_folder_id;
 
   async function upload(res: FileMeta, fileType: 'document' | 'image') {
     function progressCallback(progress: number) {
@@ -117,7 +118,7 @@ function UploadModal(props: Reducers) {
       <View style={styles.drawerKnob}></View>
 
       <View style={styles.alignCenter}>
-        <Text style={styles.modalTitle}>Upload</Text>
+        <Text style={styles.modalTitle}>{strings.generic.upload}</Text>
       </View>
       <Separator />
       <SettingsItem
@@ -288,7 +289,7 @@ function UploadModal(props: Reducers) {
       <Separator />
       <View style={styles.cancelContainer}>
         <SettingsItem
-          text={<Text style={styles.cancelText}>Cancel</Text>}
+          text={<Text style={styles.cancelText}>{strings.generic.cancel}</Text>}
           onPress={() => {
             props.dispatch(layoutActions.closeUploadFileModal());
           }}

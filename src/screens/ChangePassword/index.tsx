@@ -30,7 +30,7 @@ function ChangePassword(props: any) {
       setNewPassword('');
       setConfirmPassword('');
     }).catch(
-      (err) => {
+      (err: Error) => {
         Toast.show({
           type: 'error',
           position: 'bottom',
@@ -47,14 +47,17 @@ function ChangePassword(props: any) {
 
   const isValidPassword = !isNullOrEmpty(password)
   const isValidNewPassword = isStrongPassword(newPassword);
-  const passwordConfirmed = newPassword === confirmPassword;
+  const passwordConfirmed = confirmPassword && newPassword === confirmPassword;
 
   const activeButton = isValidPassword && isValidNewPassword && passwordConfirmed
   const [passwordFocus, setPasswordFocus] = useState(false);
   const [newPasswordFocus, setNewPasswordFocus] = useState(false);
   const [confirmPasswordFocus, setConfirmPasswordFocus] = useState(false);
 
-  return <View>
+  return <View style={{
+    backgroundColor: 'white',
+    flex: 1
+  }}>
     <AppMenu
       title={strings.components.inputs.password}
       onBackPress={() => {
@@ -63,13 +66,13 @@ function ChangePassword(props: any) {
       hideSearch={true} hideOptions={true} />
     <View style={styles.mainContainer}>
       <View style={styles.titleContainer}>
-        <Text style={styles.titleText}>Change password</Text>
+        <Text style={styles.titleText}>{strings.screens.change_password.title}</Text>
       </View>
       <View style={styles.titleContainer}>
-        <Text style={styles.subtitleText}>Remember that if you change your password, you will be signed out in all your devices. You will need these credentials for logining in again.</Text>
+        <Text style={styles.subtitleText}>{strings.screens.change_password.warning}</Text>
       </View>
       <View style={styles.container}>
-        <View style={[tailwind('input-wrapper my-2'), tailwind(isValidPassword ? 'input-valid' : 'input-error')]}>
+        <View style={[tailwind('input-wrapper my-2'), tailwind(password === '' ? '' : (isValidPassword ? 'input-valid' : 'input-error'))]}>
           <TextInput
             style={tailwind('input')}
             value={password}
@@ -82,10 +85,10 @@ function ChangePassword(props: any) {
             onBlur={() => setPasswordFocus(false)}
           />
           <Unicons.UilEye
-            style={tailwind('input-icon')}
+            style={[tailwind('input-icon'), { display: 'none' }]}
             color={passwordFocus && isValidPassword ? '#42BE65' : '#7A869A'} />
         </View>
-        <View style={[tailwind('input-wrapper my-2'), tailwind(isValidNewPassword ? 'input-valid' : 'input-error')]}>
+        <View style={[tailwind('input-wrapper my-2'), tailwind(newPassword === '' ? '' : (isValidNewPassword ? 'input-valid' : 'input-error'))]}>
           <TextInput
             style={tailwind('input')}
             value={newPassword}
@@ -98,10 +101,10 @@ function ChangePassword(props: any) {
             onBlur={() => setNewPasswordFocus(false)}
           />
           <Unicons.UilEye
-            style={tailwind('input-icon')}
+            style={[tailwind('input-icon'), { display: 'none' }]}
             color={newPasswordFocus && isValidNewPassword ? '#42BE65' : '#7A869A'} />
         </View>
-        <View style={[tailwind('input-wrapper my-2'), tailwind(passwordConfirmed ? 'input-valid' : 'input-error')]}>
+        <View style={[tailwind('input-wrapper my-2'), tailwind(confirmPassword === '' ? '' : (passwordConfirmed ? 'input-valid' : 'input-error'))]}>
           <TextInput
             style={tailwind('input')}
             value={confirmPassword}
@@ -114,15 +117,15 @@ function ChangePassword(props: any) {
             onBlur={() => setConfirmPasswordFocus(false)}
           />
           <Unicons.UilEye
-            style={tailwind('input-icon')}
+            style={[tailwind('input-icon'), { display: 'none' }]}
             color={confirmPasswordFocus && passwordConfirmed ? '#42BE65' : '#7A869A'} />
         </View>
         <TouchableHighlight
-          style={[tailwind('btn btn-primary my-5'), (activeButton && !isLoading) ? null: { backgroundColor: '#A6C8FF' }]}
+          style={[tailwind('btn btn-primary my-5'), (activeButton && !isLoading) ? null : { backgroundColor: '#A6C8FF' }]}
           underlayColor="#4585f5"
           onPress={handleOnPress}
           disabled={!activeButton || isLoading}>
-          <Text style={tailwind('text-base btn-label')}>Change password</Text>
+          <Text style={tailwind('text-base btn-label')}>{strings.screens.change_password.title}</Text>
         </TouchableHighlight>
       </View>
     </View>
@@ -153,7 +156,7 @@ const styles = StyleSheet.create({
     fontFamily: 'NeueEinstellung-Regular'
   },
   mainContainer: {
-    marginHorizontal: 40
+    paddingHorizontal: 40
   },
   container: {
     padding: 8

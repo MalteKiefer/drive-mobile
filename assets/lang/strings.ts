@@ -3,12 +3,28 @@ import LocalizedStrings from "react-native-localization"
 
 const strings = new LocalizedStrings({
   "en_US": {
+    "generic": {
+      "loading": "Loading",
+      "cancel": "Cancel",
+      "security": "Security",
+      "rename": "Rename",
+      "close": "Close",
+      "upgrade": "Upgrade",
+      "upload": "Upload",
+      "delete": "Delete",
+      "settings": "Settings"
+    },
     "screens": {
+      "change_password": {
+        "title": "Change password",
+        "warning": "Remember that if you change your password, you will be signed out in all your devices. You will need these credentials for logining in again.",
+      },
       "login_screen": {
-        "title": "Sign in to Internxt",
+        "title": "Login in to Internxt",
         "forgot": "Forgot your password?",
         "no_register": "Don't have account",
-        "register": "Get started"
+        "register": "Get started",
+        "back": "Back to login"
       },
       "register_screen": {
         "first": "{0} is a {1} cloud storage service. A {2} place for all your files. Welcome to the {3}. Welcome to {4}.",
@@ -62,9 +78,8 @@ const strings = new LocalizedStrings({
         }
       },
       "create_folder": {
-        "input": "Enter folder name"
-      },
-      "photos": {
+        "input": "Enter folder name",
+        "title": "Create folder"
       }
     },
     "components": {
@@ -114,7 +129,6 @@ const strings = new LocalizedStrings({
         "settings": {
           "storage": "Storage",
           "more": "More info",
-          "photos": "Photos",
           "drive": "Drive",
           "contact": "Contact",
           "sign": "Sign out"
@@ -143,7 +157,9 @@ const strings = new LocalizedStrings({
       },
       "delete_modal": {
         "title": "Delete item",
-        "subtitle": "Please confirm you want to delete this item. This action can not be undone."
+        "subtitle": "Please confirm you want to delete this item. This action can not be undone.",
+        "warning": "Are you sure you want to delete this item?",
+        "confirm_delete": "Delete permanently"
       },
       "out_of_space_modal": {
         "title": "Run out of space",
@@ -157,12 +173,28 @@ const strings = new LocalizedStrings({
     }
   },
   "es": {
+    "generic": {
+      "loading": "Cargando",
+      "cancel": "Cancelar",
+      "security": "Seguridad",
+      "rename": "Renombrar",
+      "close": "Cerrar",
+      "upgrade": "Mejorar",
+      "upload": "Subir",
+      "delete": "Eliminar",
+      "settings": "Configuración"
+    },
     "screens": {
+      "change_password": {
+        "title": "Cambiar contraseña",
+        "warning": "Recuerda que si cambias tu contraseña, se cerrará sesión en todos tus dispositivos. Necesitarás la nueva contraseña para acceder otra vez."
+      },
       "login_screen": {
         "title": "Inicia sesión en Internxt",
         "forgot": "¿Has olvidado la contraseña?",
         "no_register": "No tengo cuenta",
-        "register": "Crear una"
+        "register": "Crear una",
+        "back": "Iniciar sesión"
       },
       "register_screen": {
         "first": "{0} es un servicio de almacenamiento en la nube {1}. Un lugar {2} para todos tus archivos. Bienvenido a la {3}. Bienvenido a {4}.",
@@ -215,7 +247,8 @@ const strings = new LocalizedStrings({
         }
       },
       "create_folder": {
-        "input": "Nombre de la carpeta"
+        "input": "Nombre de la carpeta",
+        "title": "Crear carpeta"
       }
     },
     "components": {
@@ -266,7 +299,6 @@ const strings = new LocalizedStrings({
         "settings": {
           "storage": "Almacenamiento",
           "more": "Más información",
-          "photos": "Fotos",
           "drive": "Drive",
           "contact": "Contacto",
           "sign": "Cerrar sesión"
@@ -295,7 +327,9 @@ const strings = new LocalizedStrings({
       },
       "delete_modal": {
         "title": "Borrar",
-        "subtitle": "Por favor, confirma que realmente quieres borrar este objeto. Esta acción no puede deshacerse."
+        "subtitle": "Por favor, confirma que realmente quieres borrar este objeto. Esta acción no puede deshacerse.",
+        "warning": "Seguro que quieres eliminar?",
+        "confirm_delete": "Borrar"
       },
       "out_of_space_modal": {
         "title": "No tienes más espacio",

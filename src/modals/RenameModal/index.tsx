@@ -1,56 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableHighlight, TextInput } from 'react-native';
 import Modal from 'react-native-modalbox';
-import { createFolder } from './CreateFolderUtils'
 import { connect } from 'react-redux';
 import { fileActions, layoutActions } from '../../redux/actions';
 import { Reducers } from '../../redux/reducers/reducers';
 import Separator from '../../components/Separator';
-import SettingsItem from '../SettingsModal/SettingsItem';
 import { tailwind } from '../../helpers/designSystem';
 import * as Unicons from '@iconscout/react-native-unicons';
-import Toast from 'react-native-toast-message'
 import strings from '../../../assets/lang/strings';
-function CreateFolderModal(props: Reducers) {
+
+function RenameModal(props: Reducers) {
   const currentFolderId = props.filesState.folderContent && props.filesState.folderContent.currentFolder
-  const [isOpen, setIsOpen] = useState(props.layoutState.showCreateFolderModal)
-  const [folderName, setFolderName] = useState('');
+  const [isOpen, setIsOpen] = useState(props.layoutState.showRenameModal)
+  const [newName, setNewName] = useState('');
   const [isLoading, setIsLoading] = useState(false)
 
-  const emptyName = folderName === ''
+  const emptyName = newName === ''
+
+  const isFolder = props.filesState.selectedFile && !!props.filesState.selectedFile.parentId
+
+  const folder = isFolder && props.filesState.selectedFile
+  const file = !isFolder && props.filesState.selectedFile
 
   useEffect(() => {
-    props.layoutState.showCreateFolderModal ? setIsOpen(true) : null
+    props.layoutState.showRenameModal ? setIsOpen(true) : null
   }, [props.layoutState])
 
-  const createHandle = () => {
-    setIsLoading(true);
-    createFolder({ folderName, parentId: currentFolderId }).then(() => {
-      props.dispatch(fileActions.getFolderContent(currentFolderId))
-      Toast.show({
-        type: 'success',
-        position: 'bottom',
-        text1: 'Folder created',
-        visibilityTime: 5000,
-        autoHide: true,
-        bottomOffset: 100
-      });
-      setFolderName('');
-    }).catch((err) => {
-      Toast.show({
-        type: 'error',
-        position: 'bottom',
-        text1: err.message,
-        visibilityTime: 5000,
-        autoHide: true,
-        bottomOffset: 100
-      });
-    }).finally(() => {
-      props.dispatch(layoutActions.closeCreateFolderModal());
-      setIsOpen(false);
-      setIsLoading(false);
-    });
-
+  const renameHandle = () => {
+    setIsLoading(false);
   }
 
   return (
@@ -58,7 +35,8 @@ function CreateFolderModal(props: Reducers) {
       isOpen={isOpen}
       swipeArea={20}
       onClosed={() => {
-        props.dispatch(layoutActions.closeCreateFolderModal())
+        props.dispatch(layoutActions.closeRenameModal())
+        setNewName('')
         setIsOpen(false)
       }}
       position={'bottom'}
@@ -69,16 +47,16 @@ function CreateFolderModal(props: Reducers) {
     >
       <View style={styles.drawerKnob}></View>
       <View style={styles.alignCenter}>
-        <Text style={styles.modalTitle}>{strings.screens.create_folder.title}</Text>
+        <Text style={styles.modalTitle}>{strings.generic.rename} {props.filesState.selectedFile && props.filesState.selectedFile.name}</Text>
       </View>
       <Separator />
       <View style={styles.container}>
         <View style={[tailwind('input-wrapper'), styles.inputBox]}>
           <TextInput
             style={tailwind('input')}
-            value={folderName}
-            onChangeText={value => setFolderName(value)}
-            placeholder={'Insert folder name'}
+            value={newName}
+            onChangeText={value => setNewName(value)}
+            placeholder={'Insert new name'}
             placeholderTextColor="#0F62FE"
             maxLength={64}
             autoCapitalize='words'
@@ -86,28 +64,33 @@ function CreateFolderModal(props: Reducers) {
             key='name'
             autoCorrect={false}
           />
-          <Unicons.UilFolderMedical
+          <Unicons.UilEdit
             style={tailwind('input-icon')}
             color={'#0F62FE'} />
         </View>
         <TouchableHighlight
           style={[tailwind('btn btn-primary my-3'), emptyName || isLoading ? { backgroundColor: '#A6C8FF' } : null]}
           underlayColor="#4585f5"
-          onPress={createHandle}
+          onPress={renameHandle}
           disabled={emptyName || isLoading}>
-          <Text style={tailwind('text-base btn-label')}>{strings.screens.create_folder.title}</Text>
+          <Text style={tailwind('text-base btn-label')}>{strings.generic.rename}</Text>
         </TouchableHighlight>
       </View>
 
       <Separator />
-      <View style={styles.cancelContainer}>
-        <SettingsItem
-          text={<Text style={styles.cancelText}>{strings.generic.cancel}</Text>}
+
+      <View>
+        <TouchableHighlight
+          underlayColor={'#eee'}
+          style={{ alignItems: 'center', padding: 20 }}
           onPress={() => {
-            props.dispatch(layoutActions.closeCreateFolderModal());
-          }}
-        />
+            props.dispatch(fileActions.deselectAll())
+            props.dispatch(layoutActions.closeRenameModal())
+          }}>
+          <Text style={{ color: '#DA1E28' }}>{strings.generic.cancel}</Text>
+        </TouchableHighlight>
       </View>
+
     </Modal>
   );
 }
@@ -126,14 +109,6 @@ const styles = StyleSheet.create({
     margin: 12,
     width: 50
   },
-  cancelText: {
-    color: '#f00',
-    textAlign: 'center',
-    flexGrow: 1,
-    fontFamily: 'NeueEinstellung-Regular',
-    fontSize: 19,
-    fontWeight: '500'
-  },
   modalTitle: {
     color: '#42526E',
     fontFamily: 'Neue-Einstellung',
@@ -141,12 +116,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
     fontWeight: 'bold'
-  },
-  cancelContainer: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    flexGrow: 1,
-    marginBottom: 16
   },
   alignCenter: { alignItems: 'center' },
   container: {
@@ -165,4 +134,4 @@ const mapStateToProps = (state: any) => {
   return { ...state }
 };
 
-export default connect(mapStateToProps)(CreateFolderModal)
+export default connect(mapStateToProps)(RenameModal)

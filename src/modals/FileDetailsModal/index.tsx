@@ -11,7 +11,6 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-nat
 import strings from '../../../assets/lang/strings';
 import { Reducers } from '../../redux/reducers/reducers';
 import * as Unicons from '@iconscout/react-native-unicons';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 interface FileDetailsProps extends Reducers {
   showItemModal: boolean
@@ -95,14 +94,23 @@ function FileDetailsModal(props: FileDetailsProps) {
           <Separator />
 
           <View>
-            <TouchableWithoutFeedback style={{ flexDirection: 'row', alignItems: 'center', padding: 20, paddingLeft: 20 }}>
-              <View style={{ paddingRight: 10 }}>
-                <Unicons.UilEdit color="#0F62FE" size={30} />
+            <TouchableHighlight
+              underlayColor={'#eee'}
+              onPress={() => {
+                // props.dispatch(layoutActions.closeItemModal())
+                props.dispatch(layoutActions.openRenameModal())
+              }}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center', padding: 20, paddingLeft: 20 }}>
+                <View style={{ paddingRight: 10 }}>
+                  <Unicons.UilEdit color="#0F62FE" size={30} />
+                </View>
+                <View>
+                  <Text style={{ fontFamily: 'NeueEinstellung-Regular' }}>{strings.generic.rename}</Text>
+                </View>
+
               </View>
-              <View>
-                <Text style={{ fontFamily: 'NeueEinstellung-Regular' }}>Rename</Text>
-              </View>
-            </TouchableWithoutFeedback>
+            </TouchableHighlight>
           </View>
 
           <View>
@@ -118,7 +126,7 @@ function FileDetailsModal(props: FileDetailsProps) {
                   <Unicons.UilTrashAlt color="#DA1E28" size={30} />
                 </View>
                 <View>
-                  <Text style={{ fontFamily: 'NeueEinstellung-Regular', color: '#DA1E28' }}>Delete</Text>
+                  <Text style={{ fontFamily: 'NeueEinstellung-Regular', color: '#DA1E28' }}>{strings.generic.delete}</Text>
                 </View>
               </View>
             </TouchableHighlight>
@@ -137,7 +145,7 @@ function FileDetailsModal(props: FileDetailsProps) {
                 props.dispatch(fileActions.deselectAll())
                 props.dispatch(layoutActions.closeItemModal())
               }}>
-              <Text style={{ color: '#DA1E28' }}>Cancel</Text>
+              <Text style={{ color: '#DA1E28' }}>{strings.generic.cancel}</Text>
             </TouchableHighlight>
           </View>
 

@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "yarn check --verify-tree && react-native start --reset-cache",
+    "start": "react-native start --reset-cache",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "web": "expo start --web",

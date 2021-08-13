@@ -4,6 +4,7 @@ import * as Unicons from '@iconscout/react-native-unicons'
 import { connect } from 'react-redux';
 import { fileActions, layoutActions } from '../../redux/actions';
 import { Reducers } from '../../redux/reducers/reducers';
+import strings from '../../../assets/lang/strings';
 
 function SearchBox(props: Reducers): JSX.Element {
 
@@ -44,7 +45,7 @@ function SearchBox(props: Reducers): JSX.Element {
             props.dispatch(layoutActions.closeSearch())
           }}
           style={styles.cancelWrapper}>
-          <Text style={styles.cancelText}>Cancel</Text>
+          <Text style={styles.cancelText}>{strings.generic.cancel}</Text>
         </TouchableWithoutFeedback>
       </View>
     </View>

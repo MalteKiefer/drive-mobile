@@ -13,9 +13,10 @@ export interface LayoutState {
   showShareModal: boolean
   showFreeForYouModal: boolean
   showComingSoonModal: boolean
-  showUploadModal: boolean,
-  showCreateFolderModal: boolean,
+  showUploadModal: boolean
+  showCreateFolderModal: boolean
   backButtonEnabled: boolean
+  showRenameModal: boolean
 }
 
 const initialState: LayoutState = {
@@ -32,7 +33,8 @@ const initialState: LayoutState = {
   showComingSoonModal: false,
   showUploadModal: false,
   showCreateFolderModal: false,
-  backButtonEnabled: true
+  backButtonEnabled: true,
+  showRenameModal: false
 };
 
 export function layoutReducer(state = initialState, action: AnyAction): LayoutState {
@@ -174,6 +176,18 @@ export function layoutReducer(state = initialState, action: AnyAction): LayoutSt
     return {
       ...state,
       backButtonEnabled: false
+    }
+  }
+  case layoutActionTypes.OPEN_RENAME_MODAL: {
+    return {
+      ...state,
+      showRenameModal: true
+    }
+  }
+  case layoutActionTypes.CLOSE_RENAME_MODAL: {
+    return {
+      ...state,
+      showRenameModal: false
     }
   }
   default:

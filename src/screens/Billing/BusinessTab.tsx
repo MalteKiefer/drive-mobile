@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 function BusinessTab(props: any) {
   return <View>
-    <Text>Tab 1</Text>
+    <Text></Text>
   </View>
 }
 

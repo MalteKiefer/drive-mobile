@@ -10,6 +10,7 @@ import ReceiveSharingIntent from 'react-native-receive-sharing-intent';
 import Toast from 'react-native-toast-message';
 import * as Unicons from '@iconscout/react-native-unicons'
 import { tailwind } from './src/helpers/designSystem';
+import strings from './assets/lang/strings'
 
 process.nextTick = setImmediate;
 
@@ -113,7 +114,7 @@ export default function App(): JSX.Element {
         routeNameRef.current = currentRouteName;
       }}
       linking={linking}
-      fallback={<Text>Loading...</Text>}>
+      fallback={<Text>{strings.generic.loading}</Text>}>
 
       {appInitialized ?
         <SafeAreaView

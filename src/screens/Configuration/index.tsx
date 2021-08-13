@@ -6,6 +6,7 @@ import { Reducers } from '../../redux/reducers/reducers';
 import * as Unicons from '@iconscout/react-native-unicons'
 import { tailwind } from '../../helpers/designSystem';
 import { userActions } from '../../redux/actions';
+import strings from '../../../assets/lang/strings';
 
 function ConfigurationItem(props: {
   title: string,
@@ -38,7 +39,7 @@ function ConfigurationGap() {
 
 function Configuration(props: Reducers): JSX.Element {
   return <View>
-    <AppMenu {...props} title="Settings" hideSearch={true} hideOptions={true} hideBackPress={true}/>
+    <AppMenu {...props} title={strings.generic.settings} hideSearch={true} hideOptions={true} hideBackPress={true}/>
     <ConfigurationItem title="Storage"
       onPress={() => {
         props.navigation.push('Storage')
@@ -48,8 +49,8 @@ function Configuration(props: Reducers): JSX.Element {
         props.navigation.push('Billing')
       }} />*/ }
     <ConfigurationGap />
-    {/* <ConfigurationItem title="Security" /> */}
-    <ConfigurationItem title="Change password"
+    {/* <ConfigurationItem title={strings.generic.security} /> */}
+    <ConfigurationItem title={strings.screens.change_password.title}
       onPress={() => {
         props.navigation.push('ChangePassword')
       }} />

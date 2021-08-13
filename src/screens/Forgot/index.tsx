@@ -69,7 +69,7 @@ function Forgot(props: ForgotProps): JSX.Element {
           <View style={styles.containerHeader}>
             <View style={tailwind('items-center pb-10')}>
               <InternxtLogo />
-              <Text style={styles.subTitle}>Security</Text>
+              <Text style={styles.subTitle}>{strings.generic.security}</Text>
             </View>
             <Text style={[tailwind('text-sm'), styles.explication]}>
               {strings.screens.forgot_password.subtitle_1}
@@ -110,7 +110,7 @@ function Forgot(props: ForgotProps): JSX.Element {
                 style={tailwind('m-5')}
                 onPress={() => props.navigation.replace('Login')}
               >
-                <Text style={[globalStyle.text.link, globalStyle.text.center]}> Back to login</Text>
+                <Text style={[globalStyle.text.link, globalStyle.text.center]}> {strings.screens.login_screen.back}</Text>
               </TouchableWithoutFeedback>
             </View>
           </View>
@@ -132,7 +132,7 @@ function Forgot(props: ForgotProps): JSX.Element {
           <View style={styles.containerHeader}>
             <View style={tailwind('items-center pb-10')}>
               <InternxtLogo />
-              <Text style={styles.subTitle}>Security</Text>
+              <Text style={styles.subTitle}>{strings.generic.security}</Text>
             </View>
             <Text style={[tailwind('text-sm'), styles.explication]}>
               {strings.screens.deactivation_screen.subtitle_1}
@@ -156,7 +156,7 @@ function Forgot(props: ForgotProps): JSX.Element {
                 style={tailwind('m-5')}
                 onPress={() => props.navigation.replace('Login')}
               >
-                <Text style={[globalStyle.text.link, globalStyle.text.center]}> Back to login</Text>
+                <Text style={[globalStyle.text.link, globalStyle.text.center]}> {strings.screens.login_screen.back}</Text>
               </TouchableWithoutFeedback>
             </View>
           </View>

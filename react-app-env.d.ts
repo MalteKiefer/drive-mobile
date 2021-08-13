@@ -6,5 +6,8 @@ declare namespace NodeJS {
       REACT_NATIVE_BRIDGE_URL: string
       REACT_NATIVE_SEGMENT_API: string
       REACT_NATIVE_SEGMENT_API_DEV: string
+      REACT_NATIVE_CRYPTO_SECRET2: string
+      REACT_NATIVE_MAGIC_IV: string
+      REACT_NATIVE_MAGIC_SALT: string
   }
 }

@@ -40,6 +40,7 @@ function signin(email: string, password: string, sKey: string, twoFactorCode: st
 
           // eslint-disable-next-line camelcase
           user.root_folder_id = initializeData.user.root_folder_id
+          user.bucket = initializeData.user.bucket
         }
 
         // Store login data

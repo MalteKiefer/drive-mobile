@@ -202,15 +202,6 @@ function FileItem(props: FileItemProps) {
                         width={30}
                         height={30}
                         label={props.item.bucket ? props.item.type || '' : props.item.name && props.item.name.split('.').pop()} isLoading={isLoading} />
-                      <ActivityIndicator
-                        style={{
-                          position: 'absolute',
-                          top: 5,
-                          left: 5,
-                          opacity: isLoading ? 1 : 0
-                        }}
-                        color='#aaf' />
-
                     </View>
                 }
 
@@ -251,13 +242,17 @@ function FileItem(props: FileItemProps) {
             </TouchableOpacity>
           </View>
           {
-            !item.isUploaded &&
+            !isLoading ?
               <View style={styles.buttonDetails}>
                 <TouchableOpacity
-                  style={isSelectionMode ? styles.dNone : styles.dFlex}
+                  style={isSelectionMode || props.isFolder ? styles.dNone : styles.dFlex}
                   onPress={() => props.dispatch(layoutActions.openItemModal(props.item))}>
                   <Unicons.UilEllipsisH size={32} color={'#7A869A'} />
                 </TouchableOpacity>
+              </View>
+              :
+              <View style={{ padding: 10 }}>
+                <ActivityIndicator color='#aaf' size='large' />
               </View>
           }
         </View>
