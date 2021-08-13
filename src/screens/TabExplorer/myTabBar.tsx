@@ -66,7 +66,7 @@ function MyTabBar(props: MyTabBarProps): JSX.Element {
             onLongPress={onLongPress}
           >
             <View style={styles.tabItem}>
-              <Icon size={40} color={isFocused ? '#0F62FE' : '#C1C7D0'} />
+              <Icon size={32} color={isFocused ? '#0F62FE' : '#C1C7D0'} />
               {!options.tabBarShowLabel && <Text style={{ color: isFocused ? '#0F62FE' : '#C1C7D0', opacity: route.name === 'Upload' ? 0 : 1 }}>
                 {label}
               </Text>}
@@ -84,14 +84,14 @@ export default connect(mapStateToProps)(MyTabBar);
 
 const styles = StyleSheet.create({
   tabContainer: {
-    paddingTop: normalize(16),
+    paddingTop: normalize(8),
+    paddingBottom: normalize(8),
     backgroundColor: '#fff',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
     borderTopWidth: 1,
-    borderColor: '#C1C7D0',
-    paddingBottom: normalize(16)
+    borderColor: '#C1C7D0'
   },
   tabItem: {
     flexDirection: 'column',

@@ -117,7 +117,7 @@ function Login(props: LoginProps): JSX.Element {
               editable={!isLoading}
             />
             <Unicons.UilEye
-              style={tailwind('input-icon')}
+              style={[tailwind('input-icon'), { display: 'none' }]}
               color="#7A869A" />
           </View>
         </View>

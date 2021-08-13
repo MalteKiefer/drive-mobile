@@ -213,7 +213,7 @@ function Register(props: Reducers): JSX.Element {
                   onBlur={() => setPasswordFocus(false)}
                 />
                 <Unicons.UilEye
-                  style={tailwind('input-icon')}
+                  style={[tailwind('input-icon'), { display: 'none' }]}
                   color={isValidPassword || isValidPassword || passwordFocus ? '#42BE65' : '#7A869A'} />
               </View>
 
@@ -231,7 +231,7 @@ function Register(props: Reducers): JSX.Element {
                   onBlur={() => setConfirmPasswordFocus(false)}
                 />
                 <Unicons.UilEye
-                  style={tailwind('input-icon')}
+                  style={[tailwind('input-icon'), { display: 'none' }]}
                   color={isValidConfirmedPassword || confirmPasswordFocus ? '#42BE65' : '#7A869A'} />
               </View>
             </View>
