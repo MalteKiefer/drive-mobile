@@ -32,7 +32,7 @@ const initialState: FilesState = {
   filesCurrentlyUploading: [],
   filesAlreadyUploaded: [],
   folderContent: null,
-  rootFolderContent: null,
+  rootFolderContent: [],
   selectedFile: null,
   selectedItems: [],
   sortType: '',

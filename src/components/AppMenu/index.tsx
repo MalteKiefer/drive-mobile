@@ -17,7 +17,7 @@ function AppMenu(props: AppMenuProps) {
   // Hide options menu, it is not finished yet.
   props.hideOptions = undefined;
 
-  const parentFolderId = props?.filesState?.folderContent?.parentId;
+  const parentFolderId = props.filesState.folderContent?.parentId;
   const backButtonEnabled = props.layoutState.backButtonEnabled;
 
   return <View style={styles.container}>

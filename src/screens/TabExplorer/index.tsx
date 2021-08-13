@@ -24,15 +24,15 @@ const Tab = createBottomTabNavigator();
 
 export default function TabExplorer(props: Reducers): JSX.Element {
   return <View style={{ flex: 1 }}>
-    <FileDetailsModal {...props} />
-    <SettingsModal {...props} navigation={props.navigation} />
-    <UploadModal {...props} navigation={props.navigation} />
-    <SortModal {...props} />
-    <DeleteItemModal {...props} />
-    <MoveFilesModal {...props} />
-    <ShareFilesModal {...props} />
-    <FreeForYouModal {...props} navigation={props.navigation} />
-    <CreateFolderModal {...props} />
+    <FileDetailsModal />
+    <SettingsModal navigation={props.navigation} />
+    <UploadModal navigation={props.navigation} />
+    <SortModal />
+    <DeleteItemModal />
+    <MoveFilesModal />
+    <ShareFilesModal />
+    <FreeForYouModal navigation={props.navigation} />
+    <CreateFolderModal />
     <RenameModal />
 
     <Tab.Navigator

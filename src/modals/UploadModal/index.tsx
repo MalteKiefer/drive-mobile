@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, StyleSheet, Text, Alert } from 'react-native';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { uniqueId } from 'lodash';
 import Modal from 'react-native-modalbox';
 import { launchCameraAsync, launchImageLibraryAsync, MediaTypeOptions, requestCameraPermissionsAsync, requestMediaLibraryPermissionsAsync } from 'expo-image-picker';
@@ -34,8 +34,9 @@ function removeExtension(filename: string) {
 }
 
 function UploadModal(props: Reducers) {
-  const currentFolder = props.filesState?.folderContent?.currentFolder ||
-    props?.authenticationState?.user?.root_folder_id;
+  const { filesState, authenticationState, layoutState } = useSelector<any, Reducers>(state => state);
+
+  const currentFolder = filesState.folderContent?.currentFolder || authenticationState.user.root_folder_id;
 
   async function upload(res: FileMeta, fileType: 'document' | 'image') {
     function progressCallback(progress: number) {
@@ -57,13 +58,13 @@ function UploadModal(props: Reducers) {
 
     result.uri = finalUri;
     result.type = fileType;
-    result.path = props.filesState.absolutePath + result.name;
+    result.path = filesState.absolutePath + result.name;
 
     const fileStat = await stat(finalUri);
     const fileId = await uploadFile(result, progressCallback);
 
     const folderId = result.currentFolder.toString();
-    const name = encryptFilename(result.name, folderId);
+    const name = encryptFilename(removeExtension(result.name), folderId);
     const fileSize = fileStat.size;
     const type = extension;
     const { bucket } = await deviceStorage.getUser();
@@ -103,7 +104,7 @@ function UploadModal(props: Reducers) {
 
   return (
     <Modal
-      isOpen={props.layoutState.showUploadModal}
+      isOpen={layoutState.showUploadModal}
       position={'bottom'}
       entry={'bottom'}
       coverScreen={true}
@@ -144,7 +145,7 @@ function UploadModal(props: Reducers) {
             }
 
             const file: any = result
-            const filesAtSameLevel = props.filesState.folderContent.files.map(file => {
+            const filesAtSameLevel = filesState.folderContent.files.map(file => {
               return { name: removeExtension(file.name), type: file.type };
             });
 
