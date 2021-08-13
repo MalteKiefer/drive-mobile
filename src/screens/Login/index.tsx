@@ -53,7 +53,7 @@ function Login(props: LoginProps): JSX.Element {
       Alert.alert('Login error', props.authenticationState.error)
       setIsLoading(false)
     }
-  }, [props.authenticationState])
+  }, [props.authenticationState.error])
 
   useEffect(() => {
     if (props.authenticationState.loggedIn === true) {
