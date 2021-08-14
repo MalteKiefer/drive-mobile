@@ -1,6 +1,9 @@
-import { Platform } from 'react-native';
 import RNFS from 'react-native-fs';
 import RNFetchBlob from 'rn-fetch-blob';
+import { Platform } from 'react-native';
+
+import { AndroidFileSystemReference, directories as androidDirs } from './android';
+import { IOSFileSystemReference, directories as iosDirs } from './ios';
 
 enum AcceptedEncodings {
   Utf8 = 'utf8',
@@ -8,25 +11,23 @@ enum AcceptedEncodings {
   Base64 = 'base64'
 }
 
-export function getDocumentsDir(): string {
-  return RNFS.DocumentDirectoryPath;
+export enum Directory {
+  Downloads = 'downloads',
+  Documents = 'documents',
+  Temporary = 'temporary',
+  Cache = 'cache'
 }
 
-export function getDownloadsDir(): string {
-  // MainBundlePath is only available on iOS
-  return Platform.OS === 'ios' ? RNFS.MainBundlePath : RNFS.DownloadDirectoryPath;
-}
+export type DirectoryPath = string;
+export type DirectoriesPaths = Map<Directory, DirectoryPath>;
+type OSDirectories = Map<typeof Platform.OS, DirectoriesPaths>;
+
+export const osDirectories: OSDirectories = new Map();
+osDirectories.set('android', androidDirs);
+osDirectories.set('ios', iosDirs);
 
 export function moveFile(source: string, target: string): Promise<void> {
   return RNFS.moveFile(source, target);
-}
-
-export function getTemporaryDir(): string {
-  return RNFS.TemporaryDirectoryPath;
-}
-
-export function getCacheDir(): string {
-  return RNFS.CachesDirectoryPath;
 }
 
 export function readFileStream(): void {
@@ -128,4 +129,74 @@ export class FileManager {
   destroy(): Promise<void> {
     return unlink(this.fileUri);
   }
+}
+
+export class FileSystemReference {
+  protected uri: string;
+
+  constructor(uri: string) {
+    this.uri = uri;
+  }
+
+  exists(): Promise<boolean> {
+    return exists(this.uri);
+  }
+
+  stat(): Promise<any> {
+    return stat(this.uri);
+  }
+
+  read(offset: number, bytesToRead: number): Promise<Buffer> {
+    return readFile(this.uri, bytesToRead, offset);
+  }
+
+  unlink(): Promise<void> {
+    return unlink(this.uri);
+  }
+
+  writeStream(): Promise<FileWriter> {
+    return writeFileStream(this.uri);
+  }
+}
+
+type FileSystemReferences = Map<typeof Platform.OS, typeof FileSystemReference>;
+
+const supportedFileSystemReferences: FileSystemReferences = new Map();
+
+supportedFileSystemReferences.set('ios', IOSFileSystemReference);
+supportedFileSystemReferences.set('android', AndroidFileSystemReference);
+
+export function createFileSystemReference(uri: string): FileSystemReference {
+  if (!supportedFileSystemReferences.has(Platform.OS)) {
+    throw new Error('File system not supported yet');
+  }
+
+  const FileSystemReferenceClass = supportedFileSystemReferences.get(Platform.OS);
+
+  return new FileSystemReferenceClass(uri);
+}
+
+const osDirectory = osDirectories.get(Platform.OS);
+
+export const dirs = {
+  Documents: osDirectory.get(Directory.Documents),
+  Downloads: osDirectory.get(Directory.Downloads),
+  Temporary: osDirectory.get(Directory.Temporary),
+  Cache: osDirectory.get(Directory.Cache)
+}
+
+function removeExtension(uri: string) {
+  return uri.substring(0, uri.length - (getExtension(uri).length + 1));
+}
+
+function getExtension(uri: string) {
+  const regex = /^(.*:\/{0,2})\/?(.*)$/gm;
+  const fileUri = uri.replace(regex, '$2');
+
+  return fileUri.split('.').pop();
+}
+
+export const utils = {
+  removeExtension,
+  getExtension
 }
