@@ -1,19 +1,29 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, KeyboardAvoidingView, StyleSheet, Alert } from 'react-native';
-import { TextInput, TouchableHighlight } from 'react-native-gesture-handler';
+import {
+  KeyboardAvoidingView,
+  StyleSheet, TextInput, TouchableOpacity,
+  View, Text, Alert,
+  ScrollView, TouchableWithoutFeedback
+} from 'react-native';
+import CheckBox from '../../components/CheckBox'
 import { connect } from 'react-redux';
 import strings from '../../../assets/lang/strings';
 import { deviceStorage, normalize } from '../../helpers';
-import analytics from '../../helpers/lytics';
 import { userActions } from '../../redux/actions';
 import Intro from '../Intro'
 import { apiLogin, validateEmail } from '../Login/access';
 import { doRegister, isNullOrEmpty, isStrongPassword } from './registerUtils';
+import InternxtLogo from '../../../assets/logo.svg'
+import globalStyles from '../../styles/global.style';
+import analytics from '../../helpers/lytics';
+import * as Unicons from '@iconscout/react-native-unicons';
+import { tailwind } from '../../helpers/designSystem';
+import { Reducers } from '../../redux/reducers/reducers';
 
-function Register(props: any): JSX.Element {
-  const [registerStep, setRegisterStep] = useState(1);
-  const [showIntro, setShowIntro] = useState(true);
+function Register(props: Reducers): JSX.Element {
+  const [showIntro, setShowIntro] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const twoFactorCode = '';
 
   // Register form fields
   const [firstName, setFirstName] = useState('');
@@ -21,12 +31,31 @@ function Register(props: any): JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [registerButtonClicked, setRegisterButtonClicked] = useState(false);
-  const twoFactorCode = ''
+  const [acceptPolicy, setAcceptPolicy] = useState(false);
 
+  const [firstNameFocus, setFirstNameFocus] = useState(false);
+  const [lastNameFocus, setLastNameFocus] = useState(false);
+  const [emailFocus, setEmailFocus] = useState(false);
+  const [passwordFocus, setPasswordFocus] = useState(false);
+  const [confirmPasswordFocus, setConfirmPasswordFocus] = useState(false);
+
+  const isEmptyEmail = isNullOrEmpty(email);
   const isValidEmail = validateEmail(email);
-  const isValidFirstName = !isNullOrEmpty(firstName)
-  const isValidLastName = !isNullOrEmpty(lastName)
+  const isValidFirstName = !isNullOrEmpty(firstName);
+  const isValidLastName = !isNullOrEmpty(lastName);
+  const isEmptyPassword = isNullOrEmpty(password);
+  const isEmptyConfirmedPassword = isNullOrEmpty(confirmPassword);
+  const isValidPassword = isStrongPassword(password);
+  const isValidConfirmedPassword = confirmPassword && password === confirmPassword;
+
+  const isValidForm = isValidEmail
+    && isValidFirstName
+    && isValidLastName
+    && isValidPassword
+    && isValidConfirmedPassword
+    && acceptPolicy;
+
+  const [registerButtonClicked, setRegisterButtonClicked] = useState(false);
 
   useEffect(() => {
     if (props.authenticationState.loggedIn === true) {
@@ -42,388 +71,235 @@ function Register(props: any): JSX.Element {
 
         if (xToken && xUser) {
           props.dispatch(userActions.localSignIn(xToken, xUser))
-        } else {
-          setIsLoading(false)
         }
       })()
     }
   }, [props.authenticationState.loggedIn, props.authenticationState.token])
 
   if (showIntro) {
-    return <Intro onFinish={() => setShowIntro(false)} />;
+    return <Intro {...props} onFinish={() => setShowIntro(false)} />;
   }
 
-  if (registerStep === 1) {
-    const isValidStep = isValidFirstName && isValidLastName && isValidEmail;
+  const handleOnPress = async () => {
+    if (!isValidPassword) { return Alert.alert('', 'Please make sure your password contains at least six characters, a number, and a letter') }
+    if (password !== confirmPassword) { return Alert.alert('', 'Please make sure your passwords match') }
+    if (registerButtonClicked || isLoading) { return }
 
-    return (
-      <KeyboardAvoidingView behavior="padding" style={styles.container}>
-        <View style={styles.containerCentered}>
-          <View style={styles.containerHeader}>
-            <View style={styles.flexRow}>
-              <Text style={styles.title}>{strings.screens.register_screen.create_account_title}</Text>
-            </View>
+    setRegisterButtonClicked(true)
+    setIsLoading(true)
 
-            <View style={styles.buttonWrapper}>
+    try {
+      const userData = await doRegister({ firstName: firstName, lastName: lastName, email: email, password: password })
 
-              <TouchableHighlight
-                style={[styles.button, styles.buttonOff]}
-                underlayColor="#f2f2f2"
-                activeOpacity={1}
-                onPress={() => props.navigation.replace('Login')}>
-                <Text style={styles.buttonOffLabel}>{strings.components.buttons.sign_in}</Text>
-              </TouchableHighlight>
+      await Promise.all([
+        analytics.identify(userData.uuid, { email: email }),
+        analytics.track('user-signup', {
+          properties: {
+            userId: userData.uuid,
+            email: email,
+            platform: 'mobile'
+          }
+        })
+      ])
 
-              <TouchableHighlight style={[styles.button, styles.buttonOn]}>
-                <Text style={styles.buttonOnLabel}>{strings.components.buttons.create}</Text>
-              </TouchableHighlight>
+      const userLoginData = await apiLogin(email)
 
-            </View>
-          </View>
-          <View style={styles.showInputFieldsWrapper}>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                style={[styles.input, !isValidFirstName ? {} : {}]}
-                value={firstName}
-                onChangeText={value => setFirstName(value)}
-                placeholder={strings.components.inputs.first_name}
-                placeholderTextColor="#666"
-                maxLength={64}
-              />
-            </View>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                style={[styles.input, !isValidLastName ? {} : {}]}
-                value={lastName}
-                onChangeText={value => setLastName(value)}
-                placeholder={strings.components.inputs.last_name}
-                placeholderTextColor="#666"
-                maxLength={64}
-              />
-            </View>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                autoCapitalize="none"
-                style={[styles.input, isValidEmail ? {} : {}]}
-                value={email}
-                onChangeText={value => setEmail(value)}
-                placeholder={strings.components.inputs.email}
-                placeholderTextColor="#666"
-                maxLength={64}
-                keyboardType="email-address"
-                textContentType="emailAddress"
-              />
-            </View>
-          </View>
-          <View style={styles.buttonFooterWrapper}>
-            <TouchableHighlight
-              style={[styles.button, styles.buttonBlock, isValidStep ? {} : styles.buttonDisabled]}
-              underlayColor="#4585f5"
-              disabled={!isValidStep}
-              onPress={() => {
-                setRegisterStep(2);
-              }}>
-              <Text style={styles.buttonOnLabel}>{strings.components.buttons.continue}</Text>
-            </TouchableHighlight>
-          </View>
-        </View>
-      </KeyboardAvoidingView>
-    );
+      await props.dispatch(userActions.signin(email, password, userLoginData.sKey, twoFactorCode))
+    } catch (err) {
+      await analytics.track('user-signin-attempted', {
+        status: 'error',
+        message: err.message
+      })
+      setIsLoading(false)
+      setRegisterButtonClicked(false)
+
+      Alert.alert('Error while registering', err.message)
+    }
   }
 
-  if (registerStep === 2) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.containerCentered}>
-          <View style={styles.containerHeader}>
-            <View style={styles.flexRow}>
-              <Text style={styles.title}>{strings.screens.register_screen.security_title}</Text>
-            </View>
-
-            <View>
-              <Text style={styles.textDisclaimer}>{strings.screens.register_screen.security_subtitle}</Text>
-            </View>
-
-            <View style={styles.textStorePasswordContainer}>
-              <View style={[styles.flexRow, { marginBottom: 10 }]}>
-                <Text>{'\u2022'}</Text>
-
-                <Text style={styles.textStorePassword}>{strings.screens.register_screen.suggestion_1}</Text>
+  return (
+    <ScrollView style={tailwind('bg-white')}>
+      <KeyboardAvoidingView
+        behavior="padding">
+        <View style={tailwind('p-6 py-0 bg-white')}>
+          <View>
+            <View style={tailwind('pb-6')}>
+              <View style={tailwind('items-center mt-5')}>
+                <InternxtLogo width={120} height={40} />
               </View>
-
-              <View style={styles.flexRow}>
-                <Text>{'\u2022'}</Text>
-
-                <Text style={styles.textTip}>{strings.screens.register_screen.suggestion_2}</Text>
+              <View>
+                <Text style={[globalStyles.text.normal, globalStyles.text.center]}>
+                  {strings.screens.register_screen.create_account_title}
+                </Text>
               </View>
             </View>
 
-            <View style={[styles.buttonFooterWrapper, { marginTop: 42 }]}>
-              <View style={styles.buttonWrapper}>
-                <TouchableHighlight
-                  style={[styles.button, styles.buttonOff, styles.buttonLeft]}
-                  underlayColor="#f2f2f2"
-                  onPress={() => setRegisterStep(1)}
+            <View style={styles.showInputFieldsWrapper}>
+              <View style={[tailwind('input-wrapper my-2'), isValidFirstName ? tailwind('input-valid') : styles.emptyInput]}>
+                <TextInput
+                  style={tailwind('input')}
+                  value={firstName}
+                  onChangeText={value => setFirstName(value)}
+                  placeholder={strings.components.inputs.first_name}
+                  placeholderTextColor="#666"
+                  maxLength={64}
+                  autoCapitalize='words'
+                  autoCompleteType='off'
+                  key='name'
+                  autoCorrect={false}
+                  onFocus={() => setFirstNameFocus(true)}
+                  onBlur={() => setFirstNameFocus(false)}
+                />
+                <Unicons.UilUser
+                  style={tailwind('input-icon')}
+                  color={isValidFirstName ? '#42BE65' : '#7A869A'} />
+              </View>
+
+              <View style={[tailwind('input-wrapper my-2'), isValidLastName ? tailwind('input-valid') : styles.emptyInput]}>
+                <TextInput
+                  style={tailwind('input')}
+                  value={lastName}
+                  onChangeText={value => setLastName(value)}
+                  placeholder={strings.components.inputs.last_name}
+                  placeholderTextColor="#666"
+                  maxLength={64}
+                  autoCapitalize='words'
+                  autoCompleteType='off'
+                  key='lastname'
+                  autoCorrect={false}
+                  onFocus={() => setLastNameFocus(true)}
+                  onBlur={() => setLastNameFocus(false)}
+                />
+                <Unicons.UilUser
+                  style={tailwind('input-icon')}
+                  color={isValidLastName ? '#42BE65' : '#7A869A'} />
+              </View>
+
+              <View style={[tailwind('input-wrapper my-2'), isEmptyEmail ? styles.emptyInput : tailwind(isValidEmail ? 'input-valid' : 'input-error')]}>
+                <TextInput
+                  style={tailwind('input')}
+                  value={email}
+                  onChangeText={value => setEmail(value)}
+                  placeholder={strings.components.inputs.email}
+                  placeholderTextColor="#666"
+                  maxLength={64}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCompleteType="off"
+                  autoCorrect={false}
+                  key='mailaddress'
+                  textContentType="emailAddress"
+                  onFocus={() => setEmailFocus(true)}
+                  onBlur={() => setEmailFocus(false)}
+                />
+                <Unicons.UilEnvelope
+                  style={tailwind('input-icon')}
+                  color={isValidEmail && !isEmptyEmail ? '#42BE65' : '#7A869A'} />
+              </View>
+            </View>
+
+            <View style={styles.showInputFieldsWrapper}>
+              <View style={[tailwind('input-wrapper my-2'), isEmptyPassword ? styles.emptyInput : tailwind(isValidPassword ? 'input-valid' : 'input-error')]}>
+                <TextInput
+                  style={tailwind('input')}
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder={strings.components.inputs.password}
+                  placeholderTextColor="#666"
+                  textContentType="password"
+                  autoCapitalize="none"
+                  autoCompleteType="password"
+                  autoCorrect={false}
+                  secureTextEntry={true}
+                  key='password'
+                  onFocus={() => setPasswordFocus(true)}
+                  onBlur={() => setPasswordFocus(false)}
+                />
+                <Unicons.UilEye
+                  style={[tailwind('input-icon'), { display: 'none' }]}
+                  color={isValidPassword || isValidPassword || passwordFocus ? '#42BE65' : '#7A869A'} />
+              </View>
+
+              <View style={[tailwind('input-wrapper my-2'), isEmptyConfirmedPassword ? styles.emptyInput : tailwind(isValidConfirmedPassword ? 'input-valid' : 'input-error')]}>
+                <TextInput
+                  style={tailwind('input')}
+                  value={confirmPassword}
+                  onChangeText={value => setConfirmPassword(value)}
+                  placeholder={strings.components.inputs.confirm_password}
+                  placeholderTextColor="#666"
+                  secureTextEntry={true}
+                  textContentType="password"
+                  key='confirmPassword'
+                  onFocus={() => setConfirmPasswordFocus(true)}
+                  onBlur={() => setConfirmPasswordFocus(false)}
+                />
+                <Unicons.UilEye
+                  style={[tailwind('input-icon'), { display: 'none' }]}
+                  color={isValidConfirmedPassword || confirmPasswordFocus ? '#42BE65' : '#7A869A'} />
+              </View>
+            </View>
+          </View>
+
+          <View style={tailwind('my-5')}>
+            <Text style={tailwind('text-sm')}>{strings.screens.register_screen.security_subtitle}</Text>
+          </View>
+
+          <View style={tailwind('py-2')}>
+            <CheckBox
+              text="Accept terms, conditions and privacy policy"
+              value={acceptPolicy}
+              onChange={setAcceptPolicy}
+            ></CheckBox>
+          </View>
+
+          <View>
+            <View style={styles.containerCentered}>
+              <View>
+                <TouchableOpacity
+                  disabled={!isValidForm || registerButtonClicked}
+                  style={[globalStyles.buttonInputStyle.button, globalStyles.buttonInputStyle.block, { backgroundColor: isValidForm || registerButtonClicked ? '#0F62FE' : '#A6C8FF' }]}
+                  onPress={handleOnPress}
                 >
-                  <Text style={styles.buttonOffLabel}>{strings.components.buttons.back}</Text>
-                </TouchableHighlight>
-
-                <TouchableHighlight
-                  style={[styles.button, styles.buttonOn, styles.buttonRight]}
-                  underlayColor="#4585f5"
-                  onPress={() => setRegisterStep(3)}
-                >
-                  <Text style={styles.buttonOnLabel}>{strings.components.buttons.continue}</Text>
-                </TouchableHighlight>
+                  <Text style={styles.buttonOnLabel}>{registerButtonClicked ? strings.components.buttons.creating_button : strings.components.buttons.create}</Text>
+                </TouchableOpacity>
               </View>
             </View>
-          </View>
-        </View>
-      </View>
-    );
-  }
-
-  if (registerStep === 3) {
-    const isValidPassword = isStrongPassword(password);
-    const isValidStep = (password === confirmPassword) && isValidPassword;
-
-    return (
-      <KeyboardAvoidingView behavior='height' style={styles.container}>
-        <View style={[styles.containerCentered, isLoading ? styles.halfOpacity : {}]}>
-          <View style={styles.containerHeader}>
-            <View style={styles.flexRow}>
-              <Text style={styles.title}>{strings.screens.register_screen.create_account_title}</Text>
-            </View>
-          </View>
-          <View style={[styles.showInputFieldsWrapper, { marginTop: -10 }]}>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                autoCapitalize="none"
-                style={[styles.input, !isValidPassword ? {} : {}]}
-                value={password}
-                onChangeText={value => setPassword(value)}
-                placeholder={strings.components.inputs.password}
-                placeholderTextColor="#666"
-                secureTextEntry={true}
-                textContentType="password"
-              />
-            </View>
-
-            <View style={styles.inputWrapper}>
-              <TextInput
-                style={[styles.input, !isValidStep ? {} : {}]}
-                value={confirmPassword}
-                onChangeText={value => setConfirmPassword(value)}
-                placeholder={strings.components.inputs.confirm_password}
-                placeholderTextColor="#666"
-                secureTextEntry={true}
-                textContentType="password"
-              />
-            </View>
-          </View>
-
-          <View style={styles.buttonFooterWrapper}>
-            <View style={styles.buttonWrapper}>
-              <TouchableHighlight
-                style={[styles.button, styles.buttonOff, styles.buttonLeft]}
-                underlayColor="#f2f2f2"
-                onPress={() => setRegisterStep(2)}
-              >
-                <Text style={styles.buttonOffLabel}>{strings.components.buttons.back}</Text>
-              </TouchableHighlight>
-
-              <TouchableHighlight
-                style={[styles.button, styles.buttonOn, styles.buttonRight]}
-                underlayColor="#4585f5"
-                disabled={registerButtonClicked}
-                onPress={() => {
-                  if (!isValidPassword) {
-                    Alert.alert(
-                      '',
-                      'Please make sure your password contains at least six characters, a number, and a letter'
-                    );
-                    return
-                  }
-                  if (password !== confirmPassword) {
-                    Alert.alert('', 'Please make sure your passwords match');
-                    return
-                  }
-                  if (registerButtonClicked || isLoading) {
-                    return;
-                  }
-                  setRegisterButtonClicked(true)
-                  setIsLoading(true)
-
-                  doRegister({ firstName, lastName, email, password })
-                    .then((userData) => {
-                      analytics.identify(userData.uuid, { email }).catch(() => { })
-                      analytics.track('user-signup', {
-                        properties: {
-                          userId: userData.uuid,
-                          email: email,
-                          platform: 'mobile'
-                        }
-                      })
-                    })
-                    .then(() => {
-                      return apiLogin(email).then(userLoginData => {
-                        props.dispatch(userActions.signin(email, password, userLoginData.sKey, twoFactorCode))
-                      })
-                    }).catch(err => {
-                      analytics.track('user-signin-attempted', {
-                        status: 'error',
-                        message: err.message
-                      }).catch(() => { })
-                      Alert.alert(err.message)
-                    }).finally(() => {
-                      setIsLoading(false)
-                      setRegisterButtonClicked(false)
-                    })
-                }}
-              >
-                <Text style={styles.buttonOnLabel}>{registerButtonClicked ? strings.components.buttons.creating_button : strings.components.buttons.continue}</Text>
-              </TouchableHighlight>
+            <View style={tailwind('py-5')}>
+              <TouchableWithoutFeedback onPress={() => props.navigation.replace('Login')}>
+                <Text style={[globalStyles.text.link, globalStyles.text.center]}>{strings.screens.login_screen.title}</Text>
+              </TouchableWithoutFeedback>
             </View>
           </View>
         </View>
       </KeyboardAvoidingView>
-    );
-  }
-  return <></>;
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
-  button: {
-    alignItems: 'center',
-    alignSelf: 'stretch',
-    backgroundColor: '#4585f5',
-    borderRadius: 3.4,
-    height: normalize(55),
-    justifyContent: 'center',
-    marginBottom: normalize(10),
-    width: normalize(130)
-  },
-  buttonBlock: {
-    width: '100%'
-  },
-  buttonDisabled: {
-    opacity: 0.5
-  },
-  buttonFooterWrapper: {
-    marginTop: normalize(20)
-  },
-  buttonLeft: {
-    marginRight: normalize(10)
-  },
-  buttonOff: {
-    alignItems: 'center',
-    backgroundColor: '#f2f2f2'
-  },
-  buttonOffLabel: {
-    color: '#5c5c5c',
-    fontFamily: 'CerebriSans-Medium',
-    fontSize: normalize(15),
-    textAlign: 'center'
-  },
-  buttonOn: {
-    alignItems: 'center',
-    backgroundColor: '#4585f5'
-  },
   buttonOnLabel: {
     color: '#fff',
-    fontFamily: 'CerebriSans-Medium',
+    fontFamily: 'NeueEinstellung-Medium',
     fontSize: normalize(15),
     textAlign: 'center'
   },
-  buttonRight: {
-    marginLeft: normalize(10)
-  },
-  buttonWrapper: {
-    alignItems: 'center',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: normalize(30)
-  },
-  container: {
-    backgroundColor: '#FFFFFF',
-    flex: 1,
-    justifyContent: 'center',
-    padding: normalize(20)
-  },
   containerCentered: {
-    alignSelf: 'center',
-    height: normalize(600),
-    justifyContent: 'center',
-    width: '100%'
-  },
-  containerHeader: {
-    borderWidth: 0
-  },
-  flexRow: {
-    flexDirection: 'row'
-  },
-  halfOpacity: {
-    opacity: 0.5
-  },
-  input: {
-    color: '#000',
-    flex: 1,
-    fontFamily: 'CerebriSans-Medium',
-    fontSize: normalize(15),
-    letterSpacing: -0.2,
-    paddingLeft: 20
-  },
-  inputWrapper: {
-    borderColor: '#c9c9c9',
-    borderRadius: 5,
-    borderWidth: 1,
-    height: normalize(55),
-    justifyContent: 'center',
-    marginBottom: normalize(15)
+    alignSelf: 'stretch',
+    justifyContent: 'center'
   },
   showInputFieldsWrapper: {
     justifyContent: 'center'
   },
-  textDisclaimer: {
-    color: '#737880',
-    fontFamily: 'CerebriSans-Regular',
-    fontSize: normalize(15),
-    letterSpacing: -0.1,
-    marginTop: -15,
-    textAlign: 'justify'
-  },
-  textStorePassword: {
-    color: '#737880',
-    flex: 1,
-    fontFamily: 'CerebriSans-Regular',
-    fontSize: normalize(15),
-    paddingLeft: normalize(9)
-  },
-  textStorePasswordContainer: {
-    backgroundColor: '#f7f7f7',
-    marginTop: normalize(30),
-    padding: normalize(23)
-  },
-  textTip: {
-    color: '#737880',
-    flex: 1,
-    fontFamily: 'CerebriSans-Regular',
-    fontSize: normalize(15),
-    paddingLeft: normalize(9)
-  },
-  title: {
-    color: '#000',
-    fontFamily: 'CerebriSans-Bold',
-    fontSize: normalize(22),
-    letterSpacing: -1.7,
-    marginBottom: normalize(30),
-    marginTop: normalize(12)
+  emptyInput: {
+    borderLeftColor: '#7A869A',
+    borderRightColor: '#7A869A',
+    borderTopColor: '#7A869A',
+    borderBottomColor: '#7A869A'
   }
 });
 
 const mapStateToProps = (state: any) => {
-  return { ...state };
+  return { authenticationState: state.authenticationState };
 };
 
 export default connect(mapStateToProps)(Register)

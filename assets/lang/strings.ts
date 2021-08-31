@@ -3,23 +3,41 @@ import LocalizedStrings from "react-native-localization"
 
 const strings = new LocalizedStrings({
   "en_US": {
+    "generic": {
+      "loading": "Loading",
+      "cancel": "Cancel",
+      "security": "Security",
+      "rename": "Rename",
+      "close": "Close",
+      "upgrade": "Upgrade",
+      "upload": "Upload",
+      "delete": "Delete",
+      "settings": "Settings"
+    },
     "screens": {
+      "change_password": {
+        "title": "Change password",
+        "warning": "Remember that if you change your password, you will be signed out in all your devices. You will need these credentials for logining in again.",
+      },
       "login_screen": {
-        "title": "Sign in to Internxt",
-        "forgot": "Forgot your password?"
+        "title": "Login in to Internxt",
+        "forgot": "Forgot your password?",
+        "no_register": "Don't have account",
+        "register": "Get started",
+        "back": "Back to login"
       },
       "register_screen": {
         "first": "{0} is a {1} cloud storage service. A {2} place for all your files. Welcome to the {3}. Welcome to {4}.",
         "second": "Files are {0} on your device. There is {1} we nor any other third-party can access them. {2}, as it should have always been.",
-        "third": "Access Internxt from {7}, {8} or {9}. Start using Drive today with {10} on us. {11} when needed, free for a month, cancel anytime.",
+        "third": "Access Internxt from {7}, {8} or {9}. Start using Internxt today with {10} on us. {11} when needed, free for a month, cancel anytime.",
         "bold_first": ["Internxt", "different", "better", "revolution", "Internxt"],
         "bold_second": ["encrypted", "no way", "Privacy"],
         "bold_third": ["Desktop", "Web", "Mobile", "10 GB", "Upgrade your storage"],
         "security_title": "Internxt Security",
-        "security_subtitle": "Internxt uses your password to encrypt and decrypt your files. Due to the secure nature of Internxt, we don't know your password. That means that if you ever forget it, your files are gone forever. With us, you're the only owner of your files. We strongly suggest you to:",
+        "security_subtitle": "Internxt uses your password to encrypt and decrypt your files. Due to the secure nature of Internxt, we don't know your password. That means that if you ever forget it, your files are gone forever. With us, you're the only owner of your files.",
         "suggestion_1": "Store your password. Keep it safe and secure.",
         "suggestion_2": "Keep an offline backup of your password.",
-        "create_account_title": 'Create an account'
+        "create_account_title": 'Create an Internxt account'
       },
       "forgot_password": {
         "title": "Internxt security",
@@ -60,30 +78,14 @@ const strings = new LocalizedStrings({
         }
       },
       "create_folder": {
-        "input": "Enter folder name"
-      },
-      "photos": {
-        "screens": {
-          "photos": {
-            "albums": "Albums",
-            "all_photos": "All photos"
-          },
-          "photo_gallery": {
-            "title": "All photos",
-            "subtitle": "Photos"
-          }
-        },
-        "components": {
-          "create_album_card": "Create new album",
-          "loading": "Loading photos from gallery...",
-          "syncing": "Syncing"
-        }
+        "input": "Enter folder name",
+        "title": "Create folder"
       }
     },
     "components": {
       "buttons": {
         "sign_in": "Sign in",
-        "create": "Create account",
+        "create": "Create an account",
         "next": "Next",
         "get_started": "Get started",
         "continue": "Continue",
@@ -106,7 +108,7 @@ const strings = new LocalizedStrings({
         "last_name": "Last name"
       },
       "empty_folder": {
-        "title": "This folder is empty",
+        "title": "This looks empty!",
         "subtitle": "Click the upload button to get started."
       },
       "app_menu": {
@@ -127,7 +129,6 @@ const strings = new LocalizedStrings({
         "settings": {
           "storage": "Storage",
           "more": "More info",
-          "photos": "Photos",
           "drive": "Drive",
           "contact": "Contact",
           "sign": "Sign out"
@@ -150,13 +151,17 @@ const strings = new LocalizedStrings({
       },
       "share_modal": {
         "title": "Share your Drive file with this private link",
-        "title2": "and enter the number of times you would like the link to be valid:",
+        "title2": "Enter the number of times you'd like the link to be valid:",
+        "title3": "Get link to share",
         "share": "Share",
+        "copy": "Copy",
         "loading": "Loading link..."
       },
       "delete_modal": {
         "title": "Delete item",
-        "subtitle": "Please confirm you want to delete this item. This action can not be undone."
+        "subtitle": "Please confirm you want to delete this item. This action can not be undone.",
+        "warning": "Are you sure you want to delete this item?",
+        "confirm_delete": "Delete permanently"
       },
       "out_of_space_modal": {
         "title": "Run out of space",
@@ -170,20 +175,38 @@ const strings = new LocalizedStrings({
     }
   },
   "es": {
+    "generic": {
+      "loading": "Cargando",
+      "cancel": "Cancelar",
+      "security": "Seguridad",
+      "rename": "Renombrar",
+      "close": "Cerrar",
+      "upgrade": "Mejorar",
+      "upload": "Subir",
+      "delete": "Eliminar",
+      "settings": "Configuración"
+    },
     "screens": {
+      "change_password": {
+        "title": "Cambiar contraseña",
+        "warning": "Recuerda que si cambias tu contraseña, se cerrará sesión en todos tus dispositivos. Necesitarás la nueva contraseña para acceder otra vez."
+      },
       "login_screen": {
         "title": "Inicia sesión en Internxt",
-        "forgot": "¿Has olvidado la contraseña?"
+        "forgot": "¿Has olvidado la contraseña?",
+        "no_register": "No tengo cuenta",
+        "register": "Crear una",
+        "back": "Iniciar sesión"
       },
       "register_screen": {
         "first": "{0} es un servicio de almacenamiento en la nube {1}. Un lugar {2} para todos tus archivos. Bienvenido a la {3}. Bienvenido a {4}.",
         "second": "Los archivos son {4} en tu dispositivo. {5} de terceros podemos acceder a ellos. {6}, como siempre tuvo que ser.",
-        "third": "Accede a Internxt desde {7}, {8} o {9}. Empieza a usar Drive hoy con {10} gratis. {11} cuando lo necesites, gratis por un mes, cancela cuando quieras.",
+        "third": "Accede a Internxt desde {7}, {8} o {9}. Empieza a usar Internxt hoy con {10} gratis. {11} cuando lo necesites, gratis por un mes, cancela cuando quieras.",
         "bold_first": ["Internxt", "diferente", "mejor", "revolución", "Internxt"],
         "bold_second": ["encriptados", "Ni nosotros ni ningún servicio", "Privacidad"],
         "bold_third": ["escritorio", "web", "móvil", "10 GB", "Mejora tu almacenamiento"],
         "security_title": "Internxt Security",
-        "security_subtitle": "Interxt usa tu contraseña para encriptar y decriptar tus archivos. Debido a la segura naturaleza de nuestro servicio, nosotros no sabemos tu contraseña. Esto significa que si algún día la llegas a perder, tus archivos se volverán inaccesibles. Con nosotros, tú eres el único propietario de tus archivos. Te recomendamos encarecidamente que:",
+        "security_subtitle": "Interxt usa tu contraseña para encriptar y decriptar tus archivos. Debido a la segura naturaleza de nuestro servicio, nosotros no sabemos tu contraseña. Esto significa que si algún día la llegas a perder, tus archivos se volverán inaccesibles. Con nosotros, tú eres el único propietario de tus archivos.",
         "suggestion_1": "Guardes tu contraseña. Mantenla sana y salva.",
         "suggestion_2": "Guarda una copia local de todos tus archivos.",
         "create_account_title": "Crear cuenta"
@@ -226,24 +249,8 @@ const strings = new LocalizedStrings({
         }
       },
       "create_folder": {
-        "input": "Nombre de la carpeta"
-      },
-      "photos": {
-        "screens": {
-          "photos": {
-            "albums": "Álbumes",
-            "all_photos": "Todas tus fotos"
-          },
-          "photo_gallery": {
-            "title": "Todas tus fotos",
-            "subtitle": "fotos"
-          }
-        },
-        "components": {
-          "create_album_card": "Crear nuevo álbum",
-          "loading": "Cargando fotos de la galería...",
-          "syncing": "Subiendo"
-        }
+        "input": "Nombre de la carpeta",
+        "title": "Crear carpeta"
       }
     },
     "components": {
@@ -272,7 +279,7 @@ const strings = new LocalizedStrings({
         "last_name": "Primer apellido"
       },
       "empty_folder": {
-        "title": "Esta carpeta está vacía",
+        "title": "¡Esto parece vacío!",
         "subtitle": "Aprieta en el botón de subida para empezar."
       },
       "app_menu": {
@@ -294,7 +301,6 @@ const strings = new LocalizedStrings({
         "settings": {
           "storage": "Almacenamiento",
           "more": "Más información",
-          "photos": "Fotos",
           "drive": "Drive",
           "contact": "Contacto",
           "sign": "Cerrar sesión"
@@ -317,13 +323,17 @@ const strings = new LocalizedStrings({
       },
       "share_modal": {
         "title": "Comparte este archivo con este link privado",
-        "title2": "e introduce el limite de descargas posibles",
+        "title2": "Introduce el limite de descargas posibles",
+        "title3": "Copiar enlace para compartir",
         "share": "Compartir",
+        "copy": "Copiar",
         "loading": "Cargando link..."
       },
       "delete_modal": {
         "title": "Borrar",
-        "subtitle": "Por favor, confirma que realmente quieres borrar este objeto. Esta acción no puede deshacerse."
+        "subtitle": "Por favor, confirma que realmente quieres borrar este objeto. Esta acción no puede deshacerse.",
+        "warning": "Seguro que quieres eliminar?",
+        "confirm_delete": "Borrar"
       },
       "out_of_space_modal": {
         "title": "No tienes más espacio",

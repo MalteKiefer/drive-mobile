@@ -2,6 +2,7 @@ import { sortTypes } from '../constants';
 import { compare } from 'natural-orderby'
 import { IFile, IFolder } from '../../components/FileList';
 import { getHeaders } from '../../helpers/headers';
+import { IMetadata } from '../../modals/FileDetailsModal/actions';
 
 export const fileService = {
   getFolderContent,
@@ -52,7 +53,7 @@ function createFolder(parentFolderId: number, folderName = 'Untitled folder'): P
   });
 }
 
-function updateFolderMetadata(metadata: any, folderId: string): Promise<Response> {
+function updateFolderMetadata(metadata: IMetadata, folderId: string): Promise<Response> {
   return new Promise(async (resolve, reject) => {
     const headers = await getHeaders();
     const data = JSON.stringify({ metadata });
@@ -69,7 +70,7 @@ function updateFolderMetadata(metadata: any, folderId: string): Promise<Response
   });
 }
 
-async function moveFile(fileId: string, destination: string) {
+async function moveFile(fileId: string, destination: string): Promise<number> {
   try {
     const headers = await getHeaders();
     const data = JSON.stringify({ fileId, destination });
@@ -112,7 +113,7 @@ function deleteItems(items: any[]): Promise<void> {
       fetchArray.push(fetchObj);
     });
 
-    Promise.all(fetchArray)
+    return Promise.all(fetchArray)
       .then(() => resolve())
       .catch(err => reject(err));
   });

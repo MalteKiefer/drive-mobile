@@ -1,21 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, Linking, ActivityIndicator, Alert, Platform } from 'react-native';
+import React from 'react'
+import { View, Text, StyleSheet, Linking, Alert } from 'react-native';
 import Modal from 'react-native-modalbox'
-import ProgressBar from '../../components/ProgressBar';
 import { layoutActions, userActions } from '../../redux/actions';
 import SettingsItem from './SettingsItem';
 import prettysize from 'prettysize'
 import Separator from '../../components/Separator';
 import { connect } from 'react-redux';
 import { getHeaders } from '../../helpers/headers';
-import { deviceStorage } from '../../helpers';
 import analytics, { getLyticsUuid } from '../../helpers/lytics';
-import Bold from '../../components/Bold';
-import { AuthenticationState } from '../../redux/reducers/authentication.reducer';
 import { Dispatch } from 'redux';
-import { LayoutState } from '../../redux/reducers/layout.reducer';
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import strings from '../../../assets/lang/strings';
+import { Reducers } from '../../redux/reducers/reducers';
 
 function identifyPlanName(bytes: number): string {
   return bytes === 0 ? 'Free 10GB' : prettysize(bytes)
@@ -28,7 +23,7 @@ async function loadUsage(): Promise<number> {
   }).then(res => {
     if (res.status !== 200) { throw Error('Cannot load usage') }
     return res
-  }).then(res => res.json()).then(res => res.total)
+  }).then(res => res.json()).then(res => { return res.total; })
 }
 
 async function loadLimit(): Promise<number> {
@@ -38,7 +33,7 @@ async function loadLimit(): Promise<number> {
   }).then(res => {
     if (res.status !== 200) { throw Error('Cannot load limit') }
     return res
-  }).then(res => res.json()).then(res => res.maxSpaceBytes)
+  }).then(res => res.json()).then(res => { return res.maxSpaceBytes })
 }
 
 export async function loadValues(): Promise<{ usage: number, limit: number }> {
@@ -56,123 +51,42 @@ export async function loadValues(): Promise<{ usage: number, limit: number }> {
 
   return { usage, limit }
 }
-
-async function initializePhotosUser(token: string, mnemonic: string): Promise<any> {
-  const xUser = await deviceStorage.getItem('xUser')
-  const xUserJson = JSON.parse(xUser || '{}')
-  const email = xUserJson.email
-
-  return fetch(`${process.env.REACT_NATIVE_PHOTOS_API_URL}/api/photos/initialize`, {
-    method: 'POST',
-    headers: await getHeaders(),
-    body: JSON.stringify({
-      email: email,
-      mnemonic: mnemonic
-    })
-  }).then(res => {
-    return res.json()
-  })
-}
-
-async function photosUserData(authenticationState: AuthenticationState): Promise<any> {
-  const token = authenticationState.token;
-  const mnemonic = authenticationState.user.mnemonic;
-  const headers = {
-    'Authorization': `Bearer ${token}`,
-    'internxt-mnemonic': mnemonic,
-    'Content-Type': 'application/json; charset=utf-8'
-  };
-
-  return fetch(`${process.env.REACT_NATIVE_PHOTOS_API_URL}/api/photos/user`, {
-    method: 'GET',
-    headers
-  }).then(res => {
-    if (res.status === 400) {
-      return initializePhotosUser(token, mnemonic)
-    }
-    return res.json()
-  }).then(res => {
-    return res
-  })
-}
-
-interface SettingsModalProps {
-  authenticationState: AuthenticationState
-  layoutState: LayoutState
+interface SettingsModalProps extends Reducers {
+  user: any
   dispatch: Dispatch,
   navigation: any
 }
 
 function SettingsModal(props: SettingsModalProps) {
 
-  const [usageValues, setUsageValues] = useState({ usage: 0, limit: 0 })
-  const [isLoadingUsage, setIsLoadingUpdate] = useState(false)
-
-  useEffect(() => {
-    if (props.layoutState.showSettingsModal) {
-      setIsLoadingUpdate(true)
-      loadValues().then(values => {
-        setUsageValues(values)
-      }).catch(() => {
-
-      }).finally(() => {
-        setIsLoadingUpdate(false)
-      })
-    }
-  }, [props.layoutState.showSettingsModal])
-
-  // Check current screen to change settings Photos/Drive text
-  useEffect(() => {
-    if (props.navigation.state.routeName === 'Photos' || props.navigation.state.routeName === 'FileExplorer') {
-      props.dispatch(layoutActions.setCurrentApp(props.navigation.state.routeName))
-    }
-  }, [props.navigation.state])
-
   return (
     <Modal
       isOpen={props.layoutState.showSettingsModal}
       position={'bottom'}
-      swipeArea={20}
+      entry={'bottom'}
       style={styles.modalSettings}
-      onClosed={() => {
-        props.dispatch(layoutActions.closeSettings())
-      }}
+      onClosed={() => props.dispatch(layoutActions.closeSettings())}
       backButtonClose={true}
-      animationDuration={200}>
+      swipeArea={50}
+      animationDuration={200}
+      coverScreen={true}>
 
       <View style={styles.drawerKnob}></View>
 
       <Text style={styles.nameText}>
-        {props.authenticationState.user.name}{' '}
-        {props.authenticationState.user.lastname}
+        {props.user.name}{' '}
+        {props.user.lastname}
       </Text>
-
-      <ProgressBar
-        styleProgress={styles.progressHeight}
-        totalValue={usageValues.limit}
-        usedValue={usageValues.usage}
-      />
-
-      {isLoadingUsage ?
-        <ActivityIndicator color={'#00f'} />
-        :
-        <Text style={styles.usageText}>
-          <Text>{strings.screens.storage.space.used.used} </Text>
-          <Bold>{prettysize(usageValues.usage)}</Bold>
-          <Text> {strings.screens.storage.space.used.of} </Text>
-          <Bold>{prettysize(usageValues.limit)}</Bold>
-        </Text>
-      }
 
       <Separator />
 
-      {/* <SettingsItem
+      <SettingsItem
         text={strings.components.app_menu.settings.storage}
         onPress={() => {
           props.dispatch(layoutActions.closeSettings())
           props.navigation.replace('Storage')
         }}
-      /> */}
+      />
 
       <SettingsItem
         text={strings.components.app_menu.settings.more}
@@ -180,28 +94,14 @@ function SettingsModal(props: SettingsModalProps) {
       />
 
       <SettingsItem
-        text={props.layoutState.currentApp === 'Photos' ? strings.components.app_menu.settings.drive : strings.components.app_menu.settings.photos}
-        onPress={async () => {
-
-          props.dispatch(layoutActions.closeSettings())
-
-          if (props.layoutState.currentApp === 'Photos') {
-            props.navigation.replace('FileExplorer')
-          } else {
-            props.navigation.replace('Photos')
-          }
-        }}
-      />
-
-      <SettingsItem
         text={strings.components.app_menu.settings.contact}
         onPress={() => {
-          const emailUrl = 'mailto:support@internxt.zohodesk.eu'
+          const contact = 'https://help.internxt.com/'
 
-          Linking.canOpenURL(emailUrl).then(() => {
-            Linking.openURL(emailUrl)
+          Linking.canOpenURL(contact).then(() => {
+            Linking.openURL(contact)
           }).catch(() => {
-            Alert.alert('Info', 'Send us an email to: support@internxt.zohodesk.')
+            Alert.alert('Info', 'To contact with us please go to https://help.internxt.com/')
           })
         }}
       />
@@ -218,38 +118,34 @@ function SettingsModal(props: SettingsModalProps) {
 }
 
 const styles = StyleSheet.create({
+  modalSettings: {
+    borderWidth: 1,
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    height: 350
+  },
   drawerKnob: {
     alignSelf: 'center',
-    backgroundColor: '#d8d8d8',
+    backgroundColor: '#0F62FE',
     borderRadius: 4,
-    height: 7,
-    marginTop: 10,
-    width: 56
-  },
-  modalSettings: {
-    height: hp('55%') < 420 ? 420 : Math.min(420, hp('55%')),
-    paddingBottom: Platform.OS === 'ios' ? 20 : 0
+    height: 4,
+    margin: 12,
+    width: 50
   },
   nameText: {
-    fontFamily: 'CerebriSans-Bold',
+    fontFamily: 'NeueEinstellung-Regular',
     fontSize: 20,
     fontWeight: 'bold',
     marginLeft: 26,
     marginTop: 10
-  },
-  progressHeight: {
-    height: 6
-  },
-  usageText: {
-    fontFamily: 'CerebriSans-Regular',
-    fontSize: 15,
-    paddingBottom: 0,
-    paddingLeft: 24
   }
 })
 
 const mapStateToProps = (state: any) => {
-  return { ...state };
+  return {
+    user: state.authenticationState.user,
+    layoutState: state.layoutState
+  };
 };
 
 export default connect(mapStateToProps)(SettingsModal);

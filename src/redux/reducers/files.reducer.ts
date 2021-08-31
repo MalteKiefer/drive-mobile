@@ -1,15 +1,17 @@
+import { AnyAction } from 'redux';
 import { IFile, IFolder, IUploadingFile } from '../../components/FileList';
 import { fileActionTypes } from '../constants';
 import { ArraySortFunction } from '../services';
 
 export interface FilesState {
+  absolutePath: string
   loading: boolean
   items: any[]
   filesCurrentlyUploading: IUploadingFile[]
   filesAlreadyUploaded: any[]
   folderContent: any
   rootFolderContent: any
-  selectedFile: IFile & IFolder | null
+  focusedItem: IFile | IFolder | null
   selectedItems: any[]
   sortType: string
   sortFunction: ArraySortFunction | null
@@ -21,16 +23,18 @@ export interface FilesState {
   startDownloadSelectedFile: boolean
   error?: string | null
   uri: string | Record<string, string> | undefined | null
+  pendingDeleteItems: {[key: string]: boolean}
 }
 
 const initialState: FilesState = {
+  absolutePath: '/',
   loading: false,
   items: [],
   filesCurrentlyUploading: [],
   filesAlreadyUploaded: [],
   folderContent: null,
-  rootFolderContent: null,
-  selectedFile: null,
+  rootFolderContent: [],
+  focusedItem: null,
   selectedItems: [],
   sortType: '',
   sortFunction: null,
@@ -40,23 +44,26 @@ const initialState: FilesState = {
   uploadFileUri: '',
   progress: 0,
   startDownloadSelectedFile: false,
-  uri: undefined
+  uri: undefined,
+  pendingDeleteItems: {}
 };
 
-export function filesReducer(state = initialState, action: any): FilesState {
+export function filesReducer(state = initialState, action: AnyAction): FilesState {
   switch (action.type) {
-  case fileActionTypes.GET_FILES_REQUEST:
-    return {
-      ...state,
-      loading: true
-    };
   case fileActionTypes.GET_FILES_SUCCESS:
+    action.payload.children = action.payload.children.filter((item) => {
+      return !state.pendingDeleteItems[item.id.toString()]
+    })
+    action.payload.files = action.payload.files.filter((item) => {
+      return !state.pendingDeleteItems[item.fileId]
+    })
     return {
       ...state,
       loading: false,
       folderContent: action.payload,
-      selectedFile: null,
-      selectedItems: []
+      selectedItems: [],
+      // REMOVE ONCE LOCAL UPLOAD
+      filesAlreadyUploaded: state.filesAlreadyUploaded.filter(file => file.isUploaded === false)
     };
   case fileActionTypes.GET_FILES_FAILURE:
     return {
@@ -87,9 +94,7 @@ export function filesReducer(state = initialState, action: any): FilesState {
       ...state,
       loading: false,
       isUploading: false,
-      isUploadingFileName: null,
-      filesCurrentlyUploading: state.filesCurrentlyUploading.filter(file => file.name !== action.payload),
-      filesAlreadyUploaded: state.filesAlreadyUploaded.filter(file => file.name !== action.payload)
+      isUploadingFileName: null
     };
 
   case fileActionTypes.ADD_FILE_FAILURE:
@@ -97,7 +102,8 @@ export function filesReducer(state = initialState, action: any): FilesState {
       ...state,
       loading: false,
       error: action.error,
-      isUploading: false
+      isUploading: false,
+      filesCurrentlyUploading: state.filesCurrentlyUploading.filter(file => file.id !== action.payload)
     };
 
   case fileActionTypes.ADD_FILE_UPLOAD_PROGRESS:
@@ -119,7 +125,7 @@ export function filesReducer(state = initialState, action: any): FilesState {
       uploadFileUri: action.payload
     };
 
-  case fileActionTypes.SELECT_FILE:
+  case fileActionTypes.SELECT_ITEM:
     // Check if file object is already on selection list
     const isAlreadySelected = state.selectedItems.filter((element: any) => {
       const elementIsFolder = !(element.fileId);
@@ -129,12 +135,11 @@ export function filesReducer(state = initialState, action: any): FilesState {
 
     return {
       ...state,
-      selectedFile: action.payload,
       selectedItems: isAlreadySelected ? state.selectedItems : [...state.selectedItems, action.payload]
     };
 
-  case fileActionTypes.DESELECT_FILE:
-    const removedItem = state.selectedItems.filter((element: any) => {
+  case fileActionTypes.DESELECT_ITEM:
+    const itemsWithoutRemovedItem = state.selectedItems.filter((element: any) => {
       const elementIsFolder = !(element.fileId);
 
       return elementIsFolder ? action.payload.id !== element.id : action.payload.fileId !== element.fileId;
@@ -142,24 +147,42 @@ export function filesReducer(state = initialState, action: any): FilesState {
 
     return {
       ...state,
-      selectedItems: removedItem
+      selectedItems: itemsWithoutRemovedItem
     }
 
   case fileActionTypes.DESELECT_ALL:
     return {
       ...state,
-      selectedFile: null,
       selectedItems: []
     };
 
+  case fileActionTypes.FOCUS_ITEM:
+    return {
+      ...state,
+      focusedItem: action.payload
+    };
+
+  case fileActionTypes.UNFOCUS_ITEM:
+    return {
+      ...state,
+      focusedItem: null
+    };
+
   case fileActionTypes.DELETE_FILE_REQUEST:
+    action.payload.forEach(item => {
+      if (item.fileId){
+        state.pendingDeleteItems[item.fileId] = true;
+      } else {
+        state.pendingDeleteItems[item.id.toString()] = true;
+      }
+    });
     return { ...state, loading: true };
 
   case fileActionTypes.DELETE_FILE_SUCCESS:
-    return { ...state, loading: false };
+    return { ...state, loading: false, pendingDeleteItems: {} };
 
   case fileActionTypes.DELETE_FILE_FAILURE:
-    return { ...state, loading: false };
+    return { ...state, loading: false, pendingDeleteItems: {} };
 
   case fileActionTypes.SET_SORT_TYPE:
     return {
@@ -174,6 +197,7 @@ export function filesReducer(state = initialState, action: any): FilesState {
       searchString: action.payload
     }
 
+  case fileActionTypes.GET_FILES_REQUEST:
   case fileActionTypes.CREATE_FOLDER_REQUEST:
     return {
       ...state,
@@ -184,7 +208,6 @@ export function filesReducer(state = initialState, action: any): FilesState {
     return {
       ...state,
       loading: false,
-      selectedFile: null,
       selectedItems: []
     };
   case fileActionTypes.CREATE_FOLDER_FAILURE:
@@ -204,6 +227,7 @@ export function filesReducer(state = initialState, action: any): FilesState {
       loading: false
     }
   case fileActionTypes.UPDATE_FOLDER_METADATA_FAILURE:
+  case fileActionTypes.MOVE_FILES_FAILURE:
     return {
       ...state,
       loading: false,
@@ -229,12 +253,6 @@ export function filesReducer(state = initialState, action: any): FilesState {
       ...state,
       loading: false
     }
-  case fileActionTypes.MOVE_FILES_FAILURE:
-    return {
-      ...state,
-      loading: false,
-      error: action.payload
-    }
   case fileActionTypes.SET_ROOTFOLDER_CONTENT:
     return {
       ...state,
@@ -245,6 +263,23 @@ export function filesReducer(state = initialState, action: any): FilesState {
       ...state,
       uri: action.payload
     }
+  case fileActionTypes.UPDATE_UPLOADING_FILE:
+    return {
+      ...state,
+      filesAlreadyUploaded: state.filesAlreadyUploaded.map(file => file.id === action.payload ? ({ ...file, isUploaded: true }) : file)
+    }
+  case fileActionTypes.ADD_DEPTH_ABSOLUTE_PATH:
+    return {
+      ...state,
+      absolutePath: action.payload.reduce((acumm, depth) => acumm + depth + '/', state.absolutePath)
+    };
+  case fileActionTypes.REMOVE_DEPTH_ABSOLUTE_PATH:
+    const pathSplitted = state.absolutePath.split('/');
+
+    return {
+      ...state,
+      absolutePath: pathSplitted.slice(0, pathSplitted.length - (action.payload + 1)).join('/') + '/' || '/'
+    };
   default:
     return state;
   }
